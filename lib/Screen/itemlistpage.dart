@@ -20,7 +20,7 @@ class _ItemListState extends State<ItemList> {
     Size size = MediaQuery.of(context).size;
     print("catid====${widget.catlId}");
     print("catnm====${widget.catName}");
-    
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -42,7 +42,7 @@ class _ItemListState extends State<ItemList> {
               color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
-    body:  Consumer<Controller>(
+      body: Consumer<Controller>(
         builder: (context, value, child) => value.isLoading
             ? SpinKitCircle(
                 color: Colors.black,
@@ -100,8 +100,7 @@ class _ItemListState extends State<ItemList> {
                           list: value.filteredlist,
                           catId: widget.catlId.toString(),
                         )
-                      :
-                       ItemWidget(
+                      : ItemWidget(
                           list: value.itemlist, catId: widget.catlId.toString())
                 ],
               ),

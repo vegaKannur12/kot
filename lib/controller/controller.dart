@@ -88,11 +88,11 @@ class Controller extends ChangeNotifier {
     {"catid":"C7","catname":"Category7"},
   ];
    List<Map<String, dynamic>> itemlist = [
-    {"catid":"C1","catname":"Category1","pname":"item1"},
-    {"catid":"C1","catname":"Category1","pname":"item2"},
-    {"catid":"C2","catname":"Category2","pname":"item4"},
-    {"catid":"C2","catname":"Category2","pname":"item1"},
-    {"catid":"C5","catname":"Category5","pname":"item1"},
+    {"catid":"C1","catname":"Category1","pname":"item1","rate":30.0},
+    {"catid":"C1","catname":"Category1","pname":"item2","rate":30.0},
+    {"catid":"C2","catname":"Category2","pname":"item4","rate":30.0},
+    {"catid":"C2","catname":"Category2","pname":"item1","rate":30.0},
+    {"catid":"C5","catname":"Category5","pname":"item1","rate":30.0},
     
   ];
 
