@@ -71,12 +71,37 @@ class Controller extends ChangeNotifier {
   var result1 = <String, List<Map<String, dynamic>>>{};
   var resultList = <String, List<Map<String, dynamic>>>{};
   List<Map<String, dynamic>> list = [];
+     List<Map<String, dynamic>> tabllist = [
+    {"tab": "Table 1","tid":1},
+    {"tab": "Table 2","tid":2},
+    {"tab": "Table 3","tid":3},
+    {"tab": "Table 4","tid":4},
+    {"tab": "Table 5","tid":5},
+  ];
+  List<Map<String, dynamic>> catlist = [
+    {"catid":"C1","catname":"Category1"},
+    {"catid":"C2","catname":"Category2"},
+    {"catid":"C3","catname":"Category3"},
+    {"catid":"C4","catname":"Category4"},
+    {"catid":"C5","catname":"Category5"},
+    {"catid":"C6","catname":"Category6"},
+    {"catid":"C7","catname":"Category7"},
+  ];
+   List<Map<String, dynamic>> itemlist = [
+    {"catid":"C1","catname":"Category1","pname":"item1"},
+    {"catid":"C1","catname":"Category1","pname":"item2"},
+    {"catid":"C2","catname":"Category2","pname":"item4"},
+    {"catid":"C2","catname":"Category2","pname":"item1"},
+    {"catid":"C5","catname":"Category5","pname":"item1"},
+    
+  ];
+
   String? userName;
   String param = "";
   List<bool> isAdded = [];
   bool isLoginLoading = false;
   Timer timer=Timer.periodic(Duration(seconds: 3), (timer) { 
-    
+  
   });
 
   Future<void> sendHeartbeat() async {
@@ -578,29 +603,65 @@ class Controller extends ChangeNotifier {
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-  searchItem(String val) {
+  searchTable(String val) {
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
-      filteredlist = itemList
+      filteredlist = tabllist
           .where((e) =>
-              e["code"].toLowerCase().contains(val.toLowerCase()) ||
-              e["Product"].toLowerCase().startsWith(val.toLowerCase()))
+              e["tab"].toLowerCase().contains(val.toLowerCase())
+              )
           .toList();
     } else {
       isSearch = false;
       notifyListeners();
-      filteredlist = itemList;
+      filteredlist = tabllist;
     }
-    qty =
-        List.generate(filteredlist.length, (index) => TextEditingController());
-    isAdded = List.generate(filteredlist.length, (index) => false);
-    response = List.generate(filteredlist.length, (index) => 0);
-    for (int i = 0; i < filteredlist.length; i++) {
-      qty[i].text = "1.0";
-      response[i] = 0;
+    // qty =
+    //     List.generate(filteredlist.length, (index) => TextEditingController());
+    // isAdded = List.generate(filteredlist.length, (index) => false);
+    // response = List.generate(filteredlist.length, (index) => 0);
+    // for (int i = 0; i < filteredlist.length; i++) {
+    //   qty[i].text = "1.0";
+    //   response[i] = 0;
+    // }
+    print("filtered_TABL_List----------------$filteredlist");
+    notifyListeners();
+  }
+
+  //////////////////////////////////////////////
+  searchCat(String val) {
+    if (val.isNotEmpty) {
+      isSearch = true;
+      notifyListeners();
+      filteredlist = catlist
+          .where((e) =>
+              e["catname"].toLowerCase().contains(val.toLowerCase())
+              )
+          .toList();
+    } else {
+      isSearch = false;
+      notifyListeners();
+      filteredlist = catlist;
     }
-    print("filteredList----------------$filteredlist");
+    print("filtered_CATGRY_List----------------$filteredlist");
+    notifyListeners();
+  }
+   searchItem(String val) {
+    if (val.isNotEmpty) {
+      isSearch = true;
+      notifyListeners();
+      filteredlist = itemlist
+          .where((e) =>
+              e["pname"].toLowerCase().contains(val.toLowerCase())
+              )
+          .toList();
+    } else {
+      isSearch = false;
+      notifyListeners();
+      filteredlist = itemlist;
+    }
+    print("filtered_ITEM_List----------------$filteredlist");
     notifyListeners();
   }
 

@@ -1,13 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:restaurent_kot/components/external_dir.dart';
-import 'package:restaurent_kot/controller/controller.dart';
-import '../../controller/registration_controller.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -17,61 +8,9 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  // final ValueNotifier<bool> _isObscure = ValueNotifier(true);
-  ExternalDir externalDir = ExternalDir();
-
   final _formKey = GlobalKey<FormState>();
   TextEditingController company = TextEditingController();
   TextEditingController phone = TextEditingController();
-  Map<String, dynamic> _deviceData = <String, dynamic>{};
-  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-  late String uniqId;
-
-  String? manufacturer;
-  String? model;
-  String? fp;
-  Future<void> initPlatformState() async {
-    var deviceData = <String, dynamic>{};
-
-    try {
-      if (Platform.isAndroid) {
-        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
-        manufacturer = deviceData["manufacturer"];
-        model = deviceData["model"];
-      }
-    } on PlatformException {
-      deviceData = <String, dynamic>{
-        'Error:': 'Failed to get platform version.'
-      };
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _deviceData = deviceData;
-    });
-  }
-
-  Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
-    return <String, dynamic>{
-      'manufacturer': build.manufacturer,
-      'model': build.model,
-    };
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    deletemenu();
-    initPlatformState();
-  }
-
-  deletemenu() async {
-    print("delete");
-    // await OrderAppDB.instance.deleteFromTableCommonQuery('menuTable', "");
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -99,7 +38,7 @@ class _RegistrationState extends State<Registration> {
                     height: size.height * 0.34,
                     width: size.width * 0.8,
                     child: Image.asset(
-                      "assets/lo1.png",
+                      "assets/login.png",
                       fit: BoxFit.contain,
                     )),
                 // Container(height: size.height*0.16,),
@@ -219,52 +158,24 @@ class _RegistrationState extends State<Registration> {
                     SizedBox(
                       height: size.height * 0.03,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Consumer<Controller>(
-                          builder: (context, value, child) => SizedBox(
-                            width: size.width * 0.5,
-                            // decoration: BoxDecoration(
-                            //   borderRadius: BorderRadius.circular(50),
-                            // ),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Theme.of(context).primaryColor,
-                                    shape: const StadiumBorder()),
-                                onPressed: () async {
-                                  String deviceInfo =
-                                      "$manufacturer" + '' + "$model";
-                                  if (_formKey.currentState!.validate()) {
-                                    String tempFp1 =
-                                        await externalDir.fileRead();
-                                    print("tempFp---${tempFp1}");
-                                    Provider.of<Controller>(context,
-                                            listen: false)
-                                        .postRegistration(company.text, tempFp1,
-                                            phone.text, deviceInfo, context);
-                                  }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 12.0, bottom: 12),
-                                  child: value.isLoading
-                                      ? const SpinKitThreeBounce(
-                                          color: Colors.white,
-                                          size: 16,
-                                        )
-                                      : Text(
-                                          "REGISTER",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 17,
-                                              color: Colors.white),
-                                        ),
-                                )),
+                    Row(children: [
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0, bottom: 12),
+                          child: Text(
+                            "REGISTER",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Colors.black),
                           ),
                         ),
-                      ],
-                    )
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 174, 236, 211),
+                        ),
+                      )
+                    ])
                   ],
                 ),
               ],

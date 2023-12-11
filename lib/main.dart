@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/splashscreen.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -87,6 +88,10 @@ class MyApp extends StatelessWidget {
             primaryColor: Color.fromARGB(255, 102, 76, 175),
             secondaryHeaderColor: Color.fromARGB(255, 219, 218, 218)),
         debugShowCheckedModeBanner: false,
-        home: SplashScreen());
+        home: 
+        // SplashScreen(),
+        HomePage(),
+
+        );
   }
 }

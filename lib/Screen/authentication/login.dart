@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurent_kot/controller/controller.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -46,8 +42,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Container(
                       child: Image.asset(
-                    "assets/lo2.png",
+                    "assets/lock.png",
                     fit: BoxFit.contain,
+                    width: 300,
+                    height: 300,
                   )),
                   SizedBox(
                     height: size.height * 0.054,
@@ -71,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: size.height * 0.02,
                       ),
                       TextFormField(
-                        controller: username,
+                        // controller: username,
                         validator: (text) {
                           if (text == null || text.isEmpty) {
                             return 'Please Enter Username';
@@ -118,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                           valueListenable: _isObscure,
                           builder: (context, values, child) {
                             return TextFormField(
-                              controller: password,
+                              // controller: password,
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
                                   return 'Please Enter Password';
@@ -127,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               scrollPadding: EdgeInsets.only(
                                   bottom: topInsets + size.height * 0.18),
-                              obscureText: _isObscure.value,
+                              // obscureText: _isObscure.value,
                               decoration: InputDecoration(
                                   // border: InputBorder.none,
                                   contentPadding: EdgeInsets.only(
@@ -168,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                                           .secondaryHeaderColor,
                                     ),
                                     onPressed: () {
-                                      _isObscure.value = !_isObscure.value;
+                                      // _isObscure.value = !_isObscure.value;
                                       // print("_isObscure $_isObscure");
                                     },
                                   ),
@@ -180,47 +178,61 @@ class _LoginPageState extends State<LoginPage> {
                         height: size.height * 0.03,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Consumer<Controller>(
-                            builder: (context, value, child) => Container(
-                              width: size.width * 0.5,
-                              // decoration: BoxDecoration(
-                              //   borderRadius: BorderRadius.circular(50),
-                              // ),
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Theme.of(context).primaryColor,
-                                      shape: StadiumBorder()),
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      // ignore: use_build_context_synchronously
-                                      Provider.of<Controller>(context,
-                                              listen: false)
-                                          .getLogin(username.text,
-                                              password.text, context);
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 14.0, bottom: 14),
-                                    child: value.isLoginLoading
-                                        ? const SpinKitThreeBounce(
-                                            color: Colors.white,
-                                            size: 16,
-                                          )
-                                        : Text(
-                                            "LOGIN",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 17,
-                                                color: Colors.white),
-                                          ),
-                                  )),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 12.0, bottom: 12),
+                              child: Text(
+                                "REGISTER",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                    color: Colors.black),
+                              ),
                             ),
-                          ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Color.fromARGB(255, 174, 236, 211),
+                            ),
+                          )
                         ],
                       )
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     Consumer<Controller>(
+                      //       builder: (context, value, child) => Container(
+                      //         width: size.width * 0.5,
+                      //         // decoration: BoxDecoration(
+                      //         //   borderRadius: BorderRadius.circular(50),
+                      //         // ),
+                      //         // child: ElevatedButton(
+                      //         //   style: ElevatedButton.styleFrom(
+                      //         //       shape: StadiumBorder()),
+                      //         //   onPressed: () {},
+                      //         //   // child: Padding(
+                      //         //   //   padding: const EdgeInsets.only(
+                      //         //   //       top: 14.0, bottom: 14),
+                      //         //   //   child: value.isLoginLoading
+                      //         //   //       ? const SpinKitThreeBounce(
+                      //         //   //           color: Colors.white,
+                      //         //   //           size: 16,
+                      //         //   //         )
+                      //         //   //       : Text(
+                      //         //   //           "LOGIN",
+                      //         //   //           style: TextStyle(
+                      //         //   //               fontWeight: FontWeight.bold,
+                      //         //   //               fontSize: 17,
+                      //         //   //               color: Colors.white),
+                      //         //   //         ),
+                      //         //   // )
+                      //         // ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // )
                     ],
                   )
                 ],
