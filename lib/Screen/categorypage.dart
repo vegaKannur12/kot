@@ -31,8 +31,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               Text(
                 "Table : ${widget.tablId.toString()}",
                 style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
+                    color: Colors.blue,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
             ],
@@ -54,7 +54,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
-                      color: Colors.blue,
+                      color: Colors.black,
                     ),
                     suffixIcon: IconButton(
                       icon: new Icon(Icons.cancel),
@@ -64,7 +64,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             .searchCat("");
                       },
                     ),
-                    hintText: "Search Category..."),
+                     focusedBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          borderSide:
+                              const BorderSide(color: Colors.blue, width: 1.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          borderSide:
+                              BorderSide(color: Colors.black, width: 1.0),
+                        ),
+                    hintText: "Search Category...",
+                    
+                    ),
               ),
               SizedBox(
                 height: 15,

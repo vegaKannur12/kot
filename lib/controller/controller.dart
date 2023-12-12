@@ -100,6 +100,7 @@ class Controller extends ChangeNotifier {
   String param = "";
   List<bool> isAdded = [];
   bool isLoginLoading = false;
+  String? tablID="";
   Timer timer=Timer.periodic(Duration(seconds: 3), (timer) { 
   
   });
@@ -318,8 +319,7 @@ class Controller extends ChangeNotifier {
           // password: "1"
           );
         
-      getCategoryList(context);
-      getCustomerList(context, "");
+      
       debugPrint("Connected!");
     } 
     catch (e) {
@@ -330,17 +330,6 @@ class Controller extends ChangeNotifier {
     }
   }
 
-//////////////////////////////////////////////////////////
-  getUserData() async {
-    isLoading = true;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    cname = prefs.getString("cname");
-    userName = prefs.getString("name");
-    // ignore: avoid_print
-    print("haiii ----$cname");
-    isLoading = false;
-    notifyListeners();
-  }
 
   ////////////////////////////////////
   setDate(String date1, String date2) {
@@ -348,36 +337,6 @@ class Controller extends ChangeNotifier {
     todate = date2;
     print("gtyy----$fromDate----$todate");
     notifyListeners();
-  }
-
-//////////////////////////////////////////////////////////////////
-  Future<List<CustomerModel>> getCustomerList(
-      BuildContext context, String filter) async {
-    List<CustomerModel> list = [];
-    // var res = await SqlConn.readData(
-    //     "SELECT fld1301 AS taxId,fld1302 as taxType FROM TAB13 WHERE  fld1302 LIKE '$filter%' ORDER BY fld1301");
-    String f = filter.trim();
-    // isCusLoading = true;
-
-    // notifyListeners();
-
-    print("dndndn------$filter");
-    var res = await SqlConn.readData("Flt_Sp_Get_Customer '$filter'");
-    // ignore: avoid_print
-    print("customer list-----------$res");
-    var valueMap = json.decode(res);
-    customerList.clear();
-    if (valueMap != null) {
-      for (var item in valueMap) {
-        // customerList.add(item);
-        list.add(CustomerModel.fromJson(item));
-      }
-      return list;
-    }
-    return [];
-
-    // isCusLoading = false;
-    // notifyListeners();
   }
 
   /////////////////////////////////////////////////
@@ -491,7 +450,7 @@ class Controller extends ChangeNotifier {
         notifyListeners();
       }
     }
-    freezeDropdown(true);
+   
     notifyListeners();
   }
 
@@ -666,87 +625,16 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////////////////////////////////////////////////////////////
-  freezeDropdown(bool val) {
-    isfreez = val;
-    print("isFreez-----$isfreez");
-    // selected = null;
+    setTableID(String id, BuildContext context) {
+    tablID = id;
 
+    print("tablID----$tablID");
     notifyListeners();
+   
   }
-
+ 
   /////////////////////////////////////////////////////////////////////
-  saveOrder(BuildContext context, String date, double total, int count) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? cid = await prefs.getString("cid");
-    // String? db = prefs.getString("db_name");
-    // String? brId = await prefs.getString("br_id");
-    String? os = await prefs.getString("os");
-    int? cartid = await prefs.getInt("cartId");
-
-    print("djgd----$os---$cartid---$customerId---$date---$total---$count");
-    notifyListeners();
-    var res = await SqlConn.readData(
-        "Flt_Sp_Save_Order  $cartid,'$date','$customerId','$os',$total,$count");
-    // ignore: avoid_print
-    print("save order------$res");
-    var valueMap = json.decode(res);
-    // String val = valueMap[0]["Orderno"];
-    if (valueMap[0]["Save_Status"] == "Success") {
-      Fluttertoast.showToast(
-          msg: "Order Saved as Order No : ${valueMap[0]["Orderno"]}",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 18.0);
-      isfreez = false;
-      // viewCart(context, customerId.toString());
-      selected = null;
-      customerId = null;
-      viewCart(context, customerId.toString());
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-    }
-    notifyListeners();
-  }
-
-  /////////////////////////////////////////////////////////////////////
-  setcustomerId(String id, BuildContext context) {
-    customerId = id;
-
-    print("customer----$customerId");
-    notifyListeners();
-    getCartNo(context);
-    freezeDropdown(true);
-  }
-
-  ///////////////////////////////////////////////////////////////////
-  getorderList(String date) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? cid = await prefs.getString("cid");
-    // String? db = prefs.getString("db_name");
-    // String? brId = await prefs.getString("br_id");
-    String? os = await prefs.getString("os");
-    int? cartid = await prefs.getInt("cartId");
-    isOrderLoading = true;
-    notifyListeners();
-    print("djgd----$os--");
-    notifyListeners();
-    var res = await SqlConn.readData("Flt_Get_Order_List  '$os','$date'");
-    // ignore: avoid_print
-    var valueMap = json.decode(res);
-    print("order list-----$valueMap");
-    orderlist.clear();
-    for (var item in valueMap) {
-      orderlist.add(item);
-    }
-    isOrderLoading = false;
-    // notifyListeners();
-    notifyListeners();
-  }
+ 
 
   ///////////////////////////////////////////////////////
   getorderDetails(String ordNo) async {
@@ -775,7 +663,8 @@ class Controller extends ChangeNotifier {
 ///////////////////////////////////////////////////////////////
   searchOrder(String val) {
     // filteredlist.clear();
-    if (val.isNotEmpty) {
+    if (val.isNotEmpty) 
+    {
       isSearch = true;
       notifyListeners();
       filteredlist = orderlist
@@ -783,12 +672,13 @@ class Controller extends ChangeNotifier {
               e["Customer_Name"].toLowerCase().startsWith(val.toLowerCase()) ||
               e["Cust_ID"].toLowerCase().startsWith(val.toLowerCase()))
           .toList();
-    } else {
+    } 
+    else 
+    {
       isSearch = false;
       notifyListeners();
       filteredlist = orderlist;
     }
-
     print("filteredList----------------$filteredlist");
     notifyListeners();
   }

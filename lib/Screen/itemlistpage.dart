@@ -33,13 +33,14 @@ class _ItemListState extends State<ItemList> {
             },
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: Colors.black,
             )),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.white,
+        // Theme.of(context).primaryColor,
         title: Text(
           "${widget.catName.toString().toUpperCase()}",
           style: TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
       body: Consumer<Controller>(
@@ -61,7 +62,7 @@ class _ItemListState extends State<ItemList> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.blue,
+                          color: Colors.black,
                         ),
                         suffixIcon: IconButton(
                           icon: new Icon(Icons.cancel),
@@ -76,9 +77,9 @@ class _ItemListState extends State<ItemList> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide:
-                              const BorderSide(color: Colors.blue, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                         ),
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: UnderlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide:
                               const BorderSide(color: Colors.blue, width: 1.0),
@@ -86,10 +87,10 @@ class _ItemListState extends State<ItemList> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide:
-                              BorderSide(color: Colors.blue, width: 1.0),
+                              BorderSide(color: Colors.black, width: 1.0),
                         ),
                         // filled: true,
-                        hintStyle: TextStyle(color: Colors.blue, fontSize: 13),
+                        hintStyle: TextStyle(color: Colors.black, fontSize: 13),
                         hintText: "Search Item here.. ",
                         // fillColor: Colors.grey[100]
                       ),

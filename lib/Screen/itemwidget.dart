@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 
 class ItemWidget extends StatefulWidget {
@@ -30,7 +31,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                     return Card(
                       margin: EdgeInsets.all(10),
                       child: Container(
-                        height: 220,
+                        height: 250,
                         decoration: BoxDecoration(
                             color: Colors.green[20],
                             borderRadius: BorderRadius.circular(13)),
@@ -43,9 +44,12 @@ class _ItemWidgetState extends State<ItemWidget> {
                                   widget.list[index]["pname"]
                                       .toString()
                                       .toUpperCase(),
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20,color: Colors.green),
+                                      fontSize: 20,
+                                      color: Colors.green),
                                 )
                               ],
                             ),
@@ -55,27 +59,45 @@ class _ItemWidgetState extends State<ItemWidget> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Quantity : '),
-                                Text('Rate : '),
-                               
+                                Text(
+                                  'Quantity : ',
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
+                                ),
+                                Text(
+                                  'Rate : ${widget.list[index]["rate"].toString()}',
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
+                                ),
                               ],
                             ),
-                             SizedBox(
+                            SizedBox(
                               height: 10,
                             ),
-                             Expanded(
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.multiline,maxLines: 3,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Description',
-                                    ),
+                            Expanded(
+                              child: SizedBox(height: 100,
+                                child: TextFormField(
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 3,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                                    labelText: 'Description',
                                   ),
+                                  style:TextStyle(overflow: TextOverflow.ellipsis),
                                 ),
-                                 SizedBox(
-                              height: 10,
+                              ),
                             ),
-                            ElevatedButton.icon(onPressed: (){}, icon: Icon(Icons.trolley), label: Text("Add to Bag"))
+                            SizedBox(
+                              height: 5,
+                            ),
+                            ElevatedButton.icon(
+                                onPressed: () {},
+                                icon: Icon(Icons.trolley),
+                                label: Text(
+                                  "Add to Bag",
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
+                                ))
                           ],
                         ),
                       ),

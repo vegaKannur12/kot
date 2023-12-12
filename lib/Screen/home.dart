@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
+import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,10 +39,37 @@ class _HomePageState extends State<HomePage> {
               Text(
                 date.toString(),
                 style: TextStyle(
-                    color: Colors.red,
+                    color: Colors.blue,
                     fontSize: 16,
                     fontWeight: FontWeight.bold),
               ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.green,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: InkWell(
+          onTap: () {},
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.shopping_cart, color: Colors.white),
+              Text(
+                'VIEW CART',
+                textScaleFactor: ScaleSize.textScaleFactor(context),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white),
+              )
             ],
           ),
         ),
@@ -51,27 +79,40 @@ class _HomePageState extends State<HomePage> {
         child: Consumer<Controller>(
           builder: (context, value, child) => Column(
             children: [
-              TextFormField(
-                controller: seacrh,
-                //   decoration: const InputDecoration(,
-                onChanged: (val) {
-                  Provider.of<Controller>(context, listen: false)
-                      .searchTable(val);
-                },
-                decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.blue,
+              SizedBox(
+                width: size.width,
+                height: 45,
+                child: TextFormField(
+                  controller: seacrh,
+                  //   decoration: const InputDecoration(,
+                  onChanged: (val) {
+                    Provider.of<Controller>(context, listen: false)
+                        .searchTable(val);
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.cancel),
+                      onPressed: () {
+                        seacrh.clear();
+                        Provider.of<Controller>(context, listen: false)
+                            .searchTable("");
+                      },
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 1.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide(color: Colors.black, width: 1.0),
+                    ),
+                    hintText: "Search Table...",
                   ),
-                  suffixIcon: IconButton(
-                    icon: new Icon(Icons.cancel),
-                    onPressed: () {
-                      seacrh.clear();
-                      Provider.of<Controller>(context, listen: false)
-                          .searchTable("");
-                    },
-                  ),
-                  hintText: "Search Table..."
                 ),
               ),
               SizedBox(
@@ -86,6 +127,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 // ItemList(catlId: map["catid"],catName: map["catname"],)
   Widget tableWidget(Size size, List list) {
     return Consumer<Controller>(
@@ -93,57 +135,64 @@ class _HomePageState extends State<HomePage> {
         child: list.length == 0
             ? Container(
                 // height: size.height * 0.7,
-                child: Center(
-                    child: Text("no data")))
-            :  GridView.builder(
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          itemCount:
-              value.isSearch ? value.filteredlist.length : value.tabllist.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12),
-          itemBuilder: (context, index) => InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        CategoryScreen(tablId: list[index]["tid"].toString())),
-              );
-            },
-            child: Card(
-              color: Colors.grey[200],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Expanded(
-                  //   child: Image.asset(
-                  //     "assets/sweets.png",
-                  //     height: size.height * 0.09,
-                  //     width: size.width * 0.15,
-                  //     // fit: BoxFit.contain,
-                  //   ),
-                  // ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                      child: Text(
-                        list[index]["tab"].toString(),
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                child: Center(child: Text("no data")))
+            : GridView.builder(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: value.isSearch
+                    ? value.filteredlist.length
+                    : value.tabllist.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12),
+                itemBuilder: (context, index) => InkWell(
+                  onTap: () {
+                   
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CategoryScreen(
+                              tablId: list[index]["tid"].toString())),
+                              
+                    );
+                    //  value.setTableID(list[index]["tid"].toString(), context);
+                  },
+                  child: Card(
+                    color: Colors.grey[200],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Expanded(
+                        //   child: Image.asset(
+                        //     "assets/sweets.png",
+                        //     height: size.height * 0.09,
+                        //     width: size.width * 0.15,
+                        //     // fit: BoxFit.contain,
+                        //   ),
+                        // ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                            child: Text(
+                              list[index]["tab"].toString(),
+                              textScaleFactor:
+                                  ScaleSize.textScaleFactor(context),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
