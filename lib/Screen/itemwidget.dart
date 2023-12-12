@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 
 class ItemWidget extends StatefulWidget {
@@ -45,7 +46,8 @@ class _ItemWidgetState extends State<ItemWidget> {
                                       .toUpperCase(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20,color: Colors.green),
+                                      fontSize: 20,
+                                      color: Colors.green),
                                 )
                               ],
                             ),
@@ -57,25 +59,34 @@ class _ItemWidgetState extends State<ItemWidget> {
                               children: [
                                 Text('Quantity : '),
                                 Text('Rate : '),
-                               
                               ],
                             ),
-                             SizedBox(
+                            SizedBox(
                               height: 10,
                             ),
-                             Expanded(
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.multiline,maxLines: 3,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Description',
-                                    ),
-                                  ),
+                            Expanded(
+                              child: TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: 3,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Description',
                                 ),
-                                 SizedBox(
+                              ),
+                            ),
+                            SizedBox(
                               height: 10,
                             ),
-                            ElevatedButton.icon(onPressed: (){}, icon: Icon(Icons.trolley), label: Text("Add to Bag"))
+                            ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CartBag()),
+                                  );
+                                },
+                                icon: Icon(Icons.trolley),
+                                label: Text("Add to Bag"))
                           ],
                         ),
                       ),

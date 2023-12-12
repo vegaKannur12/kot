@@ -1,9 +1,9 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/splashscreen.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -84,14 +84,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(
-            primaryColor: Color.fromARGB(255, 102, 76, 175),
-            secondaryHeaderColor: Color.fromARGB(255, 219, 218, 218)),
-        debugShowCheckedModeBanner: false,
-        home: 
-        // SplashScreen(),
-        HomePage(),
-
-        );
+      theme: ThemeData(
+          primaryColor: Color.fromARGB(255, 102, 76, 175),
+          secondaryHeaderColor: Color.fromARGB(255, 219, 218, 218)),
+      debugShowCheckedModeBanner: false,
+      home:
+          // SplashScreen(),
+          // HomePage(),
+          CartBag(),
+    );
   }
 }
