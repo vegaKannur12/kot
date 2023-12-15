@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 
@@ -53,7 +54,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                 )
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             Row(
@@ -87,7 +88,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             ElevatedButton.icon(

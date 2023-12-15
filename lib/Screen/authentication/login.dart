@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                               padding:
                                   const EdgeInsets.only(top: 12.0, bottom: 12),
                               child: Text(
-                                "REGISTER",
+                                "LOGIN",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 17,

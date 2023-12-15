@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -57,7 +58,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CartBag()),
+            );
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -115,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               value.isSearch
@@ -148,13 +154,11 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSpacing: 12),
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
-                   
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CategoryScreen(
                               tablId: list[index]["tid"].toString())),
-                              
                     );
                     //  value.setTableID(list[index]["tid"].toString(), context);
                   },
