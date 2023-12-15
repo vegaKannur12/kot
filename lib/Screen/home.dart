@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     // TODO: implement initState
+    Provider.of<Controller>(context, listen: false).qtyadd();
     super.initState();
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: Align(
           alignment: Alignment.centerRight,
@@ -85,41 +87,27 @@ class _HomePageState extends State<HomePage> {
         child: Consumer<Controller>(
           builder: (context, value, child) => Column(
             children: [
-              SizedBox(
-                width: size.width,
-                height: 45,
-                child: TextFormField(
-                  controller: seacrh,
-                  //   decoration: const InputDecoration(,
-                  onChanged: (val) {
-                    Provider.of<Controller>(context, listen: false)
-                        .searchTable(val);
-                  },
-                  decoration: InputDecoration(
+              TextFormField(
+                controller: seacrh,
+                //   decoration: const InputDecoration(,
+                onChanged: (val) {
+                  Provider.of<Controller>(context, listen: false)
+                      .searchTable(val);
+                },
+                decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
-                      color: Colors.black,
+                      color: Colors.blue,
                     ),
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.cancel),
+                      icon: new Icon(Icons.cancel),
                       onPressed: () {
                         seacrh.clear();
                         Provider.of<Controller>(context, listen: false)
                             .searchTable("");
                       },
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide:
-                          const BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(color: Colors.black, width: 1.0),
-                    ),
-                    hintText: "Search Table...",
-                  ),
-                ),
+                    hintText: "Search Table..."),
               ),
               const SizedBox(
                 height: 15,
@@ -135,6 +123,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 // ItemList(catlId: map["catid"],catName: map["catname"],)
+/////////////////////////////////////////////////////////////////
   Widget tableWidget(Size size, List list) {
     return Consumer<Controller>(
       builder: (context, value, child) => Expanded(
@@ -154,13 +143,13 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSpacing: 12),
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
+                    value.setTableID(list[index]["tid"].toString(), context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CategoryScreen(
                               tablId: list[index]["tid"].toString())),
                     );
-                    //  value.setTableID(list[index]["tid"].toString(), context);
                   },
                   child: Card(
                     color: Colors.grey[200],
@@ -182,8 +171,6 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                             child: Text(
                               list[index]["tab"].toString(),
-                              textScaleFactor:
-                                  ScaleSize.textScaleFactor(context),
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,

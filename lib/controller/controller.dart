@@ -38,7 +38,7 @@ class Controller extends ChangeNotifier {
   bool isCartLoading = false;
   List<Map<String, dynamic>> categoryList = [];
   List<Map<String, dynamic>> itemList = [];
-  List<TextEditingController> qty = [];
+  
   bool isCusLoading = false;
   DateTime? sdate;
   DateTime? ldate;
@@ -70,6 +70,8 @@ class Controller extends ChangeNotifier {
   // List<Map<String, dynamic>> filteredList = [];
   var result1 = <String, List<Map<String, dynamic>>>{};
   var resultList = <String, List<Map<String, dynamic>>>{};
+  List<TextEditingController> qty = [];
+  List<bool> isAdded = [];
   List<Map<String, dynamic>> list = [];
      List<Map<String, dynamic>> tabllist = [
     {"tab": "Table 1","tid":1},
@@ -95,16 +97,26 @@ class Controller extends ChangeNotifier {
     {"catid":"C5","catname":"Category5","pname":"item1","rate":30.0},
     
   ];
+ 
 
   String? userName;
   String param = "";
-  List<bool> isAdded = [];
+  
   bool isLoginLoading = false;
   String? tablID="";
   Timer timer=Timer.periodic(Duration(seconds: 3), (timer) { 
   
   });
-
+ qtyadd()
+ {
+    qty = List.generate(itemlist.length, (index) => TextEditingController());
+    isAdded = List.generate(itemlist.length, (index) => false);
+    notifyListeners();
+    for (int i = 0; i < itemlist.length; i++) {
+      qty[i].text = "1.0";
+      
+    }
+ }
   Future<void> sendHeartbeat() async {
   try {
    if (SqlConn.isConnected) 
@@ -339,33 +351,7 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  /////////////////////////////////////////////////
-  getCategoryList(
-    BuildContext context,
-  ) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? cid = await prefs.getString("cid");
-    // String? db = prefs.getString("db_name");
-    // String? brId = await prefs.getString("br_id");
-    param = "";
-    isLoading = true;
 
-    var res = await SqlConn.readData("Flt_Sp_Get_Category");
-    var valueMap = json.decode(res);
-
-    // ignore: avoid_print
-    print("category list----------$valueMap");
-    categoryList.clear();
-    if (valueMap != null) {
-      for (var item in valueMap) {
-        categoryList.add(item);
-      }
-    }
-
-    isLoading = false;
-
-    notifyListeners();
-  }
 
   /////////////////////////////////////////////////
   getItemList(BuildContext context, String catId) async {
@@ -411,6 +397,11 @@ class Controller extends ChangeNotifier {
       if (double.parse(qty[index].text) > 1) {
         double d = double.parse(qty[index].text) - val;
         qty[index].text = d.toString();
+        notifyListeners();
+      }
+      else
+      {
+        isAdded[index] = false;
         notifyListeners();
       }
     }

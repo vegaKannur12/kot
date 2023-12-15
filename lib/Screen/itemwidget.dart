@@ -29,78 +29,199 @@ class _ItemWidgetState extends State<ItemWidget> {
                   itemCount: widget.list.length,
                   physics: ScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return Card(
-                      margin: EdgeInsets.all(10),
-                      child: Container(
-                        height: 250,
-                        decoration: BoxDecoration(
-                            color: Colors.green[20],
-                            borderRadius: BorderRadius.circular(13)),
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  widget.list[index]["pname"]
-                                      .toString()
-                                      .toUpperCase(),
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: Colors.green),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Quantity : ',
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
-                                ),
-                                Text(
-                                  'Rate : ${widget.list[index]["rate"].toString()}',
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Expanded(
-                              child: SizedBox(height: 100,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 3,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                    labelText: 'Description',
-                                  ),
-                                  style:TextStyle(overflow: TextOverflow.ellipsis),
-                                ),
+                    return Container(
+                      height: 180,
+                      decoration: BoxDecoration(
+                          color: Colors.green[20],
+                          borderRadius: BorderRadius.circular(13)),
+                      padding: EdgeInsets.all(15),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                widget.list[index]["pname"]
+                                    .toString()
+                                    .toUpperCase(),
+                                textScaleFactor:
+                                    ScaleSize.textScaleFactor(context),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: Theme.of(context).primaryColor),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '\u{20B9} ${widget.list[index]["rate"].toString()}',
+                                textScaleFactor:
+                                    ScaleSize.textScaleFactor(context),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 17),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: Icon(Icons.trolley),
-                                label: Text(
-                                  "Add to Bag",
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
-                                ))
-                          ],
-                        ),
+                              Container(
+                                  height: 40,
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                      color: value.isAdded[index] == true
+                                          ? Colors.red
+                                          : Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: value.isAdded[index] == true
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            InkWell(
+                                                onTap: () {
+                                                  // value.response[index] = 0;
+
+                                                  Provider.of<Controller>(
+                                                          context,
+                                                          listen: false)
+                                                      .setQty(
+                                                          1.0, index, "dec");
+                                                },
+                                                child: Icon(
+                                                  Icons.remove,
+                                                  color: Colors.white,
+                                                )),
+                                            Container(
+                                              width: size.width * 0.14,
+                                              height: size.height * 0.05,
+                                              child: Center(
+                                                child: TextField(
+                                                  decoration: InputDecoration(
+                                                      border: InputBorder.none),
+                                                  onTap: () {
+                                                    value.qty[index].selection =
+                                                        TextSelection(
+                                                            baseOffset: 0,
+                                                            extentOffset: value
+                                                                .qty[index]
+                                                                .value
+                                                                .text
+                                                                .length);
+                                                  },
+                                                  onSubmitted: (val) {
+                                                    // value.response[index] = 0;
+                                                    // Provider.of<Controller>(context,
+                                                    //         listen: false)
+                                                    //     .updateCart(
+                                                    //         context,
+                                                    //         widget.list[index],
+                                                    //         date!,
+                                                    //         value.customerId.toString(),
+                                                    //         double.parse(val),
+                                                    //         index,
+                                                    //         "from itempage",
+                                                    //         0,
+                                                    //         widget.catId);
+                                                  },
+                                                  onChanged: (val) {
+                                                    // value.response[index] = 0;
+                                                  },
+                                                  controller: value.qty[index],
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                                onTap: () {
+                                                  // value.response[index] = 0;
+                                                  Provider.of<Controller>(
+                                                          context,
+                                                          listen: false)
+                                                      .setQty(
+                                                          1.0, index, "inc");
+                                                },
+                                                child: Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                )),
+                                          ],
+                                        )
+                                      : TextButton(
+                                          onPressed: () {
+                                            value.isAdded[index] = true;
+                                            setState(() {});
+                                          },
+                                          child: Text(
+                                            "ADD",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          )))
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            content: TextField(
+                                              maxLines: 3,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .pop(false);
+                                                  },
+                                                  child: Text('Cancel')),
+                                              ElevatedButton(
+                                                  onPressed: () {},
+                                                  child: Text("Save"))
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 25,
+                                        width: 18,
+                                        child: Image.asset(
+                                          "assets/instructions.png",
+                                          fit: BoxFit.contain,
+                                          width: 300,
+                                          height: 300,
+                                        ),
+                                      ),
+                                      Text("Add Instructions"),
+                                    ],
+                                  )),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Divider(
+                            color: Colors.black45,
+                          )
+                        ],
                       ),
                     );
                   })),

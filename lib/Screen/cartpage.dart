@@ -68,6 +68,7 @@ class _CartBagState extends State<CartBag> {
     );
   }
 
+//////////////////////////////////////////////////////////////////
   Widget customCard(int index, Size size, Map map) {
     return Consumer<Controller>(
         builder: (context, value, child) => Card(
@@ -83,7 +84,8 @@ class _CartBagState extends State<CartBag> {
                       children: [
                         Flexible(
                             child: Text(
-                          "${map["Prod_Name"].toUpperCase()} ( ${map["Cart_Batch"]} )",
+                          "product name",
+                          // "${map["Prod_Name"].toUpperCase()} ( ${map["Cart_Batch"]} )",
                           style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
@@ -114,7 +116,8 @@ class _CartBagState extends State<CartBag> {
                                           bottom: 4,
                                           top: 4),
                                       child: Text(
-                                        map["Pkg"],
+                                        "pakage",
+                                        // map["Pkg"],
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black),
@@ -145,7 +148,8 @@ class _CartBagState extends State<CartBag> {
                                           bottom: 4,
                                           top: 4),
                                       child: Text(
-                                        "${map["Cart_Unit"]}",
+                                        "cart unit",
+                                        // "${map["Cart_Unit"]}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -173,7 +177,8 @@ class _CartBagState extends State<CartBag> {
                                 padding: const EdgeInsets.only(
                                     left: 8.0, right: 8, bottom: 4, top: 4),
                                 child: Text(
-                                  "\u{20B9}${map["Cart_Rate"].toStringAsFixed(2)}",
+                                  "cart rate",
+                                  // "\u{20B9}${map["Cart_Rate"].toStringAsFixed(2)}",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
@@ -308,7 +313,8 @@ class _CartBagState extends State<CartBag> {
                           children: [
                             Text("Total : "),
                             Text(
-                              "\u{20B9}${map["It_Total"].toStringAsFixed(2)}",
+                              "total",
+                              // "\u{20B9}${map["It_Total"].toStringAsFixed(2)}",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
