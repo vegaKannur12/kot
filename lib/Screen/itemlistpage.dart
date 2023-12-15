@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/itemwidget.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 
-class ItemList extends StatefulWidget {
+class ItemList extends StatefulWidget 
+{
   String? catlId;
   String? catName;
   ItemList({super.key, required this.catlId, required this.catName});
@@ -13,7 +14,8 @@ class ItemList extends StatefulWidget {
   State<ItemList> createState() => _ItemListState();
 }
 
-class _ItemListState extends State<ItemList> {
+class _ItemListState extends State<ItemList> 
+{
   TextEditingController seacrh = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -44,10 +46,12 @@ class _ItemListState extends State<ItemList> {
               color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
-      bottomNavigationBar: Container(
+      bottomNavigationBar: Container(height: 55,width: size.width,decoration: BoxDecoration(color: Colors.amber,
+      
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15))),
           child: Consumer<Controller>(
         builder: (context, value, child) => TextButton(
-            onPressed: () {}, child: Text("ADD TO BAG${value.itemcount.toString()}")),
+            onPressed: () {}, child: Text("ADD ${value.itemcount.toInt()} ITEM TO BAG",style: TextStyle(color: Colors.black),)),
       )),
       body: Consumer<Controller>(
         builder: (context, value, child) => value.isLoading

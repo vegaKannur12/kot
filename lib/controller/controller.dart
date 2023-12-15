@@ -396,8 +396,10 @@ class Controller extends ChangeNotifier {
       itemcount = itemcount + double.parse(val);
       notifyListeners();
     } else if (type == "dec") {
-      itemcount = itemcount - double.parse(val);
-      notifyListeners();
+      if (itemcount > 1) {
+        itemcount = itemcount - double.parse(val);
+        notifyListeners();
+      }
     }
     print("object$itemcount");
   }

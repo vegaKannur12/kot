@@ -131,12 +131,12 @@ class _ItemWidgetState extends State<ItemWidget> {
                                                   },
                                                   onChanged: (val) {
                                                     // value.itemcount=value.itemcount+double.parse(value.qty[index].text);
+                                                    
                                                      value
                                                       .totalItemCount(value.qty[index].text,"inc");
                                                     // value.response[index] = 0;
                                                   },
                                                   controller: value.qty[index],
-                                                  
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: Colors.white,
