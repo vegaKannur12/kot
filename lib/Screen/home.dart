@@ -59,20 +59,19 @@ class _HomePageState extends State<HomePage> {
                       .searchTable(val);
                 },
                 decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.blue,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: new Icon(Icons.cancel),
-                    onPressed: () {
-                      seacrh.clear();
-                      Provider.of<Controller>(context, listen: false)
-                          .searchTable("");
-                    },
-                  ),
-                  hintText: "Search Table..."
-                ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.blue,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: new Icon(Icons.cancel),
+                      onPressed: () {
+                        seacrh.clear();
+                        Provider.of<Controller>(context, listen: false)
+                            .searchTable("");
+                      },
+                    ),
+                    hintText: "Search Table..."),
               ),
               SizedBox(
                 height: 15,
@@ -86,64 +85,68 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 // ItemList(catlId: map["catid"],catName: map["catname"],)
+/////////////////////////////////////////////////////////////////
   Widget tableWidget(Size size, List list) {
     return Consumer<Controller>(
       builder: (context, value, child) => Expanded(
         child: list.length == 0
             ? Container(
                 // height: size.height * 0.7,
-                child: Center(
-                    child: Text("no data")))
-            :  GridView.builder(
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          itemCount:
-              value.isSearch ? value.filteredlist.length : value.tabllist.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12),
-          itemBuilder: (context, index) => InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        CategoryScreen(tablId: list[index]["tid"].toString())),
-              );
-            },
-            child: Card(
-              color: Colors.grey[200],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Expanded(
-                  //   child: Image.asset(
-                  //     "assets/sweets.png",
-                  //     height: size.height * 0.09,
-                  //     width: size.width * 0.15,
-                  //     // fit: BoxFit.contain,
-                  //   ),
-                  // ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                      child: Text(
-                        list[index]["tab"].toString(),
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                child: Center(child: Text("no data")))
+            : GridView.builder(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: value.isSearch
+                    ? value.filteredlist.length
+                    : value.tabllist.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12),
+                itemBuilder: (context, index) => InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CategoryScreen(
+                              tablId: list[index]["tid"].toString())),
+                    );
+                  },
+                  child: Card(
+                    color: Colors.grey[200],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Expanded(
+                        //   child: Image.asset(
+                        //     "assets/sweets.png",
+                        //     height: size.height * 0.09,
+                        //     width: size.width * 0.15,
+                        //     // fit: BoxFit.contain,
+                        //   ),
+                        // ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                            child: Text(
+                              list[index]["tab"].toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

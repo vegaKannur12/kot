@@ -47,7 +47,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
-                                      color: Colors.green),
+                                      color: Theme.of(context).primaryColor),
                                 )
                               ],
                             ),
@@ -78,15 +78,24 @@ class _ItemWidgetState extends State<ItemWidget> {
                               height: 10,
                             ),
                             ElevatedButton.icon(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CartBag()),
-                                  );
-                                },
-                                icon: Icon(Icons.trolley),
-                                label: Text("Add to Bag"))
+                              onPressed: () {
+                                print("move to bag");
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const CartBag()),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.trolley,
+                              ),
+                              label: Text(
+                                "Add to Bag",
+                              ),
+                              // style: ElevatedButton.styleFrom(
+                              //   backgroundColor: Theme.of(context).primaryColor,
+                              // ),
+                            )
                           ],
                         ),
                       ),

@@ -168,11 +168,11 @@ class _RegistrationState extends State<Registration> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 17,
-                                color: Colors.black),
+                                color: Theme.of(context).secondaryHeaderColor),
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 174, 236, 211),
+                          backgroundColor: Theme.of(context).primaryColor,
                         ),
                       )
                     ])

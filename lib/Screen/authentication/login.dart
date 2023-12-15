@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                           valueListenable: _isObscure,
                           builder: (context, values, child) {
                             return TextFormField(
-                              // controller: password,
+                              controller: password,
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
                                   return 'Please Enter Password';
@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               scrollPadding: EdgeInsets.only(
                                   bottom: topInsets + size.height * 0.18),
-                              // obscureText: _isObscure.value,
+                              obscureText: _isObscure.value,
                               decoration: InputDecoration(
                                   // border: InputBorder.none,
                                   contentPadding: EdgeInsets.only(
@@ -166,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                                           .secondaryHeaderColor,
                                     ),
                                     onPressed: () {
-                                      // _isObscure.value = !_isObscure.value;
+                                      _isObscure.value = !_isObscure.value;
                                       // print("_isObscure $_isObscure");
                                     },
                                   ),
@@ -189,12 +189,12 @@ class _LoginPageState extends State<LoginPage> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 17,
-                                    color: Colors.black),
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor),
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Color.fromARGB(255, 174, 236, 211),
+                              backgroundColor: Theme.of(context).primaryColor,
                             ),
                           )
                         ],
