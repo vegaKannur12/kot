@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ItemWidget extends StatefulWidget {
   List<Map<String, dynamic>> list;
@@ -79,9 +80,12 @@ class _ItemWidgetState extends State<ItemWidget> {
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             InkWell(
-                                                onTap: () {
+                                                onTap: ()  {
                                                   // value.response[index] = 0;
+                                                 
 
+                                                  value
+                                                      .totalItemCount(value.qty[index].text,"dec");
                                                   Provider.of<Controller>(
                                                           context,
                                                           listen: false)
@@ -108,6 +112,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                                                 .value
                                                                 .text
                                                                 .length);
+                                                                print("couuuuuuu..........${value.qty[index].text}");
                                                   },
                                                   onSubmitted: (val) {
                                                     // value.response[index] = 0;
@@ -125,9 +130,13 @@ class _ItemWidgetState extends State<ItemWidget> {
                                                     //         widget.catId);
                                                   },
                                                   onChanged: (val) {
+                                                    // value.itemcount=value.itemcount+double.parse(value.qty[index].text);
+                                                     value
+                                                      .totalItemCount(value.qty[index].text,"inc");
                                                     // value.response[index] = 0;
                                                   },
                                                   controller: value.qty[index],
+                                                  
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: Colors.white,
@@ -140,6 +149,10 @@ class _ItemWidgetState extends State<ItemWidget> {
                                             InkWell(
                                                 onTap: () {
                                                   // value.response[index] = 0;
+                                                  // Provider.of<Controller>(
+                                                  //         context,
+                                                  //         listen: false)
+                                                  //     .totalItemCount("inc");
                                                   Provider.of<Controller>(
                                                           context,
                                                           listen: false)
@@ -225,6 +238,45 @@ class _ItemWidgetState extends State<ItemWidget> {
                       ),
                     );
                   })),
+    );
+  }
+}
+
+class MyBottomSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Add Item to Cart',
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 16.0),
+          // Add your item selection widgets here
+          ListTile(
+            title: Text('Item 1'),
+            onTap: () {
+              // Handle item selection
+              Navigator.pop(context); // Close the bottom sheet
+            },
+          ),
+          ListTile(
+            title: Text('Item 2'),
+            onTap: () {
+              // Handle item selection
+              Navigator.pop(context); // Close the bottom sheet
+            },
+          ),
+          // Add more items as needed
+        ],
+      ),
     );
   }
 }

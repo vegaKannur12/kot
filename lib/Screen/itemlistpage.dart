@@ -18,6 +18,7 @@ class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     print("catid====${widget.catlId}");
     print("catnm====${widget.catName}");
 
@@ -43,6 +44,11 @@ class _ItemListState extends State<ItemList> {
               color: Colors.blue, fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
+      bottomNavigationBar: Container(
+          child: Consumer<Controller>(
+        builder: (context, value, child) => TextButton(
+            onPressed: () {}, child: Text("ADD TO BAG${value.itemcount.toString()}")),
+      )),
       body: Consumer<Controller>(
         builder: (context, value, child) => value.isLoading
             ? SpinKitCircle(

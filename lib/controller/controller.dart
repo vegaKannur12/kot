@@ -38,7 +38,7 @@ class Controller extends ChangeNotifier {
   bool isCartLoading = false;
   List<Map<String, dynamic>> categoryList = [];
   List<Map<String, dynamic>> itemList = [];
-  
+
   bool isCusLoading = false;
   DateTime? sdate;
   DateTime? ldate;
@@ -73,77 +73,69 @@ class Controller extends ChangeNotifier {
   List<TextEditingController> qty = [];
   List<bool> isAdded = [];
   List<Map<String, dynamic>> list = [];
-     List<Map<String, dynamic>> tabllist = [
-    {"tab": "Table 1","tid":1},
-    {"tab": "Table 2","tid":2},
-    {"tab": "Table 3","tid":3},
-    {"tab": "Table 4","tid":4},
-    {"tab": "Table 5","tid":5},
+  List<Map<String, dynamic>> tabllist = [
+    {"tab": "Table 1", "tid": 1},
+    {"tab": "Table 2", "tid": 2},
+    {"tab": "Table 3", "tid": 3},
+    {"tab": "Table 4", "tid": 4},
+    {"tab": "Table 5", "tid": 5},
   ];
   List<Map<String, dynamic>> catlist = [
-    {"catid":"C1","catname":"Category1"},
-    {"catid":"C2","catname":"Category2"},
-    {"catid":"C3","catname":"Category3"},
-    {"catid":"C4","catname":"Category4"},
-    {"catid":"C5","catname":"Category5"},
-    {"catid":"C6","catname":"Category6"},
-    {"catid":"C7","catname":"Category7"},
+    {"catid": "C1", "catname": "Category1"},
+    {"catid": "C2", "catname": "Category2"},
+    {"catid": "C3", "catname": "Category3"},
+    {"catid": "C4", "catname": "Category4"},
+    {"catid": "C5", "catname": "Category5"},
+    {"catid": "C6", "catname": "Category6"},
+    {"catid": "C7", "catname": "Category7"},
   ];
-   List<Map<String, dynamic>> itemlist = [
-    {"catid":"C1","catname":"Category1","pname":"item1","rate":30.0},
-    {"catid":"C1","catname":"Category1","pname":"item2","rate":30.0},
-    {"catid":"C2","catname":"Category2","pname":"item4","rate":30.0},
-    {"catid":"C2","catname":"Category2","pname":"item1","rate":30.0},
-    {"catid":"C5","catname":"Category5","pname":"item1","rate":30.0},
-    
+  List<Map<String, dynamic>> itemlist = [
+    {"catid": "C1", "catname": "Category1", "pname": "item1", "rate": 30.0},
+    {"catid": "C1", "catname": "Category1", "pname": "item2", "rate": 30.0},
+    {"catid": "C2", "catname": "Category2", "pname": "item4", "rate": 30.0},
+    {"catid": "C2", "catname": "Category2", "pname": "item1", "rate": 30.0},
+    {"catid": "C5", "catname": "Category5", "pname": "item1", "rate": 30.0},
   ];
- 
+  bool showBottombar = true;
+  double itemcount = 0.0;
 
   String? userName;
   String param = "";
-  
+
   bool isLoginLoading = false;
-  String? tablID="";
-  Timer timer=Timer.periodic(Duration(seconds: 3), (timer) { 
-  
-  });
- qtyadd()
- {
+  String? tablID = "";
+  Timer timer = Timer.periodic(Duration(seconds: 3), (timer) {});
+  qtyadd() {
     qty = List.generate(itemlist.length, (index) => TextEditingController());
     isAdded = List.generate(itemlist.length, (index) => false);
     notifyListeners();
     for (int i = 0; i < itemlist.length; i++) {
       qty[i].text = "1.0";
-      
     }
- }
-  Future<void> sendHeartbeat() async {
-  try {
-   if (SqlConn.isConnected) 
-   {
-    print("connected.........OK");
-   }
-   else
-   {
-    print("Not  connected.........OK"); 
-   }
-  } 
-  catch (error) 
-  {
-    // Handle the error (connection issue)
-    print("Connection lost: $error");
-    // You can trigger a reconnection here
-    // ...
   }
-}
+
+  Future<void> sendHeartbeat() async {
+    try {
+      if (SqlConn.isConnected) {
+        print("connected.........OK");
+      } else {
+        print("Not  connected.........OK");
+      }
+    } catch (error) {
+      // Handle the error (connection issue)
+      print("Connection lost: $error");
+      // You can trigger a reconnection here
+      // ...
+    }
+  }
+
   /////////////////////////////////////////////
   Future<RegistrationData?> postRegistration(
       String companyCode,
       String? fingerprints,
       String phoneno,
       String deviceinfo,
-      BuildContext context) async 
-    {
+      BuildContext context) async {
     NetConnection.networkConnection(context).then((value) async {
       // ignore: avoid_print
       print("Text fp...$fingerprints---$companyCode---$phoneno---$deviceinfo");
@@ -257,6 +249,7 @@ class Controller extends ChangeNotifier {
     });
     return null;
   }
+
   //////////////////////////////////////////////////////////
   getLogin(String userName, String password, BuildContext context) async {
     try {
@@ -278,9 +271,7 @@ class Controller extends ChangeNotifier {
         initDb(context, "from login");
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => 
-          HomePage()
-          ),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
       }
       isLoginLoading = false;
@@ -293,8 +284,7 @@ class Controller extends ChangeNotifier {
   }
 
 //////////////////////////////////////////////////////////
-  initDb(BuildContext context, String type) async 
-  {
+  initDb(BuildContext context, String type) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? db = prefs.getString("old_db_name");
     String? ip = prefs.getString("ip");
@@ -330,18 +320,15 @@ class Controller extends ChangeNotifier {
           // username: "sa",
           // password: "1"
           );
-        
-      
+
       debugPrint("Connected!");
-    } 
-    catch (e) {
+    } catch (e) {
       debugPrint(e.toString());
     } finally {
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     }
   }
-
 
   ////////////////////////////////////
   setDate(String date1, String date2) {
@@ -350,8 +337,6 @@ class Controller extends ChangeNotifier {
     print("gtyy----$fromDate----$todate");
     notifyListeners();
   }
-
-
 
   /////////////////////////////////////////////////
   getItemList(BuildContext context, String catId) async {
@@ -398,13 +383,23 @@ class Controller extends ChangeNotifier {
         double d = double.parse(qty[index].text) - val;
         qty[index].text = d.toString();
         notifyListeners();
-      }
-      else
-      {
+      } else {
         isAdded[index] = false;
         notifyListeners();
       }
     }
+  }
+
+  ///////////////////////////////////
+  totalItemCount(String val, String type) {
+    if (type == "inc") {
+      itemcount = itemcount + double.parse(val);
+      notifyListeners();
+    } else if (type == "dec") {
+      itemcount = itemcount - double.parse(val);
+      notifyListeners();
+    }
+    print("object$itemcount");
   }
 
 ///////////////////////////////////////////////////////////
@@ -441,7 +436,7 @@ class Controller extends ChangeNotifier {
         notifyListeners();
       }
     }
-   
+
     notifyListeners();
   }
 
@@ -558,9 +553,7 @@ class Controller extends ChangeNotifier {
       isSearch = true;
       notifyListeners();
       filteredlist = tabllist
-          .where((e) =>
-              e["tab"].toLowerCase().contains(val.toLowerCase())
-              )
+          .where((e) => e["tab"].toLowerCase().contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -585,9 +578,7 @@ class Controller extends ChangeNotifier {
       isSearch = true;
       notifyListeners();
       filteredlist = catlist
-          .where((e) =>
-              e["catname"].toLowerCase().contains(val.toLowerCase())
-              )
+          .where((e) => e["catname"].toLowerCase().contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -597,14 +588,13 @@ class Controller extends ChangeNotifier {
     print("filtered_CATGRY_List----------------$filteredlist");
     notifyListeners();
   }
-   searchItem(String val) {
+
+  searchItem(String val) {
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
       filteredlist = itemlist
-          .where((e) =>
-              e["pname"].toLowerCase().contains(val.toLowerCase())
-              )
+          .where((e) => e["pname"].toLowerCase().contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -616,16 +606,14 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////////////////////////////////////////////////////////////
-    setTableID(String id, BuildContext context) {
+  setTableID(String id, BuildContext context) {
     tablID = id;
 
     print("tablID----$tablID");
     notifyListeners();
-   
   }
- 
+
   /////////////////////////////////////////////////////////////////////
- 
 
   ///////////////////////////////////////////////////////
   getorderDetails(String ordNo) async {
@@ -654,8 +642,7 @@ class Controller extends ChangeNotifier {
 ///////////////////////////////////////////////////////////////
   searchOrder(String val) {
     // filteredlist.clear();
-    if (val.isNotEmpty) 
-    {
+    if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
       filteredlist = orderlist
@@ -663,9 +650,7 @@ class Controller extends ChangeNotifier {
               e["Customer_Name"].toLowerCase().startsWith(val.toLowerCase()) ||
               e["Cust_ID"].toLowerCase().startsWith(val.toLowerCase()))
           .toList();
-    } 
-    else 
-    {
+    } else {
       isSearch = false;
       notifyListeners();
       filteredlist = orderlist;
@@ -687,6 +672,4 @@ class Controller extends ChangeNotifier {
     os = await prefs.getString("os");
     notifyListeners();
   }
- 
-  
 }
