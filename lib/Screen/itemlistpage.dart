@@ -37,7 +37,8 @@ class _ItemListState extends State<ItemList>
             icon: Icon(
               Icons.arrow_back,
               color: Colors.black,
-            )),
+            )
+            ),
         backgroundColor: Colors.white,
         // Theme.of(context).primaryColor,
         title: Text(
