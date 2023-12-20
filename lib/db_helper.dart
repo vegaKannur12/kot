@@ -4,10 +4,10 @@ import 'package:restaurent_kot/model/registration_model.dart';
 
 import 'package:sqflite/sqflite.dart';
 
-class JeminiBorma {
-  static final JeminiBorma instance = JeminiBorma._init();
+class KOT {
+  static final KOT instance = KOT._init();
   static Database? _database;
-  JeminiBorma._init();
+  KOT._init();
   //////////////////////////////////////
 
   Future<Database> get database async {
@@ -53,27 +53,27 @@ class JeminiBorma {
           )
           ''');
 /////////////////////order bag//////////////////////////////////////////////
-    await db.execute('''
-          CREATE TABLE orderBagTable (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            itemName TEXT NOT NULL,
-            catId TEXT NOT NULL,
-            cartDate TEXT,
-            cartTime TEXT,
-            os TEXT NOT NULL,
-            customerId TEXT,
-            cartRowno INTEGER,
-            code TEXT,
-            qty REAL,
-            rate TEXT,
-            totalAmount TEXT,
-            pid INTEGER,
-            unitName TEXT,
-            package REAL,
-            baseRate REAL,
-            cStatus INTEGER
-          )
-          ''');
+    // await db.execute('''
+    //       CREATE TABLE orderBagTable (
+    //         id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //         itemName TEXT NOT NULL,
+    //         catId TEXT NOT NULL,
+    //         cartDate TEXT,
+    //         cartTime TEXT,
+    //         os TEXT NOT NULL,
+    //         customerId TEXT,
+    //         cartRowno INTEGER,
+    //         code TEXT,
+    //         qty REAL,
+    //         rate TEXT,
+    //         totalAmount TEXT,
+    //         pid INTEGER,
+    //         unitName TEXT,
+    //         package REAL,
+    //         baseRate REAL,
+    //         cStatus INTEGER
+    //       )
+    //       ''');
 /////////////////////order master///////////////////////////////////////////
     await db.execute('''
           CREATE TABLE orderMasterTable (
@@ -106,6 +106,27 @@ class JeminiBorma {
             baseRate REAL  
           )
           ''');
+          await db.execute('''
+          CREATE TABLE orderBagtable (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,       
+            tableId INTEGER,
+            catId INTEGER,
+            pname TEXT,
+            rate REAL,
+            qty INTEGER        
+          )
+          ''');
+  }
+
+
+
+ Future insertorderBagTab(String tableId,Map data,double qty) async {
+    final db = await database;
+    var query ='INSERT INTO orderBagtable(tableId,catId,pname,rate,qty) VALUES("$tableId", "${data["catid"]}" , "${data["pname"]}", "${data["rate"]}","$qty")';
+    var res = await db.rawInsert(query);
+    print(query);
+    print("inserted to bag  ----$res");
+    return res;
   }
 
 /////////////////////////////////////////////////////////////////////////
@@ -258,4 +279,9 @@ class JeminiBorma {
     //   print(row.values);
     // });
   }
+
+  ///////////////////////////................................///////////////////////////////////////
+  
+
+
 }

@@ -194,18 +194,18 @@ class _CartBagState extends State<CartBag> {
                                   Provider.of<Controller>(context,
                                           listen: false)
                                       .setQty(1.0, index, "dec");
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .updateCart(
-                                          context,
-                                          map,
-                                          date!,
-                                          value.customerId.toString(),
-                                          double.parse(value.qty[index].text),
-                                          index,
-                                          "from cart",
-                                          0,
-                                          '');
+                                  // Provider.of<Controller>(context,
+                                  //         listen: false)
+                                  //     .updateCart(
+                                  //         context,
+                                  //         map,
+                                  //         date!,
+                                  //         value.customerId.toString(),
+                                  //         double.parse(value.qty[index].text),
+                                  //         index,
+                                  //         "from cart",
+                                  //         0,
+                                  //         '');
 
                                   Provider.of<Controller>(context,
                                           listen: false)
@@ -230,18 +230,18 @@ class _CartBagState extends State<CartBag> {
                                           value.qty[index].value.text.length);
                                 },
                                 onSubmitted: (val) {
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .updateCart(
-                                          context,
-                                          map,
-                                          date!,
-                                          value.customerId.toString(),
-                                          double.parse(val),
-                                          index,
-                                          "from cart",
-                                          0,
-                                          "");
+                                  // Provider.of<Controller>(context,
+                                  //         listen: false)
+                                  //     .updateCart(
+                                  //         context,
+                                  //         map,
+                                  //         date!,
+                                  //         value.customerId.toString(),
+                                  //         double.parse(val),
+                                  //         index,
+                                  //         "from cart",
+                                  //         0,
+                                  //         "");
 
                                   Provider.of<Controller>(context,
                                           listen: false)
@@ -277,18 +277,18 @@ class _CartBagState extends State<CartBag> {
                                           listen: false)
                                       .setQty(1.0, index, "inc");
 
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .updateCart(
-                                          context,
-                                          map,
-                                          date!,
-                                          value.customerId.toString(),
-                                          double.parse(value.qty[index].text),
-                                          index,
-                                          "from cart",
-                                          0,
-                                          "");
+                                  // Provider.of<Controller>(context,
+                                  //         listen: false)
+                                  //     .updateCart(
+                                  //         context,
+                                  //         map,
+                                  //         date!,
+                                  //         value.customerId.toString(),
+                                  //         double.parse(value.qty[index].text),
+                                  //         index,
+                                  //         "from cart",
+                                  //         0,
+                                  //         "");
 
                                   Provider.of<Controller>(context,
                                           listen: false)
@@ -340,19 +340,19 @@ class _CartBagState extends State<CartBag> {
                                         ),
                                         TextButton(
                                           onPressed: () {
-                                            Provider.of<Controller>(context,
-                                                    listen: false)
-                                                .updateCart(
-                                                    context,
-                                                    map,
-                                                    date!,
-                                                    value.customerId.toString(),
-                                                    double.parse(
-                                                        value.qty[index].text),
-                                                    index,
-                                                    "from cart",
-                                                    1,
-                                                    "");
+                                            // Provider.of<Controller>(context,
+                                            //         listen: false)
+                                            //     .updateCart(
+                                            //         context,
+                                            //         map,
+                                            //         date!,
+                                            //         value.customerId.toString(),
+                                            //         double.parse(
+                                            //             value.qty[index].text),
+                                            //         index,
+                                            //         "from cart",
+                                            //         1,
+                                            //         "");
                                             Provider.of<Controller>(context,
                                                     listen: false)
                                                 .viewCart(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
+import 'package:restaurent_kot/db_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ItemWidget extends StatefulWidget {
@@ -15,6 +17,16 @@ class ItemWidget extends StatefulWidget {
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
+  String? date;
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+
+    date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -80,12 +92,11 @@ class _ItemWidgetState extends State<ItemWidget> {
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
                                             InkWell(
-                                                onTap: ()  {
+                                                onTap: () {
                                                   // value.response[index] = 0;
-                                                 
 
-                                                  value
-                                                      .totalItemCount(value.qty[index].text,"dec");
+                                                  // value
+                                                  //     .totalItemCount(value.qty[index].text,"dec");
                                                   Provider.of<Controller>(
                                                           context,
                                                           listen: false)
@@ -112,30 +123,60 @@ class _ItemWidgetState extends State<ItemWidget> {
                                                                 .value
                                                                 .text
                                                                 .length);
-                                                                print("couuuuuuu..........${value.qty[index].text}");
+                                                    print(
+                                                        "couuuuuuu..........${value.qty[index].text}");
                                                   },
-                                                  onSubmitted: (val) {
-                                                    // value.response[index] = 0;
-                                                    // Provider.of<Controller>(context,
-                                                    //         listen: false)
-                                                    //     .updateCart(
-                                                    //         context,
-                                                    //         widget.list[index],
-                                                    //         date!,
-                                                    //         value.customerId.toString(),
-                                                    //         double.parse(val),
-                                                    //         index,
-                                                    //         "from itempage",
-                                                    //         0,
-                                                    //         widget.catId);
-                                                  },
+                                                  // onSubmitted:
+                                                  // (val) {
+                                                  //   // value.response[index] = 0;
+                                                  // setState(() {
+
+                                                  //    Provider.of<Controller>(context,
+                                                  //           listen: false)
+                                                  //       .addToBag(
+                                                  //           context,
+                                                  //           widget.list[index],
+                                                  //           date!,
+                                                  //           value.tablID.toString(),
+                                                  //           widget.catId,
+                                                  //           double.parse(val),
+                                                  //           index,
+                                                  //           "from itempage",
+                                                  //           0);
+                                                  // });
+                                                  // },
                                                   onChanged: (val) {
-                                                    // value.itemcount=value.itemcount+double.parse(value.qty[index].text);
-                                                    
-                                                     value
-                                                      .totalItemCount(value.qty[index].text,"inc");
+                                                    setState(() {
+                                                       print("txtttttttttttttt$val");
+                                                    });
+                                                   
                                                     // value.response[index] = 0;
+                                                    // setState(() async {
+                                                    //   await KOT.instance
+                                                    //       .insertorderBagTab(
+                                                    //     value.tablID.toString(),
+                                                    //     widget.list[index],
+                                                    //     double.parse(val),
+                                                    //   );
+                                                      // await Provider.of<
+                                                      //             Controller>(
+                                                      //         context,
+                                                      //         listen: false)
+                                                      //     .addToBag(
+                                                      //         context,
+                                                      //         widget
+                                                      //             .list[index],
+                                                      //         date!,
+                                                      //         value.tablID
+                                                      //             .toString(),
+                                                      //         widget.catId,
+                                                      //         double.parse(val),
+                                                      //         index,
+                                                      //         "from itempage",
+                                                      //         0);
+                                                    // });
                                                   },
+                                                  //  onTextChanged,
                                                   controller: value.qty[index],
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
@@ -240,6 +281,24 @@ class _ItemWidgetState extends State<ItemWidget> {
                   })),
     );
   }
+
+  void onTextChanged(String value) {
+    // Your custom logic goes here
+    print('TextField value changed: $value');
+  }
+  // textfldchange(int index, Map<String, dynamic> list, String tablID,
+  //     String catId, String s, int i) {
+  //   Provider.of<Controller>(context, listen: false).addToBag(
+  //       context,
+  //       list,
+  //       date!,
+  //       tablID,
+  //       catId,
+  //       double.parse(val),
+  //       index,
+  //       s,
+  //       i);
+  // }
 }
 
 class MyBottomSheet extends StatelessWidget {

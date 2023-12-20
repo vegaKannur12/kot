@@ -7,6 +7,7 @@ import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/splashscreen.dart';
+import 'package:restaurent_kot/Screen/tesssssss.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
           // Registration(),
           HomePage(),
       // CartBag(),
+      // MyTextFieldScreen(),
     );
   }
 }

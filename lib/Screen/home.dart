@@ -5,6 +5,8 @@ import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
+import 'package:restaurent_kot/db_helper.dart';
+import 'package:restaurent_kot/tableList.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,8 +20,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<Controller>(context, listen: false).qtyadd();
+
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false)
+          .qtyadd(); //tempry adding qty
+      // Provider.of<Controller>(context, listen: false).initDb(context, "");
+      Provider.of<Controller>(context, listen: false).getOs();
+    });
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
 
@@ -30,25 +38,48 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(Icons.calendar_month),
-              SizedBox(
-                width: 15,
-              ),
-              Text(
-                date.toString(),
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
+        title: Consumer<Controller>(
+            builder: (BuildContext context, Controller value, Widget? child) =>
+                Text(
+                  value.os.toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                )),
+        actions: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(Icons.calendar_month),
+                SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  date.toString(),
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-        ),
+          IconButton(
+              onPressed: () async {
+                List<Map<String, dynamic>> list =
+                    await KOT.instance.getListOfTables();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TableList(list: list)),
+                );
+              },
+              icon: Icon(Icons.table_bar, color: Colors.green),
+            ),
+        ],
       ),
       bottomNavigationBar: Container(
         height: 60,

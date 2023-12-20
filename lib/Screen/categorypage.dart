@@ -78,7 +78,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     
                     ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               value.isSearch

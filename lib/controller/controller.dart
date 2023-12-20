@@ -8,6 +8,7 @@ import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/external_dir.dart';
+import 'package:restaurent_kot/db_helper.dart';
 import 'package:restaurent_kot/model/customer_model.dart';
 import 'package:restaurent_kot/model/registration_model.dart';
 
@@ -96,6 +97,7 @@ class Controller extends ChangeNotifier {
     {"catid": "C2", "catname": "Category2", "pname": "item1", "rate": 30.0},
     {"catid": "C5", "catname": "Category5", "pname": "item1", "rate": 30.0},
   ];
+  List<Map<String, dynamic>> myBagList = [];
   bool showBottombar = true;
   double itemcount = 0.0;
 
@@ -223,7 +225,9 @@ class Controller extends ChangeNotifier {
                   MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               }
-            } else {
+            } 
+            else 
+            {
               isLoading = false;
               notifyListeners();
               CustomSnackbar snackbar = CustomSnackbar();
@@ -451,12 +455,10 @@ class Controller extends ChangeNotifier {
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
-
     var res = await SqlConn.readData("Flt_Sp_GetCartno '$os'");
     // ignore: avoid_print
     print("cart no------$res");
     var valueMap = json.decode(res);
-
     // cartId = valueMap[0]["CartId"];
     prefs.setInt("cartId", valueMap[0]["CartId"]);
     notifyListeners();
@@ -470,44 +472,83 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  ///////////////////////////////////////////////
-  updateCart(
-      BuildContext context,
-      Map map,
-      String dateTime,
-      String customId,
-      double qty,
-      int index,
-      String type,
-      int status,
-      String category_id) async {
+///////////////////////////////////////////////////
+  addToBag(
+    BuildContext context,
+    Map map,
+    String dateTime,
+    String tablId,
+    String catid,
+    double qty,
+    int index,
+    String type,
+    int status,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? cid = await prefs.getString("cid");
-    // String? db = prefs.getString("db_name");
-    // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
-    int? cartid = await prefs.getInt("cartId");
     isAdded[index] = true;
+     await KOT.instance.insertorderBagTab(tablId,map,qty);
     notifyListeners();
     print("stattuss----$status");
     var res;
-    notifyListeners();
-    if (type == "from cart") {
-      res = await SqlConn.readData(
-          "Flt_Update_Cart $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
-    } else if (type == "from itempage") {
-      res = await SqlConn.readData(
-          "Flt_Update_Cart $cartid,'$dateTime','$customId',0,'$os','${map["code"]}',$qty,${map["Srate"]},${map["ProdId"]},'${map["Unit"]}','${map["Pkg"]}',$status");
-      getItemList(context, category_id);
-    }
+    
+    // if (type == "from cart") 
+    // {
+    //   // res = await SqlConn.readData(
+    //   //     "Flt_Update_Cart $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
+    // } 
+    // else if (type == "from itempage") 
+    // {
+    //   // myBagList.add({});
+    //   // print("bbbbbbbbbbbbaaaaaaaggggg=======$map");
+    // }
 
-    // ignore: avoid_print
-    print("insert cart---$res");
-    var valueMap = json.decode(res);
-    response[index] = valueMap[0]["Result"];
-    isAdded[index] = false;
-    notifyListeners();
+    // // ignore: avoid_print
+    // print("insert cart---$res");
+    // var valueMap = json.decode(res);
+    // response[index] = valueMap[0]["Result"];
+    // isAdded[index] = false;
+    // notifyListeners();
   }
+
+  ///////////////////////////////////////////////
+  // updateCart(
+  //     BuildContext context,
+  //     Map map,
+  //     String dateTime,
+  //     String customId,
+  //     double qty,
+  //     int index,
+  //     String type,
+  //     int status,
+  //     String category_id) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   // String? cid = await prefs.getString("cid");
+  //   // String? db = prefs.getString("db_name");
+  //   // String? brId = await prefs.getString("br_id");
+  //   String? os = await prefs.getString("os");
+  //   int? cartid = await prefs.getInt("cartId");
+  //   isAdded[index] = true;
+  //   notifyListeners();
+  //   print("stattuss----$status");
+  //   var res;
+  //   notifyListeners();
+  //   if (type == "from cart") {
+  //     res = await SqlConn.readData(
+  //         "Flt_Update_Cart $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
+  //   } else if (type == "from itempage") {
+  //     res = await SqlConn.readData(
+  //         "Flt_Update_Cart $cartid,'$dateTime','$customId',0,'$os','${map["code"]}',$qty,${map["Srate"]},${map["ProdId"]},'${map["Unit"]}','${map["Pkg"]}',$status");
+  //     getItemList(context, category_id);
+  //   }
+
+  //   // ignore: avoid_print
+  //   print("insert cart---$res");
+  //   var valueMap = json.decode(res);
+  //   response[index] = valueMap[0]["Result"];
+  //   isAdded[index] = false;
+  //   notifyListeners();
+  // }
 
   ///////////////////////////////////////////////////////
   viewCart(
