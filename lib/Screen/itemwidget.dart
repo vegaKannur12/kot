@@ -43,7 +43,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                   physics: ScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                      height: 180,
+                      height: 190,
                       decoration: BoxDecoration(
                           color: Colors.green[20],
                           borderRadius: BorderRadius.circular(13)),
@@ -53,14 +53,15 @@ class _ItemWidgetState extends State<ItemWidget> {
                           Row(
                             children: [
                               Text(
-                                widget.list[index]["pname"]
+                                widget.list[index]["Product"]
                                     .toString()
                                     .toUpperCase(),
+                                    maxLines: 2,
                                 textScaleFactor:
                                     ScaleSize.textScaleFactor(context),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                                    fontSize: 15,
                                     color: Theme.of(context).primaryColor),
                               )
                             ],
@@ -69,16 +70,66 @@ class _ItemWidgetState extends State<ItemWidget> {
                             height: 5,
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            
                             children: [
                               Text(
-                                '\u{20B9} ${widget.list[index]["rate"].toString()}',
+                                '\u{20B9} ${widget.list[index]["Srate"].toString()}',
                                 textScaleFactor:
                                     ScaleSize.textScaleFactor(context),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 17),
                               ),
-                              Container(
+                              
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                  onTap: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            content: TextField(
+                                              maxLines: 3,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .pop(false);
+                                                  },
+                                                  child: Text('Cancel')),
+                                              ElevatedButton(
+                                                  onPressed: () {},
+                                                  child: Text("Save"))
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 25,
+                                        width: 18,
+                                        child: Image.asset(
+                                          "assets/instructions.png",
+                                          fit: BoxFit.contain,
+                                          width: 300,
+                                          height: 300,
+                                        ),
+                                      ),
+                                      Text("Add Instructions"),
+                                    ],
+                                  )),
+                                  Container(
                                   height: 40,
                                   width: 120,
                                   decoration: BoxDecoration(
@@ -221,56 +272,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                             ],
                           ),
                           SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              InkWell(
-                                  onTap: () async {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            content: TextField(
-                                              maxLines: 3,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
-                                            ),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context,
-                                                            rootNavigator: true)
-                                                        .pop(false);
-                                                  },
-                                                  child: Text('Cancel')),
-                                              ElevatedButton(
-                                                  onPressed: () {},
-                                                  child: Text("Save"))
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        height: 25,
-                                        width: 18,
-                                        child: Image.asset(
-                                          "assets/instructions.png",
-                                          fit: BoxFit.contain,
-                                          width: 300,
-                                          height: 300,
-                                        ),
-                                      ),
-                                      Text("Add Instructions"),
-                                    ],
-                                  )),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
+                            height: 20,
                           ),
                           Divider(
                             color: Colors.black45,

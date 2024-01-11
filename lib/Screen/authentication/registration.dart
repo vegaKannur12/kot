@@ -1,5 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurent_kot/controller/controller.dart';
+import 'package:restaurent_kot/components/external_dir.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 class Registration extends StatefulWidget {
   const Registration({super.key});
 
@@ -9,8 +15,58 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   final _formKey = GlobalKey<FormState>();
+  ExternalDir externalDir = ExternalDir();
+
   TextEditingController company = TextEditingController();
   TextEditingController phone = TextEditingController();
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  late String uniqId;
+  Map<String, dynamic> _deviceData = <String, dynamic>{};
+  String? manufacturer;
+  String? model;
+  String? fp;
+  Future<void> initPlatformState() async {
+    var deviceData = <String, dynamic>{};
+
+    try {
+      if (Platform.isAndroid) {
+        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
+        manufacturer = deviceData["manufacturer"];
+        model = deviceData["model"];
+      }
+    } on PlatformException {
+      deviceData = <String, dynamic>{
+        'Error:': 'Failed to get platform version.'
+      };
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _deviceData = deviceData;
+    });
+  }
+
+  Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
+    return <String, dynamic>{
+      'manufacturer': build.manufacturer,
+      'model': build.model,
+    };
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    deletemenu();
+    initPlatformState();
+  }
+
+  deletemenu() async {
+    print("delete");
+    // await OrderAppDB.instance.deleteFromTableCommonQuery('menuTable', "");
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -158,9 +214,25 @@ class _RegistrationState extends State<Registration> {
                     SizedBox(
                       height: size.height * 0.03,
                     ),
-                    Row(children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: ()async {
+                          String deviceInfo =
+                                      "$manufacturer" + '' + "$model";
+                                  if (_formKey.currentState!.validate()) {
+                                    String tempFp1 =
+                                        await externalDir.fileRead();
+
+                                    print("tempFp---${tempFp1}");
+
+                                    Provider.of<Controller>(context,
+                                            listen: false)
+                                        .postRegistration(company.text, tempFp1,
+                                            phone.text, deviceInfo, context);
+                                  }
+                        },
                         child: Padding(
                           padding: const EdgeInsets.only(top: 12.0, bottom: 12),
                           child: Text(

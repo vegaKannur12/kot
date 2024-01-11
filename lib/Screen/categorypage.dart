@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/itemlistpage.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -13,6 +14,19 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   TextEditingController seacrh = TextEditingController();
+  String? date;
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<Controller>(context, listen: false).getCategoryList();
+      //tempry adding qty
+    });
+    date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.tablId.toString());
@@ -52,31 +66,29 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       .searchCat(val);
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.black,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: new Icon(Icons.cancel),
-                      onPressed: () {
-                        seacrh.clear();
-                        Provider.of<Controller>(context, listen: false)
-                            .searchCat("");
-                      },
-                    ),
-                     focusedBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide:
-                              const BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
-                        ),
-                    hintText: "Search Category...",
-                    
-                    ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: new Icon(Icons.cancel),
+                    onPressed: () {
+                      seacrh.clear();
+                      Provider.of<Controller>(context, listen: false)
+                          .searchCat("");
+                    },
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide:
+                        const BorderSide(color: Colors.blue, width: 1.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide(color: Colors.black, width: 1.0),
+                  ),
+                  hintText: "Search Category...",
+                ),
               ),
               const SizedBox(
                 height: 15,
@@ -103,19 +115,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 physics: const ScrollPhysics(),
                 itemCount: value.isSearch
                     ? value.filteredlist.length
-                    : value.tabllist.length,
+                    : value.catlist.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12),
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
+                    value.setCatID(list[index]["Cat_Id"].toString(), context);
+                    Provider.of<Controller>(context, listen: false).getItemList(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => ItemList(
-                                catlId: list[index]["catid"],
-                                catName: list[index]["catname"],
+                                catlId: list[index]["Cat_Id"],
+                                catName: list[index]["Cat_Name"],
                               )),
                     );
                   },
@@ -129,13 +143,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           alignment: Alignment.center,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                            child: Text(
-                              list[index]["catname"].toString(),
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                              overflow: TextOverflow.ellipsis,
+                            child: Center(
+                              child: Text(
+                                maxLines: 2,
+                                list[index]["Cat_Name"].toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                         ),

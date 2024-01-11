@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurent_kot/controller/controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     double topInsets = MediaQuery.of(context).viewInsets.top;
-
+    
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -69,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: size.height * 0.02,
                       ),
                       TextFormField(
-                        // controller: username,
+                        controller: username,
                         validator: (text) {
                           if (text == null || text.isEmpty) {
                             return 'Please Enter Username';
@@ -178,9 +180,17 @@ class _LoginPageState extends State<LoginPage> {
                         height: size.height * 0.03,
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Provider.of<Controller>(context, listen: false)
+                                  .getLogin(
+                                      username.text, password.text, context);
+                              //  Provider.of<Controller>(context, listen: false)
+                              //     .getLogin(
+                              //         'DHANUSH', '3804', context);
+                            },
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(top: 12.0, bottom: 12),
@@ -198,41 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           )
                         ],
-                      )
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     Consumer<Controller>(
-                      //       builder: (context, value, child) => Container(
-                      //         width: size.width * 0.5,
-                      //         // decoration: BoxDecoration(
-                      //         //   borderRadius: BorderRadius.circular(50),
-                      //         // ),
-                      //         // child: ElevatedButton(
-                      //         //   style: ElevatedButton.styleFrom(
-                      //         //       shape: StadiumBorder()),
-                      //         //   onPressed: () {},
-                      //         //   // child: Padding(
-                      //         //   //   padding: const EdgeInsets.only(
-                      //         //   //       top: 14.0, bottom: 14),
-                      //         //   //   child: value.isLoginLoading
-                      //         //   //       ? const SpinKitThreeBounce(
-                      //         //   //           color: Colors.white,
-                      //         //   //           size: 16,
-                      //         //   //         )
-                      //         //   //       : Text(
-                      //         //   //           "LOGIN",
-                      //         //   //           style: TextStyle(
-                      //         //   //               fontWeight: FontWeight.bold,
-                      //         //   //               fontSize: 17,
-                      //         //   //               color: Colors.white),
-                      //         //   //         ),
-                      //         //   // )
-                      //         // ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // )
+                      )                    
                     ],
                   )
                 ],

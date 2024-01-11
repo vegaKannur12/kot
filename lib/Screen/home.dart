@@ -23,9 +23,10 @@ class _HomePageState extends State<HomePage> {
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<Controller>(context, listen: false)
-          .qtyadd(); //tempry adding qty
-      // Provider.of<Controller>(context, listen: false).initDb(context, "");
+      Provider.of<Controller>(context, listen: false).getTableList();
+      // Provider.of<Controller>(context, listen: false)
+      //     .qtyadd();           //tempry adding qty
+     
       Provider.of<Controller>(context, listen: false).getOs();
     });
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
@@ -68,17 +69,16 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           IconButton(
-              onPressed: () async {
-                List<Map<String, dynamic>> list =
-                    await KOT.instance.getListOfTables();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TableList(list: list)),
-                );
-              },
-              icon: Icon(Icons.table_bar, color: Colors.green),
-            ),
+            onPressed: () async {
+              List<Map<String, dynamic>> list =
+                  await KOT.instance.getListOfTables();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TableList(list: list)),
+              );
+            },
+            icon: Icon(Icons.table_bar, color: Colors.green),
+          ),
         ],
       ),
       bottomNavigationBar: Container(
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                 //   decoration: const InputDecoration(,
                 onChanged: (val) {
                   Provider.of<Controller>(context, listen: false)
-                      .searchTable(val);
+                      .searchTable(val.toString());
                 },
                 decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -169,17 +169,18 @@ class _HomePageState extends State<HomePage> {
                     ? value.filteredlist.length
                     : value.tabllist.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount: 3,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12),
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
-                    value.setTableID(list[index]["tid"].toString(), context);
+                    value.setTableID(list[index]["Table_ID"].toString(), context);
+                     Provider.of<Controller>(context, listen: false).getCartNo(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CategoryScreen(
-                              tablId: list[index]["tid"].toString())),
+                              tablId: list[index]["Table_ID"].toString())),
                     );
                   },
                   child: Card(
@@ -201,7 +202,7 @@ class _HomePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                             child: Text(
-                              list[index]["tab"].toString(),
+                              list[index]["Table_Name"].toString(),
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,

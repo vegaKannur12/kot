@@ -58,9 +58,12 @@ checkLogin() async {
   final stUname = prefs.getString("st_uname");
   final stPwd = prefs.getString("st_pwd");
 
-  if (stUname != null && stPwd != null) {
+  if (stUname != null && stPwd != null) 
+  {
     isAuthenticated = true;
-  } else {
+  } 
+  else 
+  {
     isAuthenticated = false;
   }
   return isAuthenticated;
@@ -93,13 +96,13 @@ class MyApp extends StatelessWidget {
         secondaryHeaderColor: Color.fromARGB(255, 237, 231, 232),
       ),
       debugShowCheckedModeBanner: false,
-      home:
-          // SplashScreen(),
+      home:  
+          SplashScreen(),
           // LoginPage(),
           // Registration(),
-          HomePage(),
-      // CartBag(),
-      // MyTextFieldScreen(),
+          // const HomePage(),
+          // CartBag(),
+          // MyTextFieldScreen(),
     );
   }
 }

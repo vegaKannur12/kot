@@ -12,7 +12,7 @@ class KOT {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB("Jemini.db");
+    _database = await _initDB("kot.db");
     return _database!;
   }
 
@@ -141,12 +141,20 @@ class KOT {
   }
 
 ////////////////////////////////////////////////////////////////////////////////
-  deleteFromTableCommonQuery(String table, String? condition) async {
+   deleteFromTableCommonQuery(String table, String? condition) async {
     // ignore: avoid_print
     print("table--condition -$table---$condition");
     Database db = await instance.database;
+    if (condition == null || condition.isEmpty || condition == "") {
+      // ignore: avoid_print
+      print("no condition");
+      await db.delete('$table');
+    } else {
+      // ignore: avoid_print
+      print("condition");
 
-    await db.rawDelete('DELETE FROM "$table" $condition');
+      await db.rawDelete('DELETE FROM "$table" WHERE $condition');
+    }
   }
 
 ///////////////////////////////////////////////////////////////////////////////

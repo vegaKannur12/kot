@@ -16,6 +16,12 @@ class ItemList extends StatefulWidget {
 class _ItemListState extends State<ItemList> {
   TextEditingController seacrh = TextEditingController();
   @override
+  void initState() {
+    // TODO: implement initState
+    
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
