@@ -38,7 +38,8 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       extendBody: true,
-      appBar: AppBar(
+      appBar: AppBar(toolbarHeight: 80,
+        backgroundColor: const Color.fromARGB(255, 111, 128, 228),
         title: Consumer<Controller>(
             builder: (BuildContext context, Controller value, Widget? child) =>
                 Text(
@@ -54,14 +55,14 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(Icons.calendar_month),
+                Icon(Icons.calendar_month,color: Colors.white,),
                 SizedBox(
-                  width: 15,
+                  width: 5,
                 ),
                 Text(
                   date.toString(),
                   style: TextStyle(
-                      color: Colors.blue,
+                      color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
@@ -84,7 +85,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Container(
         height: 60,
         decoration: BoxDecoration(
-          color: Colors.green,
+          color: Color.fromARGB(255, 197, 121, 71),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),

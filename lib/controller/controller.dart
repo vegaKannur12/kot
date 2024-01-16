@@ -768,34 +768,49 @@ class Controller extends ChangeNotifier {
 
   //////////////////////////////////////////////
   searchCat(String val) {
+      filteredlist = catlist;
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
-      filteredlist.clear();
+     
       filteredlist = catlist
-          .where((e) => e["catname"].toLowerCase().contains(val.toLowerCase()))
+          .where((e) => e["Cat_Name"].toString().toLowerCase()
+          .contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
       notifyListeners();
       filteredlist = catlist;
     }
-    print("filtered_CATGRY_List----------------$filteredlist");
+    // qty =
+    //     List.generate(filteredlist.length, (index) => TextEditingController());
+    // isAdded = List.generate(filteredlist.length, (index) => false);
+    // response = List.generate(filteredlist.length, (index) => 0);
+    // for (int i = 0; i < filteredlist.length; i++) {
+    //   qty[i].text = "1.0";
+    //   response[i] = 0;
+    // }
+    print("filtered_CAT_List----------------$filteredlist");
     notifyListeners();
   }
 
   searchItem(String val) {
+    filteredlist = itemlist;
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
+     
       filteredlist = itemlist
-          .where((e) => e["pname"].toLowerCase().contains(val.toLowerCase()))
+          .where((e) => e["Product"].toString().toLowerCase()
+          .contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
       notifyListeners();
       filteredlist = itemlist;
     }
+   
+    // }
     print("filtered_ITEM_List----------------$filteredlist");
     notifyListeners();
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
@@ -43,32 +44,118 @@ class _ItemWidgetState extends State<ItemWidget> {
                   physics: ScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                      height: 190,
+                      height: 200,
                       decoration: BoxDecoration(
                           color: Colors.green[20],
                           borderRadius: BorderRadius.circular(13)),
                       padding: EdgeInsets.all(15),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                widget.list[index]["Product"]
-                                    .toString()
-                                    .toUpperCase(),
-                                    maxLines: 2,
-                                textScaleFactor:
-                                    ScaleSize.textScaleFactor(context),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Theme.of(context).primaryColor),
-                              )
-                            ],
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  widget.list[index]["Product"]
+                                      .toString()
+                                      .toUpperCase(),
+                                      maxLines: 2,
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,color: Color.fromARGB(255, 104, 40, 35)
+                                      // color: Theme.of(context).primaryColor
+                                      ),
+                                )
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             height: 5,
                           ),
+                          Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  widget.list[index]["Pkg"] == null ||
+                                          widget.list[index]["Pkg"] == ""
+                                      ? Container()
+                                      : Container(
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 235, 234, 234),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            // border: Border.all(
+                                            //     color: Colors.red)
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0,
+                                                right: 8,
+                                                bottom: 4,
+                                                top: 4),
+                                            child: Text(
+                                              widget.list[index]["Pkg"],
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        ),
+                                  widget.list[index]["Unit"] == null ||
+                                          widget.list[index]["Unit"] == ""
+                                      ? Container()
+                                      : Container(
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 247, 208, 221),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            // border: Border.all(
+                                            //     color: Colors.green)
+                                            // color: Colors.yellow,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0,
+                                                right: 8,
+                                                bottom: 4,
+                                                top: 4),
+                                            child: Text(
+                                              "${widget.list[index]["Unit"]}",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                  Row(
+                                    children: [
+                                      // Text("Rs : "),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.yellow,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0,
+                                              right: 8,
+                                              bottom: 4,
+                                              top: 4),
+                                          child: Text(
+                                            "\u{20B9}${widget.list[index]["Srate"].toStringAsFixed(2)}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                           Row(
                             
                             children: [
@@ -174,8 +261,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                                                 .value
                                                                 .text
                                                                 .length);
-                                                    print(
-                                                        "couuuuuuu..........${value.qty[index].text}");
+                                                    print("couuuuuuu..........${value.qty[index].text}");
                                                   },
                                                   // onSubmitted:
                                                   // (val) {
@@ -274,7 +360,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                           SizedBox(
                             height: 20,
                           ),
-                          Divider(
+                          Divider(thickness: 2,
                             color: Colors.black45,
                           )
                         ],

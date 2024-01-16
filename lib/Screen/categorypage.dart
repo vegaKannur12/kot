@@ -33,37 +33,52 @@ class _CategoryScreenState extends State<CategoryScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerRight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(Icons.table_bar_outlined),
-              SizedBox(
-                width: 5,
+       leading: IconButton(
+            onPressed: () {
+              // Provider.of<Controller>(context, listen: false).viewCart(
+              //   context,
+              //   value.customerId.toString(),
+              // );
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
+        backgroundColor: Color.fromARGB(255, 139, 200, 228),
+        // Theme.of(context).primaryColor,
+
+        actions: [
+          Consumer<Controller>(
+            builder: (context, value, child) => Card(
+              shape: StadiumBorder(),
+              color: Colors.black,
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  "Table : ${value.tablID.toString().toUpperCase()}",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              Text(
-                "Table : ${widget.tablId.toString()}",
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Consumer<Controller>(
           builder: (context, value, child) => Column(
             children: [
+              
               TextFormField(
                 controller: seacrh,
                 //   decoration: const InputDecoration(,
                 onChanged: (val) {
                   Provider.of<Controller>(context, listen: false)
-                      .searchCat(val);
+                      .searchCat(val.toString());
                 },
                 decoration: InputDecoration(
                   prefixIcon: Icon(

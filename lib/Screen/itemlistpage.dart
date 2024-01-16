@@ -18,9 +18,10 @@ class _ItemListState extends State<ItemList> {
   @override
   void initState() {
     // TODO: implement initState
-    
+
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -42,22 +43,18 @@ class _ItemListState extends State<ItemList> {
               Icons.arrow_back,
               color: Colors.black,
             )),
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 139, 200, 228),
         // Theme.of(context).primaryColor,
-        title: Text(
-          "${widget.catName.toString().toUpperCase()}",
-          style: TextStyle(
-              color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),
-        ),
+
         actions: [
           Consumer<Controller>(
             builder: (context, value, child) => Card(
-             shape: StadiumBorder(),
+              shape: StadiumBorder(),
               color: Colors.black,
               child: Padding(
                 padding: EdgeInsets.all(8),
                 child: Text(
-                 "Table : ${value.tablID.toString().toUpperCase()}",
+                  "Table : ${value.tablID.toString().toUpperCase()}",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 17,
@@ -68,22 +65,21 @@ class _ItemListState extends State<ItemList> {
           )
         ],
       ),
-      bottomNavigationBar: Container(
-          height: 55,
-          width: size.width,
-          decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-          child: Consumer<Controller>(
-            builder: (context, value, child) => TextButton(
-                onPressed: () {},
-                child: Text(
-                  "ADD ${value.itemcount.toInt()} ITEM TO BAG",
-                  style: const TextStyle(color: Colors.black),
-                )),
-          )
-          ),
+      // bottomNavigationBar: Container(
+      //     height: 55,
+      //     width: size.width,
+      //     decoration: BoxDecoration(
+      //         color: Colors.amber,
+      //         borderRadius: BorderRadius.only(
+      //             topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+      //     child: Consumer<Controller>(
+      //       builder: (context, value, child) => TextButton(
+      //           onPressed: () {},
+      //           child: Text(
+      //             "ADD ${value.itemcount.toInt()} ITEM TO BAG",
+      //             style: const TextStyle(color: Colors.black),
+      //           )),
+      //     )),
       body: Consumer<Controller>(
         builder: (context, value, child) => value.isLoading
             ? SpinKitCircle(
@@ -91,6 +87,18 @@ class _ItemListState extends State<ItemList> {
               )
             : Column(
                 children: [
+                  Container(width: double.infinity,height: 50,
+                    color: Color.fromARGB(255, 139, 200, 228),
+                    child: Center(
+                      child: Text(
+                        "${widget.catName.toString().toUpperCase()}",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
@@ -98,7 +106,7 @@ class _ItemListState extends State<ItemList> {
                       //   decoration: const InputDecoration(,
                       onChanged: (val) {
                         Provider.of<Controller>(context, listen: false)
-                            .searchItem(val);
+                            .searchItem(val.toString());
                       },
                       decoration: InputDecoration(
                         prefixIcon: Icon(
@@ -114,7 +122,7 @@ class _ItemListState extends State<ItemList> {
                           },
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                            const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide:
