@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sql_conn/sql_conn.dart';
-
 
 class DBSelection extends StatefulWidget {
   const DBSelection({super.key});
@@ -82,42 +82,38 @@ class _DBSelectionState extends State<DBSelection> {
                                       size: 40,
                                       color: Colors.red,
                                     ),
-                                    trailing:
+                                    trailing: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green),
+                                        onPressed: () async {
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          prefs.setString(
+                                              "db_name",
+                                              value.db_list[index]["Data_Name"]
+                                                  .toString());
+                                          prefs.setString(
+                                              "yr_name",
+                                              value.db_list[index]["Year_Name"]
+                                                  .toString());
 
-                                    
-                                        ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green),
-                                            onPressed: () async {
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              prefs.setString(
-                                                  "db_name",
-                                                  value.db_list[index]
-                                                          ["Data_Name"]
-                                                      .toString());
-                                              prefs.setString(
-                                                  "yr_name",
-                                                  value.db_list[index]
-                                                          ["Year_Name"]
-                                                      .toString());
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .initYearsDb(context, "");
-                                              Navigator.push(
-                                                context,
-                                                new MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HomePage()),
-                                              );
-                                            },
-                                            child: Text(
-                                              "Connect",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            )),
+                                          Provider.of<Controller>(context,
+                                                  listen: false)
+                                              .initYearsDb(context, "");
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginPage()),
+                                          );
+                                        },
+                                        child: Text(
+                                          "Connect",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        )),
                                     title: Text(
                                       value.db_list[index]["Year_Name"]
                                           .toString()

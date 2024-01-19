@@ -21,9 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
     final stUname = prefs.getString("st_uname");
     final stPwd = prefs.getString("st_pwd");
 
-    if (stUname != null && stPwd != null) {
+    if (stUname != null && stPwd != null) 
+    {
       isAuthenticated = true;
-    } else {
+    } 
+    else 
+    {
       isAuthenticated = false;
     }
     return isAuthenticated;
@@ -53,13 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
               opaque: false, // set to false
               pageBuilder: (_, __, ___) {
                 if (isRegistered) {
-                  if (isLoggedIn) {
+                
                   
                     return DBSelection();
-                  } else 
-                  {
-                    return LoginPage();
-                  }
+                 
                 }
                 else 
                 {

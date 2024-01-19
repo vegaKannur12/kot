@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -104,9 +103,12 @@ class Controller extends ChangeNotifier {
   String? userName;
   String param = "";
   List<Map<String, dynamic>> db_list = [];
-
+  bool isYearSelectLoading = false;
   bool isLoginLoading = false;
   bool isDBLoading = false;
+  bool isTableLoading = false;
+  bool isCategoryLoading = false;
+  bool isItemLoading = false;
   String? tablID = "";
   String? catlID = "";
   Timer timer = Timer.periodic(Duration(seconds: 3), (timer) {});
@@ -222,7 +224,7 @@ class Controller extends ChangeNotifier {
               // ignore: use_build_context_synchronously
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(builder: (context) => DBSelection()),
               );
             } else {
               CustomSnackbar snackbar = CustomSnackbar();
@@ -260,7 +262,8 @@ class Controller extends ChangeNotifier {
       String oo = "Flt_Sp_Verify_User '$os','$userName','$password'";
       print("loginnnnnnnnnnnnnnn$oo");
       //  print("{Flt_Sp_Verify_User '$os','$userName','$password'}");
-      initDb(context, "from login");
+      // initDb(context, "from login");
+      // initYearsDb(context, "");
       var res = await SqlConn.readData(
           "Flt_Sp_Verify_User '$os','$userName','$password'");
       var valueMap = json.decode(res);
@@ -271,6 +274,11 @@ class Controller extends ChangeNotifier {
         prefs.setString("Sm_id", valueMap[0]["Sm_id"].toString());
         prefs.setString("st_uname", userName);
         prefs.setString("st_pwd", password);
+       
+        Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
       } else {
         CustomSnackbar snackbar = CustomSnackbar();
         snackbar.showSnackbar(context, "Incorrect Username or Password", "");
@@ -307,6 +315,8 @@ class Controller extends ChangeNotifier {
     print("tyyyyyyyyyp--------$type");
     isdbLoading = false;
     notifyListeners();
+    SqlConn.disconnect();
+    print("disconnected--------$db");
     if (db_list.length > 1) {
       if (type == "from login") {
         Navigator.push(
@@ -327,6 +337,7 @@ class Controller extends ChangeNotifier {
     BuildContext context,
     String type,
   ) async {
+   
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? ip = prefs.getString("ip");
     String? port = prefs.getString("port");
@@ -335,12 +346,13 @@ class Controller extends ChangeNotifier {
     String? db = prefs.getString("db_name");
     String? multi_db = prefs.getString("multi_db");
 
-    debugPrint("Connecting...$db----");
-    try {
+    debugPrint("Connecting selected DB...$db----");
+    try { isYearSelectLoading=true;
+    notifyListeners();
       // await SqlConn.disconnect();
       showDialog(
         context: context,
-        builder: (mycontxt) {
+        builder: (context) {
           // Navigator.push(
           //   context,
           //   new MaterialPageRoute(builder: (context) => HomePage()),
@@ -372,13 +384,15 @@ class Controller extends ChangeNotifier {
             username: un!,
             password: pw!);
       }
-      debugPrint("Connected!----$ip------$db");
+      debugPrint("Connected selected DB!----$ip------$db");
       // getDatabasename(context, type);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       // yr = prefs.getString("yr_name");
       // dbn = prefs.getString("db_name");
       cName = prefs.getString("cname");
+       isYearSelectLoading=false;
+    notifyListeners();
       // prefs.setString("db_name", dbn.toString());
       // prefs.setString("yr_name", yrnam.toString());
       // getDbName();
@@ -443,6 +457,8 @@ class Controller extends ChangeNotifier {
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("tabl para---------$os---$smid");
+    isTableLoading = true;
+    notifyListeners();
     var res = await SqlConn.readData("Flt_Sp_Get_Tables '$os','$smid'");
     var map = jsonDecode(res);
     tabllist.clear();
@@ -452,18 +468,22 @@ class Controller extends ChangeNotifier {
       }
     }
     print("tablelist-$res");
-    
-    isdbLoading = false;
+
+    isTableLoading = false;
     notifyListeners();
   }
 
 ///////////////////////////////////
- getCategoryList() async {
+  getCategoryList() async {
+    isCategoryLoading = true;
+    notifyListeners();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("cat para---------$os---------$tablID-----------$smid");
-    var res = await SqlConn.readData("Flt_Sp_Get_Category_Kot '$tablID','$smid'");
+    
+    var res =
+        await SqlConn.readData("Flt_Sp_Get_Category_Kot '$tablID','$smid'");
     var map = jsonDecode(res);
     catlist.clear();
     if (map != null) {
@@ -472,13 +492,13 @@ class Controller extends ChangeNotifier {
       }
     }
     print("categoryList...................-$res");
-    
-    isdbLoading = false;
+
+    isCategoryLoading = false;
     notifyListeners();
   }
 
 ///////////////////////////////////
- /////////////////////////////////////////////////
+  /////////////////////////////////////////////////
   getItemList(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
@@ -486,7 +506,7 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-    
+
     print("catttt iidd----$catlID---$cartNo----$os");
     isLoading = true;
     notifyListeners();
@@ -512,6 +532,7 @@ class Controller extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
 ///////////////////////////////////
   getCartNo(
     BuildContext context,
@@ -527,7 +548,7 @@ class Controller extends ChangeNotifier {
     var valueMap = json.decode(res);
     // cartId = valueMap[0]["CartId"];
     prefs.setInt("cartNo", valueMap[0]["CartId"]);
-    int? c=prefs.getInt("cartNo");
+    int? c = prefs.getInt("cartNo");
     print("cart No------$c");
     notifyListeners();
     // customerList.clear();
@@ -547,8 +568,6 @@ class Controller extends ChangeNotifier {
     print("gtyy----$fromDate----$todate");
     notifyListeners();
   }
-
- 
 
   ///////////////////////////////////////////////////////
   setQty(double val, int index, String type) {
@@ -660,48 +679,54 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////////////////////////////////////
-  // updateCart(
-  //     BuildContext context,
-  //     Map map,
-  //     String dateTime,
-  //     String customId,
-  //     double qty,
-  //     int index,
-  //     String type,
-  //     int status,
-  //     String category_id) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   // String? cid = await prefs.getString("cid");
-  //   // String? db = prefs.getString("db_name");
-  //   // String? brId = await prefs.getString("br_id");
-  //   String? os = await prefs.getString("os");
-  //   int? cartid = await prefs.getInt("cartId");
-  //   isAdded[index] = true;
-  //   notifyListeners();
-  //   print("stattuss----$status");
-  //   var res;
-  //   notifyListeners();
-  //   if (type == "from cart") {
-  //     res = await SqlConn.readData(
-  //         "Flt_Update_Cart $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
-  //   } else if (type == "from itempage") {
-  //     res = await SqlConn.readData(
-  //         "Flt_Update_Cart $cartid,'$dateTime','$customId',0,'$os','${map["code"]}',$qty,${map["Srate"]},${map["ProdId"]},'${map["Unit"]}','${map["Pkg"]}',$status");
-  //     getItemList(context, category_id);
-  //   }
+  updateCart(
+    BuildContext context,
+    Map map,
+    String dateTime,
+    double qty,
+    String des,
+    int index,
+    String type,
+    int status,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? cid = await prefs.getString("cid");
+    // String? db = prefs.getString("db_name");
+    // String? brId = await prefs.getString("br_id");
+    String? os = await prefs.getString("os");
+    int? cartid = await prefs.getInt("cartNo");
+    int? c = prefs.getInt("cartNo");
+    String? smid = await prefs.getString("Sm_id");
 
-  //   // ignore: avoid_print
-  //   print("insert cart---$res");
-  //   var valueMap = json.decode(res);
-  //   response[index] = valueMap[0]["Result"];
-  //   isAdded[index] = false;
-  //   notifyListeners();
-  // }
+    isAdded[index] = true;
+    notifyListeners();
+    print("stattuss----$status");
+    var res;
+    notifyListeners();
+    if (type == "from cart") 
+    {
+      // res = await SqlConn.readData(
+      //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
+    } else if (type == "from itempage") {
+      res = await SqlConn.readData(
+        "Flt_Update_Cart_Kot $cartid,'$dateTime','$smid',$tablID,0,'$os','${map["code"]}',$qty,'${map["Srate"]}',${map["ProdId"]},'${map["Unit"]}','dec',1,'${map["Pkg"]}',$status",
+      );
+      print("data added..............--------------------------------------------------------------");
+      //getItemList(context);
+    }
+
+    // ignore: avoid_print
+    print("insert cart---$res");
+    var valueMap = json.decode(res);
+    response[index] = valueMap[0]["Result"];
+    isAdded[index] = false;
+    notifyListeners();
+  }
 
   ///////////////////////////////////////////////////////
   viewCart(
     BuildContext context,
-    String customId,
+    
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
@@ -709,13 +734,14 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
+  
 
     isCartLoading = true;
     notifyListeners();
 
-    print("jbjhbvbv -------------$os--$cartNo ---- $customerId---");
+    print("jbjhbvbv -------------{Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tablID','$os'}");
     var res = await SqlConn.readData(
-        "Flt_Sp_Get_Unsaved_Cart $cartNo,'$customerId','$os'");
+        "Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tablID','$os'");
     var valueMap = json.decode(res);
     isCartLoading = false;
     notifyListeners();
@@ -744,10 +770,12 @@ class Controller extends ChangeNotifier {
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
-     
+
       filteredlist = tabllist
-          .where((e) => e["Table_Name"].toString().toLowerCase()
-          .contains(val.toLowerCase()))
+          .where((e) => e["Table_Name"]
+              .toString()
+              .toLowerCase()
+              .contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -768,14 +796,16 @@ class Controller extends ChangeNotifier {
 
   //////////////////////////////////////////////
   searchCat(String val) {
-      filteredlist = catlist;
+    filteredlist = catlist;
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
-     
+
       filteredlist = catlist
-          .where((e) => e["Cat_Name"].toString().toLowerCase()
-          .contains(val.toLowerCase()))
+          .where((e) => e["Cat_Name"]
+              .toString()
+              .toLowerCase()
+              .contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -799,17 +829,17 @@ class Controller extends ChangeNotifier {
     if (val.isNotEmpty) {
       isSearch = true;
       notifyListeners();
-     
+
       filteredlist = itemlist
-          .where((e) => e["Product"].toString().toLowerCase()
-          .contains(val.toLowerCase()))
+          .where((e) =>
+              e["Product"].toString().toLowerCase().contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
       notifyListeners();
       filteredlist = itemlist;
     }
-   
+
     // }
     print("filtered_ITEM_List----------------$filteredlist");
     notifyListeners();
@@ -822,6 +852,7 @@ class Controller extends ChangeNotifier {
     print("tablID----$tablID");
     notifyListeners();
   }
+
   ///////////////........................../////////////////////////////
   setCatID(String id, BuildContext context) {
     catlID = id;

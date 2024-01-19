@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
       Provider.of<Controller>(context, listen: false).getTableList();
       // Provider.of<Controller>(context, listen: false)
       //     .qtyadd();           //tempry adding qty
-     
+
       Provider.of<Controller>(context, listen: false).getOs();
     });
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
@@ -38,7 +39,8 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       extendBody: true,
-      appBar: AppBar(toolbarHeight: 80,
+      appBar: AppBar(
+        toolbarHeight: 80,
         backgroundColor: const Color.fromARGB(255, 111, 128, 228),
         title: Consumer<Controller>(
             builder: (BuildContext context, Controller value, Widget? child) =>
@@ -55,7 +57,10 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Icon(Icons.calendar_month,color: Colors.white,),
+                Icon(
+                  Icons.calendar_month,
+                  color: Colors.white,
+                ),
                 SizedBox(
                   width: 5,
                 ),
@@ -93,6 +98,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: InkWell(
           onTap: () {
+            Provider.of<Controller>(context, listen: false).viewCart(context);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CartBag()),
@@ -158,66 +164,79 @@ class _HomePageState extends State<HomePage> {
 /////////////////////////////////////////////////////////////////
   Widget tableWidget(Size size, List list) {
     return Consumer<Controller>(
-      builder: (context, value, child) => Expanded(
-        child: list.length == 0
-            ? Container(
-                // height: size.height * 0.7,
-                child: Center(child: Text("no data")))
-            : GridView.builder(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount: value.isSearch
-                    ? value.filteredlist.length
-                    : value.tabllist.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12),
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () {
-                    value.setTableID(list[index]["Table_ID"].toString(), context);
-                     Provider.of<Controller>(context, listen: false).getCartNo(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CategoryScreen(
-                              tablId: list[index]["Table_ID"].toString())),
-                    );
-                  },
-                  child: Card(
-                    color: Colors.grey[200],
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Expanded(
-                        //   child: Image.asset(
-                        //     "assets/sweets.png",
-                        //     height: size.height * 0.09,
-                        //     width: size.width * 0.15,
-                        //     // fit: BoxFit.contain,
-                        //   ),
-                        // ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                            child: Text(
-                              list[index]["Table_Name"].toString(),
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+      builder: (context, value, child) => value.isTableLoading
+          ? Expanded(
+            child: Align(alignment: Alignment.center,
+              child: SpinKitCircle(
+                  color: Colors.black,
+                ),
+            ),
+          )
+          : Expanded(
+              child: list.length == 0
+                  ? Container(
+                      // height: size.height * 0.7,
+                      child: Center(child: Text("no data")))
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      itemCount: value.isSearch
+                          ? value.filteredlist.length
+                          : value.tabllist.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12),
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () {
+                          value.setTableID(
+                              list[index]["Table_ID"].toString(), context);
+                          Provider.of<Controller>(context, listen: false)
+                              .getCartNo(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CategoryScreen(
+                                    tablId:
+                                        list[index]["Table_ID"].toString())),
+                          );
+                        },
+                        child: Card(
+                          color: Colors.grey[200],
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Expanded(
+                              //   child: Image.asset(
+                              //     "assets/sweets.png",
+                              //     height: size.height * 0.09,
+                              //     width: size.width * 0.15,
+                              //     // fit: BoxFit.contain,
+                              //   ),
+                              // ),
+                              Container(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8),
+                                  child: Text(
+                                    list[index]["Table_Name"].toString(),
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-      ),
+            ),
     );
   }
 }

@@ -128,10 +128,10 @@ class _CartBagState extends State<CartBag> {
                         ),
                         Row(
                           children: [
-                            map["Cart_Unit"] == null || map["Cart_Unit"].isEmpty
+                            map["Unit"] == null || map["Unit"].isEmpty
                                 ? Container()
                                 : Text("Unit : "),
-                            map["Cart_Unit"] == null || map["Cart_Unit"].isEmpty
+                            map["Unit"] == null || map["Unit"].isEmpty
                                 ? Container()
                                 : Container(
                                     decoration: BoxDecoration(
@@ -211,7 +211,7 @@ class _CartBagState extends State<CartBag> {
                                           listen: false)
                                       .viewCart(
                                     context,
-                                    value.customerId.toString(),
+                                    
                                   );
                                 },
                                 child: Icon(
@@ -247,7 +247,7 @@ class _CartBagState extends State<CartBag> {
                                           listen: false)
                                       .viewCart(
                                     context,
-                                    value.customerId.toString(),
+                                  
                                   );
                                 },
                                 controller: value.qty[index],
@@ -294,7 +294,7 @@ class _CartBagState extends State<CartBag> {
                                           listen: false)
                                       .viewCart(
                                     context,
-                                    value.customerId.toString(),
+                                    
                                   );
                                 },
                                 child: Icon(
@@ -327,7 +327,7 @@ class _CartBagState extends State<CartBag> {
                                   builder: (context) {
                                     return AlertDialog(
                                       content:
-                                          Text('Delete ${map["Prod_Name"]}?'),
+                                          Text('Delete ${map["Product"]}?'),
                                       actions: <Widget>[
                                         new TextButton(
                                           onPressed: () {
@@ -357,7 +357,7 @@ class _CartBagState extends State<CartBag> {
                                                     listen: false)
                                                 .viewCart(
                                               context,
-                                              value.customerId.toString(),
+                                             
                                             );
                                             Navigator.pop(context);
                                           },
