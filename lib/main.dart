@@ -22,18 +22,23 @@ Future<void> main() async {
   isLoggedIn = await checkLogin();
   isRegistered = await checkRegistration();
   requestPermission();
-  SystemChrome.setPreferredOrientations([
+  SystemChrome.setPreferredOrientations(
+    [
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]);
 
-  runApp(MultiProvider(
+  runApp(
+    MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => Controller()),
       // ChangeNotifierProvider(create: (_) => RegistrationController()),
     ],
     child: const MyApp(),
-  ));
+  )
+  );
   // FlutterNativeSplash.remove();
 }
 

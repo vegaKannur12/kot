@@ -1,23 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
+import 'package:restaurent_kot/Screen/authentication/registration.dart';
 import 'package:restaurent_kot/Screen/db_selection.dart';
 import 'package:restaurent_kot/Screen/home.dart';
+import 'package:restaurent_kot/components/c_errorDialog.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/external_dir.dart';
 import 'package:restaurent_kot/db_helper.dart';
 import 'package:restaurent_kot/model/customer_model.dart';
+import 'package:restaurent_kot/model/login_model.dart';
 import 'package:restaurent_kot/model/registration_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sql_conn/sql_conn.dart';
 import '../components/network_connectivity.dart';
 
 class Controller extends ChangeNotifier {
-  // int? cartNo;
+  //   int? cartNo;
   String? fromDate;
   String? lastdate;
   String? customerId;
@@ -26,10 +30,12 @@ class Controller extends ChangeNotifier {
   String? cname;
   double sum = 0.0;
   bool isSearch = false;
+  bool isRoomSearch = false;
   String? colorString;
   // List<CD> cD = [];
   List<Map<String, dynamic>> customerList = [];
   List<Map<String, dynamic>> filteredlist = [];
+  List<Map<String, dynamic>> filteredroomlist = [];
   List<Map<String, dynamic>> orderlist = [];
   List<Map<String, dynamic>> orderDetails = [];
   bool isOrderLoading = false;
@@ -43,6 +49,7 @@ class Controller extends ChangeNotifier {
   DateTime? sdate;
   DateTime? ldate;
   String? os;
+  int? cartNum;
   String? cName;
   List<Widget> calendarWidget = [];
   List<int> response = [];
@@ -80,6 +87,7 @@ class Controller extends ChangeNotifier {
     {"tab": "Table 4", "tid": 4},
     {"tab": "Table 5", "tid": 5},
   ];
+  List<Map<String, dynamic>> roomlist = [];
   List<Map<String, dynamic>> catlist = [
     {"catid": "C1", "catname": "Category1"},
     {"catid": "C2", "catname": "Category2"},
@@ -89,6 +97,7 @@ class Controller extends ChangeNotifier {
     {"catid": "C6", "catname": "Category6"},
     {"catid": "C7", "catname": "Category7"},
   ];
+
   // List<Map<String, dynamic>> itemlist = [
   //   {"catid": "C1", "catname": "Category1", "pname": "item1", "rate": 30.0},
   //   {"catid": "C1", "catname": "Category1", "pname": "item2", "rate": 30.0},
@@ -99,7 +108,6 @@ class Controller extends ChangeNotifier {
   List<Map<String, dynamic>> myBagList = [];
   bool showBottombar = true;
   double itemcount = 0.0;
-
   String? userName;
   String param = "";
   List<Map<String, dynamic>> db_list = [];
@@ -107,11 +115,21 @@ class Controller extends ChangeNotifier {
   bool isLoginLoading = false;
   bool isDBLoading = false;
   bool isTableLoading = false;
+  bool isRoomLoading = false;
   bool isCategoryLoading = false;
+  
   bool isItemLoading = false;
   String? tablID = "";
+  String? roomID = "";
   String? catlID = "";
+  String roomnm="";
+  String tablname="";
+  String guestnm="";
   Timer timer = Timer.periodic(Duration(seconds: 3), (timer) {});
+  List<Map<String, dynamic>> logList = [];
+  String? selectedSmName;
+  Map<String, dynamic>? selectedItemStaff;
+  int cartTotal=0;
   // qtyadd() {
   //   qty = List.generate(itemlist.length, (index) => TextEditingController());
   //   isAdded = List.generate(itemlist.length, (index) => false);
@@ -178,54 +196,76 @@ class Controller extends ChangeNotifier {
           String? msg = regModel.msg;
 
           if (sof == "1") {
-            if (appType == 'UY') {
+            if (appType == 'UY')
+            // if (appType == 'ED')
+            {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               /////////////// insert into local db /////////////////////
               String? fp1 = regModel.fp;
+              if (map["os"] == null || map["os"].isEmpty) {
+                isLoading = false;
+                notifyListeners();
+                CustomSnackbar snackbar = CustomSnackbar();
+                snackbar.showSnackbar(context, "Series is Missing", "");
+              } else {
+                // ignore: avoid_print
+                print("fingerprint......$fp1");
+                prefs.setString("fp", fp!);
 
-              // ignore: avoid_print
-              print("fingerprint......$fp1");
-              prefs.setString("fp", fp!);
+                cid = regModel.cid;
+                os = regModel.os;
+                prefs.setString("cid", cid!);
 
-              cid = regModel.cid;
-              os = regModel.os;
-              prefs.setString("cid", cid!);
+                cname = regModel.c_d![0].cnme;
 
-              cname = regModel.c_d![0].cnme;
+                prefs.setString("cname", cname!);
+                prefs.setString("os", os!);
+                print("cid----cname-----$cid---$cname....$os");
+                notifyListeners();
+                await externalDir.fileWrite(fp1!);
 
-              prefs.setString("cname", cname!);
-              prefs.setString("os", os!);
-              print("cid----cname-----$cid---$cname....$os");
-              notifyListeners();
+                // ignore: duplicate_ignore
+                for (var item in regModel.c_d!) {
+                  print("ciddddddddd......$item");
+                  c_d.add(item);
+                }
+                // verifyRegistration(context, "");
+                isLoading = false;
+                notifyListeners();
+                prefs.setString("user_type", appType!);
+                prefs.setString("db_name", map["mssql_arr"][0]["db_name"]);
+                prefs.setString("old_db_name", map["mssql_arr"][0]["db_name"]);
+                prefs.setString("ip", map["mssql_arr"][0]["ip"]);
+                prefs.setString("port", map["mssql_arr"][0]["port"]);
+                prefs.setString("usern", map["mssql_arr"][0]["username"]);
+                prefs.setString("pass_w", map["mssql_arr"][0]["password"]);
+                prefs.setString("multi_db", map["mssql_arr"][0]["multi_db"]);
 
-              await externalDir.fileWrite(fp1!);
-
-              // ignore: duplicate_ignore
-              for (var item in regModel.c_d!) {
-                print("ciddddddddd......$item");
-                c_d.add(item);
+                String? user = prefs.getString("userType");
+                await KOT.instance
+                    .deleteFromTableCommonQuery("companyRegistrationTable", "");
+                // ignore: use_build_context_synchronously
+                String? m_db = prefs.getString("multi_db");
+                if (m_db != "1") {
+                  print("dont want year select");
+                  await initDb(context, "from login");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => LoginPage()), //m_db=0
+                  );
+                } else {
+                  print("want year select");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DBSelection()),
+                  );
+                }
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => DBSelection()),
+                // );
               }
-              // verifyRegistration(context, "");
-
-              isLoading = false;
-              notifyListeners();
-              prefs.setString("user_type", appType!);
-              prefs.setString("db_name", map["mssql_arr"][0]["db_name"]);
-              prefs.setString("old_db_name", map["mssql_arr"][0]["db_name"]);
-              prefs.setString("ip", map["mssql_arr"][0]["ip"]);
-              prefs.setString("port", map["mssql_arr"][0]["port"]);
-              prefs.setString("usern", map["mssql_arr"][0]["username"]);
-              prefs.setString("pass_w", map["mssql_arr"][0]["password"]);
-              prefs.setString("multi_db", map["mssql_arr"][0]["multi_db"]);
-
-              String? user = prefs.getString("userType");
-              await KOT.instance
-                  .deleteFromTableCommonQuery("companyRegistrationTable", "");
-              // ignore: use_build_context_synchronously
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DBSelection()),
-              );
             } else {
               CustomSnackbar snackbar = CustomSnackbar();
               // ignore: use_build_context_synchronously
@@ -240,10 +280,28 @@ class Controller extends ChangeNotifier {
           }
 
           notifyListeners();
+        } on SocketException catch (e) {
+          // regLoad = false;
+          notifyListeners();
+          if (e.osError != null && e.osError!.errorCode == 110) {
+            await showCommonErrorDialog(
+                'Connection timed out. Please try again..',
+                Registration(),
+                context);
+          } else {
+            // print("SocketException");
+            // ignore: use_build_context_synchronously
+            await showCommonErrorDialog(
+                'SocketException: ${e.message}', Registration(), context);
+          }
         } catch (e) {
           // ignore: avoid_print
-          print(e);
-          return null;
+          // regLoad = false;
+          await showCommonErrorDialog(
+              'An unexpected error occurred: ${e.toString()}',
+              Registration(),
+              context);
+          // return null;
         }
       }
     });
@@ -251,47 +309,45 @@ class Controller extends ChangeNotifier {
   }
 
   //////////////////////////////////////////////////////////
-  getLogin(String userName, String password, BuildContext context) async {
+  getLogin(BuildContext context) async {
     try {
       isLoginLoading = true;
       notifyListeners();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? os = prefs.getString("os");
 
-      print("unaaaaaaaaaaammmeeeeeeeee$userName");
-      String oo = "Flt_Sp_Verify_User '$os','$userName','$password'";
+      // print("unaaaaaaaaaaammmeeeeeeeee$userName");
+      String oo = "Kot_Login_Info '$os'";
       print("loginnnnnnnnnnnnnnn$oo");
       //  print("{Flt_Sp_Verify_User '$os','$userName','$password'}");
       // initDb(context, "from login");
       // initYearsDb(context, "");
-      var res = await SqlConn.readData(
-          "Flt_Sp_Verify_User '$os','$userName','$password'");
+      var res = await SqlConn.readData("Kot_Login_Info '$os'");
       var valueMap = json.decode(res);
-      print("item list----------$res");
+      print("login details----------$res");
       if (valueMap != null) {
-        print("item list----------$res");
-        print("smId.............>${valueMap[0]["Sm_id"]}");
-        prefs.setString("Sm_id", valueMap[0]["Sm_id"].toString());
-        prefs.setString("st_uname", userName);
-        prefs.setString("st_pwd", password);
-       
-        Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-      } else {
-        CustomSnackbar snackbar = CustomSnackbar();
-        snackbar.showSnackbar(context, "Incorrect Username or Password", "");
-        isLoginLoading = false;
-        notifyListeners();
+        // LoginModel logModel = LoginModel.fromJson(valueMap);
+        for (var item in valueMap) {
+          logList.add(item);
+          notifyListeners();
+        }
+        print("LogList----$logList");
       }
-
       isLoginLoading = false;
       notifyListeners();
     } catch (e) {
       // ignore: avoid_print
       print(e);
       return null;
+    }
+  }
+
+  verifyStaff(String pwd, BuildContext context) {
+    print("pwd , selpwd ====$pwd ,${selectedItemStaff!['PWD']}");
+    if (pwd == selectedItemStaff!['PWD'].toString().trim()) {
+      return 1;
+    } else {
+      return 0;
     }
   }
 
@@ -302,6 +358,7 @@ class Controller extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? db = prefs.getString("db_name");
     String? cid = await prefs.getString("cid");
+    await initDb(context, "");
     print("cid dbname---------$cid---$db");
     var res = await SqlConn.readData("Flt_LoadYears '$db','$cid'");
     var map = jsonDecode(res);
@@ -315,21 +372,21 @@ class Controller extends ChangeNotifier {
     print("tyyyyyyyyyp--------$type");
     isdbLoading = false;
     notifyListeners();
-    SqlConn.disconnect();
-    print("disconnected--------$db");
-    if (db_list.length > 1) {
-      if (type == "from login") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => DBSelection()),
-        );
-      }
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-    }
+    // SqlConn.disconnect();
+    // print("disconnected--------$db");
+    // if (db_list.length > 1) {
+    //   if (type == "from login") {
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => DBSelection()),
+    //     );
+    //   }
+    // } else {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => HomePage()),
+    //   );
+    // }
   }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -337,7 +394,6 @@ class Controller extends ChangeNotifier {
     BuildContext context,
     String type,
   ) async {
-   
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? ip = prefs.getString("ip");
     String? port = prefs.getString("port");
@@ -347,8 +403,9 @@ class Controller extends ChangeNotifier {
     String? multi_db = prefs.getString("multi_db");
 
     debugPrint("Connecting selected DB...$db----");
-    try { isYearSelectLoading=true;
-    notifyListeners();
+    try {
+      isYearSelectLoading = true;
+      notifyListeners();
       // await SqlConn.disconnect();
       showDialog(
         context: context,
@@ -391,8 +448,8 @@ class Controller extends ChangeNotifier {
       // yr = prefs.getString("yr_name");
       // dbn = prefs.getString("db_name");
       cName = prefs.getString("cname");
-       isYearSelectLoading=false;
-    notifyListeners();
+      isYearSelectLoading = false;
+      notifyListeners();
       // prefs.setString("db_name", dbn.toString());
       // prefs.setString("yr_name", yrnam.toString());
       // getDbName();
@@ -412,7 +469,7 @@ class Controller extends ChangeNotifier {
     String? port = prefs.getString("port");
     String? un = prefs.getString("usern");
     String? pw = prefs.getString("pass_w");
-    debugPrint("Connecting...");
+    debugPrint("Connecting...initDB..$db");
     try {
       showDialog(
         context: context,
@@ -443,7 +500,7 @@ class Controller extends ChangeNotifier {
 
           );
       debugPrint("Connected!");
-      getDatabasename(context, type);
+      // getDatabasename(context, type);
     } catch (e) {
       debugPrint(e.toString());
     } finally {
@@ -459,7 +516,7 @@ class Controller extends ChangeNotifier {
     print("tabl para---------$os---$smid");
     isTableLoading = true;
     notifyListeners();
-    var res = await SqlConn.readData("Flt_Sp_Get_Tables '$os','$smid'");
+    var res = await SqlConn.readData("Kot_Table_List '$os','$smid'");
     var map = jsonDecode(res);
     tabllist.clear();
     if (map != null) {
@@ -473,6 +530,27 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
+  getRoomList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? os = await prefs.getString("os");
+    String? smid = await prefs.getString("Sm_id");
+    print("room para---------$os---$smid");
+    isRoomLoading = true;
+    notifyListeners();
+    var res = await SqlConn.readData("Kot_Room_List '$os','$smid'");
+    var map = jsonDecode(res);
+    roomlist.clear();
+    if (map != null) {
+      for (var item in map) {
+        roomlist.add(item);
+      }
+    }
+    print("rooomlist-$res");
+
+    isRoomLoading = false;
+    notifyListeners();
+  }
+
 ///////////////////////////////////
   getCategoryList() async {
     isCategoryLoading = true;
@@ -481,9 +559,8 @@ class Controller extends ChangeNotifier {
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("cat para---------$os---------$tablID-----------$smid");
-    
-    var res =
-        await SqlConn.readData("Flt_Sp_Get_Category_Kot '$tablID','$smid'");
+
+    var res = await SqlConn.readData("Kot_ItCategory_List '$os','$smid'");
     var map = jsonDecode(res);
     catlist.clear();
     if (map != null) {
@@ -510,8 +587,7 @@ class Controller extends ChangeNotifier {
     print("catttt iidd----$catlID---$cartNo----$os");
     isLoading = true;
     notifyListeners();
-    var res =
-        await SqlConn.readData("Flt_Sp_ItemList '$catlID','$cartNo','$os'");
+    var res = await SqlConn.readData("Kot_ItemList '$catlID','$cartNo','$os'");
     var valueMap = json.decode(res);
     print("item list----------$valueMap");
     itemlist.clear();
@@ -542,7 +618,9 @@ class Controller extends ChangeNotifier {
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
-    var res = await SqlConn.readData("Flt_Sp_GetCartno '$os'");
+    String pp="Kot_GetCartno '$os'";
+    print("cart conn $pp");
+    var res = await SqlConn.readData("Kot_GetCartno '$os'");
     // ignore: avoid_print
     print("cart map------$res");
     var valueMap = json.decode(res);
@@ -557,8 +635,6 @@ class Controller extends ChangeNotifier {
     //     customerList.add(item);
     //   }
     // }
-
-    notifyListeners();
   }
 
   ////////////////////////////////////
@@ -688,7 +764,9 @@ class Controller extends ChangeNotifier {
     int index,
     String type,
     int status,
-  ) async {
+  ) 
+  async 
+  {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
@@ -697,21 +775,23 @@ class Controller extends ChangeNotifier {
     int? cartid = await prefs.getInt("cartNo");
     int? c = prefs.getInt("cartNo");
     String? smid = await prefs.getString("Sm_id");
-
+ 
     isAdded[index] = true;
     notifyListeners();
     print("stattuss----$status");
     var res;
     notifyListeners();
-    if (type == "from cart") 
-    {
+    if (type == "from cart") {
       // res = await SqlConn.readData(
       //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
     } else if (type == "from itempage") {
+      // double rt=double.parse(map["SRATE"]);
+      print("Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tablID,$roomID,gust,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"",'dec',1,'',$status");
       res = await SqlConn.readData(
-        "Flt_Update_Cart_Kot $cartid,'$dateTime','$smid',$tablID,0,'$os','${map["code"]}',$qty,'${map["Srate"]}',${map["ProdId"]},'${map["Unit"]}','dec',1,'${map["Pkg"]}',$status",
+        "Kot_Save_Cart $cartid,'$dateTime','$smid',$tablID,$roomID,gust,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
       );
-      print("data added..............--------------------------------------------------------------");
+      print(
+          "data added..............--------------------------------------------------------------");
       //getItemList(context);
     }
 
@@ -719,6 +799,7 @@ class Controller extends ChangeNotifier {
     print("insert cart---$res");
     var valueMap = json.decode(res);
     response[index] = valueMap[0]["Result"];
+    cartTotal=valueMap[0]["TotalCount"];
     isAdded[index] = false;
     notifyListeners();
   }
@@ -726,7 +807,6 @@ class Controller extends ChangeNotifier {
   ///////////////////////////////////////////////////////
   viewCart(
     BuildContext context,
-    
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
@@ -734,14 +814,14 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-  
 
     isCartLoading = true;
     notifyListeners();
 
-    print("jbjhbvbv -------------{Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tablID','$os'}");
+    print(
+        "jbjhbvbv -------------{Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tablID','$os'}");
     var res = await SqlConn.readData(
-        "Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tablID','$os'");
+        "Kot_Get_Unsaved_Cart $cartNo,'$tablID','$os'");
     var valueMap = json.decode(res);
     isCartLoading = false;
     notifyListeners();
@@ -823,7 +903,34 @@ class Controller extends ChangeNotifier {
     print("filtered_CAT_List----------------$filteredlist");
     notifyListeners();
   }
+  searchRoom(String val) {
+    filteredroomlist = roomlist;
+    if (val.isNotEmpty) {
+      isRoomSearch = true;
+      notifyListeners();
 
+      filteredroomlist = roomlist
+          .where((e) => e["Room_Name"]
+              .toString().trimLeft()
+              .toLowerCase()
+              .contains(val.toLowerCase()))
+          .toList();
+    } else {
+      isRoomSearch = false;
+      notifyListeners();
+      filteredroomlist = roomlist;
+    }
+    // qty =
+    //     List.generate(filteredlist.length, (index) => TextEditingController());
+    // isAdded = List.generate(filteredlist.length, (index) => false);
+    // response = List.generate(filteredlist.length, (index) => 0);
+    // for (int i = 0; i < filteredlist.length; i++) {
+    //   qty[i].text = "1.0";
+    //   response[i] = 0;
+    // }
+    print("filtered_Roomm_List----------------$filteredroomlist");
+    notifyListeners();
+  }
   searchItem(String val) {
     filteredlist = itemlist;
     if (val.isNotEmpty) {
@@ -846,10 +953,22 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////////////////////////////////////////////////////////////
-  setTableID(String id, BuildContext context) {
+  setTableID(String id,String tbNM, BuildContext context) {
     tablID = id;
-
+    tablname=tbNM;
     print("tablID----$tablID");
+    notifyListeners();
+  }
+   setRoomID(String id,String rmnm, BuildContext context) {
+    roomID = id;
+    roomnm=rmnm;
+    print("RoomID----$tablID, Nmae: $roomnm");
+    notifyListeners();
+  }
+
+  updateSm_id() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("Sm_id", selectedItemStaff!['Sm_id']);
     notifyListeners();
   }
 
@@ -918,6 +1037,7 @@ class Controller extends ChangeNotifier {
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     os = await prefs.getString("os");
+    cartNum = prefs.getInt("cartNo");
     notifyListeners();
   }
 }

@@ -50,6 +50,7 @@ dependencies:
     path: C:/Users/PHP SERVER/Downloads/sql_conn-master/sql_conn-master
   device_info_plus: ^4.1.2
   sqflite: ^2.0.3+1
+  responsive_grid_list: ^1.4.0
   carousel_slider: ^4.2.1
   flutter_native_splash: ^2.2.16
   badges: ^3.1.2

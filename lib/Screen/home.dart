@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
+import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:restaurent_kot/db_helper.dart';
@@ -18,6 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? date;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -25,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<Controller>(context, listen: false).getTableList();
+      Provider.of<Controller>(context, listen: false).getRoomList();
       // Provider.of<Controller>(context, listen: false)
       //     .qtyadd();           //tempry adding qty
 
@@ -34,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   TextEditingController seacrh = TextEditingController();
+  TextEditingController seacrhRoom = TextEditingController();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -87,39 +91,149 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 60,
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 197, 121, 71),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: InkWell(
-          onTap: () {
-            Provider.of<Controller>(context, listen: false).viewCart(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CartBag()),
-            );
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.shopping_cart, color: Colors.white),
-              Text(
-                'VIEW CART',
-                textScaleFactor: ScaleSize.textScaleFactor(context),
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.white),
-              )
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: Provider.of<Controller>(context, listen: false)
+              .tablID!
+              .isEmpty
+          ? Container()
+          : Consumer<Controller>(
+              builder: (BuildContext context, Controller value, Widget? child) {
+                return Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 197, 121, 71),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    // height: 200,
+                                    height: value.roomlist.isNotEmpty
+                                        ? MediaQuery.of(context).size.height *
+                                            0.65
+                                        : size.height * 0.2,
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        value.roomlist.isNotEmpty
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.close))
+                                                ],
+                                              )
+                                            : Container(),
+                                        TextFormField(
+                                          controller: seacrhRoom,
+                                          //   decoration: const InputDecoration(,
+                                          onChanged: (val) {
+                                            Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .searchRoom(val.toString());
+                                          },
+                                          decoration: InputDecoration(
+                                            prefixIcon: const Icon(
+                                              Icons.search,
+                                              color: Colors.black,
+                                            ),
+                                            suffixIcon: IconButton(
+                                              icon: const Icon(Icons.cancel),
+                                              onPressed: () {
+                                                seacrhRoom.clear();
+                                                value.isRoomSearch = false;
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .searchRoom("");
+                                              },
+                                            ),
+                                            focusedBorder: UnderlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.blue,
+                                                  width: 1.0),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.black,
+                                                  width: 1.0),
+                                            ),
+                                            hintText: "Search room...",
+                                          ),
+                                        ),
+                                        value.isRoomSearch
+                                            ? roomWidget(
+                                                size, value.filteredroomlist,context)
+                                            : roomWidget(size, value.roomlist,context)
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.cabin, color: Colors.white),
+                                Text(
+                                  'Room Credit',
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.white),
+                                )
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                if (value.tablID!.isNotEmpty) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CategoryScreen(
+                                              tablId: value.tablname.toString(),
+                                              roomId: value.roomnm.toString(),
+                                            )),
+                                  );
+                                } else {
+                                  CustomSnackbar snackbar = CustomSnackbar();
+                                  snackbar.showSnackbar(
+                                      context, "Select Table", "");
+                                }
+                              },
+                              child: Text("Proceed"))
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Consumer<Controller>(
@@ -166,12 +280,13 @@ class _HomePageState extends State<HomePage> {
     return Consumer<Controller>(
       builder: (context, value, child) => value.isTableLoading
           ? Expanded(
-            child: Align(alignment: Alignment.center,
-              child: SpinKitCircle(
+              child: Align(
+                alignment: Alignment.center,
+                child: SpinKitCircle(
                   color: Colors.black,
                 ),
-            ),
-          )
+              ),
+            )
           : Expanded(
               child: list.length == 0
                   ? Container(
@@ -189,18 +304,47 @@ class _HomePageState extends State<HomePage> {
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12),
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () {
-                          value.setTableID(
-                              list[index]["Table_ID"].toString(), context);
-                          Provider.of<Controller>(context, listen: false)
+                        onTap: () async {
+                          await value.setTableID(
+                              list[index]["Table_ID"].toString(),
+                              list[index]["Table_ID"].toString().trimLeft(),
+                              context);
+                          await Provider.of<Controller>(context, listen: false)
                               .getCartNo(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CategoryScreen(
-                                    tablId:
-                                        list[index]["Table_ID"].toString())),
-                          );
+                          CustomSnackbar snackbar = CustomSnackbar();
+                          snackbar.showSnackbar(context,
+                              "Table ${value.tablID.toString()} Selected.", "");
+                          // showDialog(
+                          //     barrierDismissible: false,
+                          //     context: context,
+                          //     builder: (context) {
+                          //       Size size = MediaQuery.of(context).size;
+
+                          //       Future.delayed(Duration(seconds: 2), () {
+                          //         Navigator.of(context).pop(true);
+                          //       });
+                          //       return AlertDialog(
+                          //           content: Row(
+                          //         mainAxisAlignment: MainAxisAlignment.center,
+                          //         children: [
+                          //           Text(
+                          //             'Table ${value.tablID.toString()} Selected.',
+                          //           ),
+                          //           Icon(
+                          //             Icons.done,
+                          //             color: Colors.green,
+                          //           )
+                          //         ],
+                          //       ));
+                          //     });
+                          setState(() {});
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => CategoryScreen(
+                          //           tablId:
+                          //               list[index]["Table_ID"].toString())),
+                          // );
                         },
                         child: Card(
                           color: Colors.grey[200],
@@ -232,6 +376,120 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+    );
+  }
+
+  Widget roomWidget(Size size, List list,BuildContext context) {
+    return Consumer<Controller>(
+      builder: (context, value, child) => value.isRoomLoading
+          ? const Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: SpinKitCircle(
+                  color: Colors.black,
+                ),
+              ),
+            )
+          : Expanded(
+              child: list.isEmpty
+                  ? const Center(child: Text("no data"))
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      itemCount: value.isRoomSearch
+                          ? value.filteredroomlist.length
+                          : value.roomlist.length,
+                      // gridDelegate:
+                      //     const SliverGridDelegateWithFixedCrossAxisCount(
+                      //         crossAxisCount: 1,
+                      //         crossAxisSpacing: 12,
+                      //         mainAxisSpacing: 12),
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () {},
+                        child: InkWell(
+                          onTap: () async {
+                            await value.setRoomID(
+                                list[index]["Room_ID"].toString(),
+                                list[index]["Room_Name"].toString(),
+                                context);
+                                // Navigator.pop(context);
+                            // CustomSnackbar snackbar = CustomSnackbar();
+                            // snackbar.showSnackbar(
+                            //     context,
+                            //     "Room ${value.roomID.toString()} Selected.",
+                            //     "");
+                            // showDialog(
+                            //     barrierDismissible: false,
+                            //     context: context,
+                            //     builder: (context) {
+                            //       Size size = MediaQuery.of(context).size;
+
+                            //       Future.delayed(Duration(seconds: 2), () {
+                            //         Navigator.of(context).pop(true);
+                            //       });
+                            //       return AlertDialog(
+                            //           content: Row(
+                            //         mainAxisAlignment: MainAxisAlignment.center,
+                            //         children: [
+                            //           Text(
+                            //             'Room ${value.roomID.toString()} Selected.',
+                            //           ),
+                            //           Icon(
+                            //             Icons.done,
+                            //             color: Colors.green,
+                            //           )
+                            //         ],
+                            //       ));
+                            //     });
+                          },
+                          child: Card(
+                            color: Colors.grey[200],
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0, bottom: 8),
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            maxLines: 2,
+                                            list[index]["Room_Name"].toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            maxLines: 2,
+                                            list[index]["Guest_Info"]
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

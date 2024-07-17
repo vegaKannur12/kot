@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/home.dart';
+import 'package:restaurent_kot/components/popup_unreg.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sql_conn/sql_conn.dart';
@@ -17,12 +18,16 @@ class DBSelection extends StatefulWidget {
 }
 
 class _DBSelectionState extends State<DBSelection> {
+ 
+   Unreg popup = Unreg();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<Controller>(context, listen: false).initDb(context, "");
+      // Provider.of<Controller>(context, listen: false).initDb(context, "");
+       Provider.of<Controller>(context, listen: false).getDatabasename(context, "");
+      
       // Provider.of<Controller>(context, listen: false).getDbName();
     });
   }
@@ -38,6 +43,27 @@ class _DBSelectionState extends State<DBSelection> {
           backgroundColor: parseColor("#46bdc6"),
           elevation: 0,
           automaticallyImplyLeading: false,
+           actions: [
+            PopupMenuButton(itemBuilder: (context) {
+              return [
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: Text("Unregister"),
+                ),
+                // PopupMenuItem<int>(
+                //   value: 1,
+                //   child: Text("Exit"),
+                // ),
+              ];
+            }, onSelected: (value) {
+              if (value == 0) {
+                popup.showAlertDialog(context);
+              }
+              //  else if (value == 1) {
+              //   extPop.showAlertDialog(context);
+              // }
+            })
+          ],
           // title: Text(
           //   "Year Selection",
           //   style: TextStyle(
@@ -98,9 +124,10 @@ class _DBSelectionState extends State<DBSelection> {
                                               value.db_list[index]["Year_Name"]
                                                   .toString());
 
-                                          Provider.of<Controller>(context,
+                                         await Provider.of<Controller>(context,
                                                   listen: false)
                                               .initYearsDb(context, "");
+                                         Provider.of<Controller>(context, listen: false).getLogin(context);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

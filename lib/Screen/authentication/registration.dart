@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:restaurent_kot/components/external_dir.dart';
@@ -71,37 +72,60 @@ class _RegistrationState extends State<Registration> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     double topInsets = MediaQuery.of(context).viewInsets.top;
+    Orientation ori = MediaQuery.of(context).orientation;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
+    
+     
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 18.0,
-            right: 18,
+          child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 18.0,
+              right: 18,
+            ),
+            child: Form(
+                key: _formKey,
+                child: ori == Orientation.portrait
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        // crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: size.height * 0.16,
+                          ),
+                          reg_img(size),
+                          // Container(height: size.height*0.16,),
+                          SizedBox(
+                            height: size.height * 0.054,
+                          ),
+                          reg_form(size, topInsets),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: size.height * 0.02,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(child: reg_img(size)),
+                              Expanded(
+                                  flex: 1, child: reg_form(size, topInsets))
+                            ],
+                          ),
+                        ],
+                      )),
           ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              // crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  height: size.height * 0.16,
-                ),
-                Container(
-                    height: size.height * 0.34,
-                    width: size.width * 0.8,
-                    child: Image.asset(
-                      "assets/login.png",
-                      fit: BoxFit.contain,
-                    )),
-                // Container(height: size.height*0.16,),
-                SizedBox(
-                  height: size.height * 0.054,
-                ),
-                Column(
+        ),
+      )),
+    );
+  }
+    Column reg_form(Size size, double topInsets) {
+    return Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -164,6 +188,7 @@ class _RegistrationState extends State<Registration> {
                     TextFormField(
                       keyboardType: TextInputType.phone,
                       controller: phone,
+                      inputFormatters: [LengthLimitingTextInputFormatter(10)],
                       validator: (text) {
                         if (text == null || text.isEmpty) {
                           return 'Please Enter Phone Number';
@@ -217,44 +242,57 @@ class _RegistrationState extends State<Registration> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                      ElevatedButton(
-                        onPressed: ()async {
-                          String deviceInfo =
-                                      "$manufacturer" + '' + "$model";
-                                  if (_formKey.currentState!.validate()) {
-                                    String tempFp1 =
-                                        await externalDir.fileRead();
-
-                                    print("tempFp---${tempFp1}");
-
-                                    Provider.of<Controller>(context,
-                                            listen: false)
-                                        .postRegistration(company.text, tempFp1,
-                                            phone.text, deviceInfo, context);
-                                  }
-                        },
-                        child: Padding(
+                      Consumer<Controller>(
+                        builder: (BuildContext context, Controller value, Widget? child) { 
+                          return  SizedBox(width: size.width * 0.44,
+                          child: ElevatedButton(
+                            onPressed: ()async {
+                              String deviceInfo =
+                                          "$manufacturer" + '' + "$model";
+                                      if (_formKey.currentState!.validate()) {
+                                        String tempFp1 =
+                                            await externalDir.fileRead();
+                          
+                                        print("tempFp---${tempFp1}");
+                          
+                                        Provider.of<Controller>(context,
+                                                listen: false)
+                                            .postRegistration(company.text, tempFp1,
+                                                phone.text, deviceInfo, context);
+                                      }
+                            },
+                            child: Padding(
                           padding: const EdgeInsets.only(top: 12.0, bottom: 12),
-                          child: Text(
-                            "REGISTER",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Theme.of(context).secondaryHeaderColor),
+                          child: value.isLoading
+                              ? const SpinKitThreeBounce(
+                                  color: Colors.white,
+                                  size: 16,
+                                )
+                              : Text(
+                                  "REGISTER",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                      color: Colors.white),
+                                ),
+                                              )
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                        ),
+                        );
+                         },
+                      
                       )
                     ])
                   ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      )),
-    );
+                );
+  }
+
+  Container reg_img(Size size) {
+    return Container(
+        height: size.height * 0.34,
+        width: size.width * 0.8,
+        child: Image.asset(
+          "assets/login.png",
+          fit: BoxFit.contain,
+        ));
   }
 }

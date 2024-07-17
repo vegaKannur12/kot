@@ -7,7 +7,8 @@ import 'package:restaurent_kot/controller/controller.dart';
 
 class CategoryScreen extends StatefulWidget {
   String? tablId;
-  CategoryScreen({super.key, required this.tablId});
+  String? roomId;
+  CategoryScreen({super.key, required this.tablId,required this.roomId});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -57,10 +58,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  "Table : ${value.tablID.toString().toUpperCase()}",
+                  "${widget.tablId.toString().toUpperCase()} / ${widget.roomId.toString().toUpperCase()} /${value.cartNum.toString()}",
                   style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 17,
+                      fontSize: 10,
                       fontWeight: FontWeight.bold),
                 ),
               ),

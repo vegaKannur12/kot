@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class Widget_TextField extends StatelessWidget {
   final TextEditingController controller;
@@ -8,6 +9,7 @@ class Widget_TextField extends StatelessWidget {
   final IconData prefixIcon;
   final bool isPassword;
   final String? Function(String?) validator;
+  final TextInputType keytype;
 
   Widget_TextField({
     required this.controller,
@@ -15,6 +17,7 @@ class Widget_TextField extends StatelessWidget {
     required this.hintText,
     required this.prefixIcon,
     this.isPassword = false,
+    this.keytype=TextInputType.text,
     required this.validator,
   });
 
@@ -23,7 +26,7 @@ class Widget_TextField extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: obscureNotifier,
       builder: (context, isObscure, child) {
-        return TextFormField(
+        return TextFormField(keyboardType: keytype,
           controller: controller,
           obscureText: isPassword ? isObscure : false,
           validator: validator,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/authentication/registration.dart';
 import 'package:restaurent_kot/Screen/db_selection.dart';
 import 'package:restaurent_kot/Screen/home.dart';
+import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,12 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final stUname = prefs.getString("st_uname");
     final stPwd = prefs.getString("st_pwd");
 
-    if (stUname != null && stPwd != null) 
-    {
+    if (stUname != null && stPwd != null) {
       isAuthenticated = true;
-    } 
-    else 
-    {
+    } else {
       isAuthenticated = false;
     }
     return isAuthenticated;
@@ -47,6 +46,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   navigate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? m_db = prefs.getString("multi_db");
     await Future.delayed(Duration(seconds: 3), () async {
       isLoggedIn = await checkLogin();
       isRegistered = await checkRegistration();
@@ -56,13 +57,16 @@ class _SplashScreenState extends State<SplashScreen> {
               opaque: false, // set to false
               pageBuilder: (_, __, ___) {
                 if (isRegistered) {
-                
-                  
-                    return DBSelection();
-                 
-                }
-                else 
-                {
+                  if (m_db != "1") {
+                    Provider.of<Controller>(context, listen: false)
+                        .initDb(context, "");
+                    return const LoginPage();
+                  } 
+                  else 
+                  {
+                    return const DBSelection();
+                  }
+                } else {
                   return Registration();
                 }
               }));
@@ -91,12 +95,12 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Expanded(
               child: Container(
-                  height: 150,
-                  width: 150,
-                  child: Image.asset(
-                    "assets/logo_black_bg.png",
-                  ),
-                  ),
+                height: 150,
+                width: 150,
+                child: Image.asset(
+                  "assets/logo_black_bg.png",
+                ),
+              ),
             ),
           ],
         )),

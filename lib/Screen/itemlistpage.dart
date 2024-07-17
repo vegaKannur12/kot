@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/itemwidget.dart';
 import 'package:restaurent_kot/controller/controller.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ItemList extends StatefulWidget {
   String? catlId;
@@ -48,21 +50,33 @@ class _ItemListState extends State<ItemList> {
 
         actions: [
           Consumer<Controller>(
-            builder: (context, value, child) => Card(
-              shape: StadiumBorder(),
-              color: Colors.black,
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Text(
-                  "Table : ${value.tablID.toString().toUpperCase()}",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          )
+              builder: (context, value, child) => Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: badges.Badge(
+                      badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
+                      position: badges.BadgePosition.topEnd(top: -5, end: -10),
+                      showBadge: true,
+                      badgeContent: Text(
+                        value.cartTotal.toString() ?? "0",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      child: OutlinedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(
+                                  Colors.orangeAccent)),
+                          onPressed: () {
+                            Provider.of<Controller>(context, listen: false)
+                                .viewCart(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CartBag()),
+                            );
+                          },
+                          child:
+                              Icon(Icons.shopping_cart, color: Colors.white)),
+                    ),
+                  ))
         ],
       ),
       // bottomNavigationBar: Container(
@@ -87,7 +101,9 @@ class _ItemListState extends State<ItemList> {
               )
             : Column(
                 children: [
-                  Container(width: double.infinity,height: 50,
+                  Container(
+                    width: double.infinity,
+                    height: 50,
                     color: Color.fromARGB(255, 139, 200, 228),
                     child: Center(
                       child: Text(
@@ -121,8 +137,8 @@ class _ItemListState extends State<ItemList> {
                                 .searchItem("");
                           },
                         ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide:
