@@ -74,7 +74,6 @@ class Controller extends ChangeNotifier {
   String? appType;
   bool isdbLoading = true;
 
-
   // List<Map<String, dynamic>> filteredList = [];
   var result1 = <String, List<Map<String, dynamic>>>{};
   var resultList = <String, List<Map<String, dynamic>>>{};
@@ -119,29 +118,29 @@ class Controller extends ChangeNotifier {
   bool isTableLoading = false;
   bool isRoomLoading = false;
   bool isCategoryLoading = false;
-  
+
   bool isItemLoading = false;
   String? tablID = "";
   String? roomID = "0";
   String? catlID = "";
-  String roomnm="";
-  String tablname="";
-  String guestnm=" ";
- 
- //new IDsss
-  int cart_id=0;
+  String roomnm = "";
+  String tablname = "";
+  String guestnm = " ";
+
+  //new IDsss
+  int cart_id = 0;
   String tabl_ID = "";
   String? room_ID = "0";
   // String? catlID = "";
-  String? room_nm="";
-  String tabl_name="";
-  String? guest_nm=" ";
+  String? room_nm = "";
+  String tabl_name = "";
+  String? guest_nm = " ";
   Timer timer = Timer.periodic(Duration(seconds: 3), (timer) {});
   List<Map<String, dynamic>> logList = [];
   String? selectedSmName;
   Map<String, dynamic>? selectedItemStaff;
-  int cartTotal=0;
-  double karttotal=0.0;
+  int cartTotal = 0;
+  double karttotal = 0.0;
   // qtyadd() {
   //   qty = List.generate(itemlist.length, (index) => TextEditingController());
   //   isAdded = List.generate(itemlist.length, (index) => false);
@@ -347,13 +346,10 @@ class Controller extends ChangeNotifier {
       }
       isLoginLoading = false;
       notifyListeners();
-    } catch (e) 
-    {
+    } catch (e) {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
-    } 
-    finally 
-    {
+    } finally {
       if (SqlConn.isConnected == false) {
         print("hi");
         showDialog(
@@ -563,22 +559,20 @@ class Controller extends ChangeNotifier {
     print("tabl para---------$os---$smid");
     isTableLoading = true;
     notifyListeners();
-    try
-    {
-    var res = await SqlConn.readData("Kot_Table_List '$os','$smid'");
-    var map = jsonDecode(res);
-    tabllist.clear();
-    if (map != null) {
-      for (var item in map) {
-        tabllist.add(item);
+    try {
+      var res = await SqlConn.readData("Kot_Table_List '$os','$smid'");
+      var map = jsonDecode(res);
+      tabllist.clear();
+      if (map != null) {
+        for (var item in map) {
+          tabllist.add(item);
+        }
       }
-    }
-    print("tablelist-$res");
+      print("tablelist-$res");
 
-    isTableLoading = false;
-    notifyListeners();
-    }
-    catch (e) {
+      isTableLoading = false;
+      notifyListeners();
+    } catch (e) {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
       return [];
@@ -628,20 +622,20 @@ class Controller extends ChangeNotifier {
     print("room para---------$os---$smid");
     isRoomLoading = true;
     notifyListeners();
-    try{
-    var res = await SqlConn.readData("Kot_Room_List '$os','$smid'");
-    var map = jsonDecode(res);
-    roomlist.clear();
-    if (map != null) {
-      for (var item in map) {
-        roomlist.add(item);
+    try {
+      var res = await SqlConn.readData("Kot_Room_List '$os','$smid'");
+      var map = jsonDecode(res);
+      roomlist.clear();
+      if (map != null) {
+        for (var item in map) {
+          roomlist.add(item);
+        }
       }
-    }
-    print("rooomlist-$res");
+      print("rooomlist-$res");
 
-    isRoomLoading = false;
-    notifyListeners();}
-    catch (e) {
+      isRoomLoading = false;
+      notifyListeners();
+    } catch (e) {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
       return [];
@@ -682,7 +676,6 @@ class Controller extends ChangeNotifier {
         debugPrint("Database not connected, popping context.");
       }
     }
-
   }
 
 ///////////////////////////////////
@@ -693,20 +686,20 @@ class Controller extends ChangeNotifier {
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("cat para---------$os---------$tablID-----------$smid");
-try{
-    var res = await SqlConn.readData("Kot_ItCategory_List '$os','$smid'");
-    var map = jsonDecode(res);
-    catlist.clear();
-    if (map != null) {
-      for (var item in map) {
-        catlist.add(item);
+    try {
+      var res = await SqlConn.readData("Kot_ItCategory_List '$os','$smid'");
+      var map = jsonDecode(res);
+      catlist.clear();
+      if (map != null) {
+        for (var item in map) {
+          catlist.add(item);
+        }
       }
-    }
-    print("categoryList...................-$res");
+      print("categoryList...................-$res");
 
-    isCategoryLoading = false;
-    notifyListeners();}
-    catch (e) {
+      isCategoryLoading = false;
+      notifyListeners();
+    } catch (e) {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
       return [];
@@ -758,34 +751,36 @@ try{
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-    
+
     print("catttt iidd----$catlID---$cartNo----$os");
     isLoading = true;
     notifyListeners();
-    try{
-    var res = await SqlConn.readData("Kot_ItemList '$catlID','$cartNo','$os'");
-    var valueMap = json.decode(res);
-    print("item list----------$valueMap");
-    itemlist.clear();
-    if (valueMap != null) {
-      for (var item in valueMap) {
-        itemlist.add(item);
+    try {
+      var res =
+          await SqlConn.readData("Kot_ItemList '$catlID','$cartNo','$os'");
+      var valueMap = json.decode(res);
+      print("item list----------$valueMap");
+      itemlist.clear();
+      if (valueMap != null) {
+        for (var item in valueMap) {
+          itemlist.add(item);
+        }
       }
-    }
-    isSearch = false;
-    notifyListeners();
-    qty = List.generate(itemlist.length, (index) => TextEditingController());
-    descr = List.generate(itemlist.length, (index) => TextEditingController());
-    isAdded = List.generate(itemlist.length, (index) => false);
-    response = List.generate(itemlist.length, (index) => 0);
-    for (int i = 0; i < itemlist.length; i++) {
-      qty[i].text = "1.0";
-      descr[i].text="";
-      response[i] = 0;
-    }
-    isLoading = false;
-    notifyListeners();}
-    catch (e) {
+      isSearch = false;
+      notifyListeners();
+      qty = List.generate(itemlist.length, (index) => TextEditingController());
+      descr =
+          List.generate(itemlist.length, (index) => TextEditingController());
+      isAdded = List.generate(itemlist.length, (index) => false);
+      response = List.generate(itemlist.length, (index) => 0);
+      for (int i = 0; i < itemlist.length; i++) {
+        qty[i].text = "1.0";
+        descr[i].text = "";
+        response[i] = 0;
+      }
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
       // Handle other types of exceptions
@@ -832,36 +827,36 @@ try{
       }
     }
   }
-clearAllData(BuildContext context)  async {
-  tablID = "";
-  roomID = "0";
-  catlID = "";
-  roomnm="";
-  tablname="";
-  guestnm=" ";
-  cartItems.clear();
- SharedPreferences prefs = await SharedPreferences.getInstance();
- prefs.remove("table_id");
- prefs.remove("table_nm");
- prefs.remove("room_id");
- prefs.remove("room_nm");
- prefs.remove("gst_nm");
- prefs.remove("cartNo");
- notifyListeners();
- print("cleared..");
-}
+
+  clearAllData(BuildContext context) async {
+    tablID = "";
+    roomID = "0";
+    catlID = "";
+    roomnm = "";
+    tablname = "";
+    guestnm = " ";
+    cartItems.clear();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("table_id");
+    prefs.remove("table_nm");
+    prefs.remove("room_id");
+    prefs.remove("room_nm");
+    prefs.remove("gst_nm");
+    prefs.remove("cartNo");
+    notifyListeners();
+    print("cleared...");
+  }
+
 ///////////////////////////////////
   getCartNo(
     BuildContext context,
-  ) 
-  async 
-  {
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
-    String pp="Kot_GetCartno '$os'";
+    String pp = "Kot_GetCartno '$os'";
     print("cart conn $pp");
     var res = await SqlConn.readData("Kot_GetCartno '$os'");
     // ignore: avoid_print
@@ -879,16 +874,18 @@ clearAllData(BuildContext context)  async {
     //   }
     // }
   }
-getIDss()async{
+
+  getIDss() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    cart_id=prefs.getInt("cartNo")!;
-    room_ID=prefs.getString("room_id");
-    tabl_ID=prefs.getString("table_id")!;
-    tabl_name=prefs.getString("table_nm")!;
-    room_nm=prefs.getString("room_nm");
-    guest_nm=prefs.getString("gst_nm");
+    cart_id = prefs.getInt("cartNo")!;
+    room_ID = prefs.getString("room_id");
+    tabl_ID = prefs.getString("table_id")!;
+    tabl_name = prefs.getString("table_nm")!;
+    room_nm = prefs.getString("room_nm");
+    guest_nm = prefs.getString("gst_nm");
     notifyListeners();
-}
+  }
+
   ////////////////////////////////////
   setDate(String date1, String date2) {
     fromDate = date1;
@@ -914,11 +911,12 @@ getIDss()async{
       }
     }
   }
- setDescr(String val, int index){
-  descr[index].text="rrrrrr";
-  notifyListeners();
-  print(("descr-----$val----${descr[index].text}"));
- }
+
+  setDescr(String val, int index) {
+    descr[index].text = "rrrrrr";
+    notifyListeners();
+    print(("descr-----$val----${descr[index].text}"));
+  }
 
   ///////////////////////////////////
   totalItemCount(String val, String type) {
@@ -1021,22 +1019,21 @@ getIDss()async{
     int index,
     String type,
     int status,
-  ) 
-  async 
-  {
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartid = await prefs.getInt("cartNo");
-    String? tab=await prefs.getString("table_id");
-    String? rum=await prefs.getString("room_id");
-    String? gus=await prefs.getString("gst_nm");
+    String? tab = await prefs.getString("table_id");
+    String? rum = await prefs.getString("room_id");
+    String? gus = await prefs.getString("gst_nm");
     String? smid = await prefs.getString("Sm_id");
- 
+
     isAdded[index] = true;
     notifyListeners();
+    try{
     print("stattuss----$status");
     var res;
     notifyListeners();
@@ -1052,7 +1049,9 @@ getIDss()async{
       //   gst=
       // }
       print("------tablRmGUS==$tab,$rum,$gus");
-      print("Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"",'$des',1,'',$status");
+      print(
+          "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"
+          ",'$des',1,'',$status");
       res = await SqlConn.readData(
         "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
       );
@@ -1065,20 +1064,59 @@ getIDss()async{
     print("insert cart---$res");
     var valueMap = json.decode(res);
     response[index] = valueMap[0]["Result"];
-    cartTotal=valueMap[0]["TotalCount"];
+    cartTotal = valueMap[0]["TotalCount"];
     isAdded[index] = false;
-    notifyListeners();
+    notifyListeners();}
+     catch (e) 
+    {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+    } 
+    finally 
+    {
+      if (SqlConn.isConnected == false) {
+        print("hi");
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
   }
+
 ////////////////////////////////////////////////////////
-updateCart2(
+  updateCart2(
     BuildContext context,
     Map map,
     int status,
     // String desc,
     double qty,
-  ) 
-  async 
-  {
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
@@ -1089,63 +1127,159 @@ updateCart2(
     String? smid = await prefs.getString("Sm_id");
     // isAdded[index] = true;
     notifyListeners();
-    print("stattuss----$status");
-    var res;
-    notifyListeners();
-    // if (type == "from cart") {
-    //   // res = await SqlConn.readData(
-    //   //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
-    // } else if (type == "from itempage") {
+    try {
+      print("stattuss----$status");
+      var res;
+      notifyListeners();
+      // if (type == "from cart") {
+      //   // res = await SqlConn.readData(
+      //   //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
+      // } else if (type == "from itempage") {
       // double rt=double.parse(map["SRATE"]);
       // print("Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tablID,$roomID,gust,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"",'dec',1,'',$status");
-      if(status==0){
-         res = await SqlConn.readData(
-        "Kot_Update_CartItems '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",
-      );
-      print(
-          "data Edited..........$res---------------------------------------------------");
-
-
-      }else{
-         res = await SqlConn.readData(
-        "Kot_Update_CartItems '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",
-      );
-      print(
-          "data deleted.........$res---------------------------------------------------");
-
+      if (status == 0) {
+        res = await SqlConn.readData(
+          "Kot_Update_CartItems '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",
+        );
+        print(
+            "data Edited..........$res---------------------------------------------------");
+      } else {
+        res = await SqlConn.readData(
+          "Kot_Update_CartItems '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",
+        );
+        print(
+            "data deleted.........$res---------------------------------------------------");
       }
-     
-      //getItemList(context);
-    // }
 
-    // ignore: avoid_print
-    // print("insert cart---$res");
-    var valueMap = json.decode(res);
-    // response[index] = valueMap[0]["Result"];
-    // cartTotal=valueMap[0]["TotalCount"];
-    // isAdded[index] = false;
-    // getItemList(context);
-    notifyListeners();
+      //getItemList(context);
+      // }
+
+      // ignore: avoid_print
+      // print("insert cart---$res");
+      var valueMap = json.decode(res);
+      // response[index] = valueMap[0]["Result"];
+      // cartTotal=valueMap[0]["TotalCount"];
+      // isAdded[index] = false;
+      // getItemList(context);
+      notifyListeners();
+    } catch (e) {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+    } finally {
+      if (SqlConn.isConnected == false) {
+        print("hi");
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
   }
-finalSave(BuildContext context,) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  finalSave(
+    BuildContext context,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
+    var res;
     // for(var item in cartItems){
-      // if(item['Cart_Row']!=0){  
-      print("---------Kot_Save_Kot '$os',$cartNo");  
-        var res = await SqlConn.readData("Kot_Save_Kot '$os','$cartNo'");
-        print("Saveedddddddd ! $res");
-      // }
+    // if(item['Cart_Row']!=0){
+    try{
+    int cartlen = cartItems.length;
+    print("---------Kot_Save_Kot '$os',$cartNo,$cartlen");
+     res = await SqlConn.readData("Kot_Save_Kot '$os',$cartNo,$cartlen");
+    //  return res;
+    print("Saveedddddddd ! $res");
+    // if (res.isNotEmpty && res[0].containsKey('Save_Status')) 
+    // {
+      // String ss=res[0]['Save_Status'].toString().trimLeft();
+      // print("ssss $ss");  // Output: Success
+    // } 
+    //  else 
+    // {
+    // print('Save_Status key not found');
+    // }
+    // print("--------sa ${res[0]['Save_Status'].toString()}");
+    //  if (res) {
+       
+    //  }
+    // }
     // }
     // var res = await SqlConn.readData(
     //     "Kot_Save_Cart '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",);
     //     print("Saveedddddddd ! $res");
+    }
+     catch (e) 
+    {
+      // print("An unexpected error occurred: $e");
+      // SqlConn.disconnect();
+    } 
+    finally 
+    {
+      if (SqlConn.isConnected == false) {
+        print("hi");
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
+  }
 
-}
   ///////////////////////////////////////////////////////
   viewCart(
     BuildContext context,
@@ -1156,14 +1290,14 @@ finalSave(BuildContext context,) async {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-
+    String? tb = prefs.getString("table_id");
     isCartLoading = true;
     notifyListeners();
 
     print(
-        "jbjhbvbv -------------{Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tablID','$os'}");
-    var res = await SqlConn.readData(
-        "Kot_Get_Unsaved_Cart $cartNo,'$tablID','$os'");
+        "jbjhbvbv -------------{Flt_Sp_Get_Unsaved_Cart_KOT $cartNo,'$tb','$os'}");
+    var res =
+        await SqlConn.readData("Kot_Get_Unsaved_Cart $cartNo,'$tb','$os'");
     var valueMap = json.decode(res);
     isCartLoading = false;
     notifyListeners();
@@ -1182,9 +1316,9 @@ finalSave(BuildContext context,) async {
       qty[i].text = cartItems[i]["Cart_Qty"].toString();
       sum = sum + cartItems[i]["It_Total"];
     }
-    karttotal=sum;
-    if(cartItems.isEmpty){
-      cartTotal=0;
+    karttotal = sum;
+    if (cartItems.isEmpty) {
+      cartTotal = 0;
       notifyListeners();
     }
 
@@ -1203,7 +1337,8 @@ finalSave(BuildContext context,) async {
       filteredlist = tabllist
           .where((e) => e["Table_Name"]
               .toString()
-              .trimLeft().toLowerCase()
+              .trimLeft()
+              .toLowerCase()
               .contains(val.toLowerCase()))
           .toList();
     } else {
@@ -1252,6 +1387,7 @@ finalSave(BuildContext context,) async {
     print("filtered_CAT_List----------------$filteredlist");
     notifyListeners();
   }
+
   searchRoom(String val) {
     filteredroomlist = roomlist;
     if (val.isNotEmpty) {
@@ -1260,7 +1396,8 @@ finalSave(BuildContext context,) async {
 
       filteredroomlist = roomlist
           .where((e) => e["Room_Name"]
-              .toString().trimLeft()
+              .toString()
+              .trimLeft()
               .toLowerCase()
               .contains(val.toLowerCase()))
           .toList();
@@ -1280,6 +1417,7 @@ finalSave(BuildContext context,) async {
     print("filtered_Roomm_List----------------$filteredroomlist");
     notifyListeners();
   }
+
   searchItem(String val) {
     filteredlist = itemlist;
     if (val.isNotEmpty) {
@@ -1287,8 +1425,11 @@ finalSave(BuildContext context,) async {
       notifyListeners();
 
       filteredlist = itemlist
-          .where((e) =>
-              e["Product"].toString().trimLeft().toLowerCase().contains(val.toLowerCase()))
+          .where((e) => e["Product"]
+              .toString()
+              .trimLeft()
+              .toLowerCase()
+              .contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -1302,9 +1443,9 @@ finalSave(BuildContext context,) async {
   }
 
   ///////////////////////////////////////////////////////////////////////
-  setTableID(String id,String tbNM, BuildContext context) async {
+  setTableID(String id, String tbNM, BuildContext context) async {
     tablID = id;
-    tablname=tbNM;
+    tablname = tbNM;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("table_id", id);
     prefs.setString("table_nm", tbNM);
@@ -1312,10 +1453,11 @@ finalSave(BuildContext context,) async {
     print("tablID----$id");
     notifyListeners();
   }
-   setRoomID(String id,String rmnm, String gst,BuildContext context) async {
+
+  setRoomID(String id, String rmnm, String gst, BuildContext context) async {
     roomID = id;
-    roomnm=rmnm;
-    guestnm=gst;
+    roomnm = rmnm;
+    guestnm = gst;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("room_id", id);
     prefs.setString("room_nm", rmnm);

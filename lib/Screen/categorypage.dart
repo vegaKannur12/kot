@@ -5,10 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/itemlistpage.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'dart:io';
+
 class CategoryScreen extends StatefulWidget {
   String? tablId;
   String? roomId;
-  CategoryScreen({super.key, required this.tablId,required this.roomId});
+  CategoryScreen({super.key, required this.tablId, required this.roomId});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -22,8 +23,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     // TODO: implement initState
 
     super.initState();
-     WidgetsBinding.instance.addPostFrameCallback((_) {
-     
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<Controller>(context, listen: false).getIDss();
     });
     // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -37,7 +37,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     print(widget.tablId.toString());
     Size size = MediaQuery.of(context).size;
-    return WillPopScope(onWillPop: () => _onBackPressed(context),
+    return WillPopScope(
+      onWillPop: () => _onBackPressed(context),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -54,7 +55,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               )),
           backgroundColor: Color.fromARGB(255, 139, 200, 228),
           // Theme.of(context).primaryColor,
-      
+
           actions: [
             Consumer<Controller>(
               builder: (context, value, child) => Card(
@@ -63,7 +64,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase()} /${value.cart_id.toString()}",
+                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : value.room_nm.toString().toUpperCase()} /${value.cart_id.toString()}",
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -92,7 +93,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       color: Colors.black,
                     ),
                     suffixIcon: IconButton(
-                      icon:  const Icon(Icons.cancel),
+                      icon: const Icon(Icons.cancel),
                       onPressed: () {
                         seacrh.clear();
                         Provider.of<Controller>(context, listen: false)
@@ -106,7 +107,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.black, width: 1.0),
+                      borderSide:
+                          const BorderSide(color: Colors.black, width: 1.0),
                     ),
                     hintText: "Search Category...",
                   ),
@@ -115,8 +117,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   height: 15,
                 ),
                 value.isSearch
-                    ? categoryWidget(size, value.filteredlist,value.tabl_ID.toString(),value.room_ID.toString())
-                    : categoryWidget(size, value.catlist,value.tabl_ID.toString(),value.room_ID.toString())
+                    ? categoryWidget(size, value.filteredlist,
+                        value.tabl_ID.toString(), value.room_ID.toString())
+                    : categoryWidget(size, value.catlist,
+                        value.tabl_ID.toString(), value.room_ID.toString())
               ],
             ),
           ),
@@ -125,7 +129,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 
-  Widget categoryWidget(Size size, List list,String tbl,String rm) {
+  Widget categoryWidget(Size size, List list, String tbl, String rm) {
     return Consumer<Controller>(
       builder: (context, value, child) => value.isCategoryLoading
           ? const Expanded(
@@ -148,12 +152,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
-                              crossAxisSpacing: 12, childAspectRatio: 1.5,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 1.5,
                               mainAxisSpacing: 12),
                       itemBuilder: (context, index) => InkWell(
                         onTap: () {
                           value.setCatID(
-                              list[index]["Cat_Id"].toString().trimLeft(), context);
+                              list[index]["Cat_Id"].toString().trimLeft(),
+                              context);
                           Provider.of<Controller>(context, listen: false)
                               .getItemList(context);
                           Navigator.push(
@@ -180,7 +186,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   child: Center(
                                     child: Text(
                                       maxLines: 2,
-                                      list[index]["Cat_Name"].toString().trimLeft().toUpperCase(),
+                                      list[index]["Cat_Name"]
+                                          .toString()
+                                          .trimLeft()
+                                          .toUpperCase(),
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
@@ -199,6 +208,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     );
   }
 }
+
 Future<bool> _onBackPressed(BuildContext context) async {
   return await showDialog(
     context: context,

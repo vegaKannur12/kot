@@ -46,8 +46,8 @@ class _ItemListState extends State<ItemList> {
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Provider.of<Controller>(context, listen: false).viewCart(context);
+            onPressed: () async{
+             await Provider.of<Controller>(context, listen: false).viewCart(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CartBag()),
@@ -83,13 +83,7 @@ class _ItemListState extends State<ItemList> {
                           value.cartTotal.toString(),
                           style: TextStyle(color: Colors.white),
                         ),
-                        child: InkWell(
-                            // style: ButtonStyle(
-                            //     backgroundColor: MaterialStatePropertyAll(
-                            //         Colors.orangeAccent)),
-                            onTap: () {},
-                            child:
-                                Icon(Icons.shopping_cart, color: Colors.white)),
+                        child: Icon(Icons.shopping_cart, color: Colors.white),
                       ),
                     ))),
         appBar: AppBar(
@@ -116,7 +110,7 @@ class _ItemListState extends State<ItemList> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase()} /${value.cart_id.toString()}",
+                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : value.room_nm.toString().toUpperCase()} /${value.cart_id.toString()}",
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,

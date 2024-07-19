@@ -276,7 +276,7 @@ class _RegistrationState extends State<Registration> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 17,
-                                      color: Colors.white),
+                                      color: Colors.black),
                                 ),
                                               )
                           ),
