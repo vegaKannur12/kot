@@ -74,10 +74,12 @@ class Controller extends ChangeNotifier {
   String? appType;
   bool isdbLoading = true;
 
+
   // List<Map<String, dynamic>> filteredList = [];
   var result1 = <String, List<Map<String, dynamic>>>{};
   var resultList = <String, List<Map<String, dynamic>>>{};
   List<TextEditingController> qty = [];
+  List<TextEditingController> descr = [];
   List<bool> isAdded = [];
   List<Map<String, dynamic>> list = [];
   List<Map<String, dynamic>> tabllist = [
@@ -120,16 +122,26 @@ class Controller extends ChangeNotifier {
   
   bool isItemLoading = false;
   String? tablID = "";
-  String? roomID = "";
+  String? roomID = "0";
   String? catlID = "";
   String roomnm="";
   String tablname="";
-  String guestnm="";
+  String guestnm=" ";
+ 
+ //new IDsss
+  int cart_id=0;
+  String tabl_ID = "";
+  String? room_ID = "0";
+  // String? catlID = "";
+  String? room_nm="";
+  String tabl_name="";
+  String? guest_nm=" ";
   Timer timer = Timer.periodic(Duration(seconds: 3), (timer) {});
   List<Map<String, dynamic>> logList = [];
   String? selectedSmName;
   Map<String, dynamic>? selectedItemStaff;
   int cartTotal=0;
+  double karttotal=0.0;
   // qtyadd() {
   //   qty = List.generate(itemlist.length, (index) => TextEditingController());
   //   isAdded = List.generate(itemlist.length, (index) => false);
@@ -335,10 +347,45 @@ class Controller extends ChangeNotifier {
       }
       isLoginLoading = false;
       notifyListeners();
-    } catch (e) {
-      // ignore: avoid_print
-      print(e);
-      return null;
+    } catch (e) 
+    {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+    } 
+    finally 
+    {
+      if (SqlConn.isConnected == false) {
+        print("hi");
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
     }
   }
 
@@ -509,13 +556,15 @@ class Controller extends ChangeNotifier {
   }
 
 ///////////////////////////////////////////////
-  getTableList() async {
+  getTableList(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("tabl para---------$os---$smid");
     isTableLoading = true;
     notifyListeners();
+    try
+    {
     var res = await SqlConn.readData("Kot_Table_List '$os','$smid'");
     var map = jsonDecode(res);
     tabllist.clear();
@@ -528,15 +577,58 @@ class Controller extends ChangeNotifier {
 
     isTableLoading = false;
     notifyListeners();
+    }
+    catch (e) {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+      return [];
+      // Handle other types of exceptions
+    } finally {
+      if (SqlConn.isConnected) {
+        debugPrint("Database connected, not popping context.");
+      } else {
+        // If not connected, pop context to dismiss the dialog
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
   }
 
-  getRoomList() async {
+  getRoomList(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("room para---------$os---$smid");
     isRoomLoading = true;
     notifyListeners();
+    try{
     var res = await SqlConn.readData("Kot_Room_List '$os','$smid'");
     var map = jsonDecode(res);
     roomlist.clear();
@@ -548,18 +640,60 @@ class Controller extends ChangeNotifier {
     print("rooomlist-$res");
 
     isRoomLoading = false;
-    notifyListeners();
+    notifyListeners();}
+    catch (e) {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+      return [];
+      // Handle other types of exceptions
+    } finally {
+      if (SqlConn.isConnected) {
+        debugPrint("Database connected, not popping context.");
+      } else {
+        // If not connected, pop context to dismiss the dialog
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
+
   }
 
 ///////////////////////////////////
-  getCategoryList() async {
+  getCategoryList(BuildContext context) async {
     isCategoryLoading = true;
     notifyListeners();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
     print("cat para---------$os---------$tablID-----------$smid");
-
+try{
     var res = await SqlConn.readData("Kot_ItCategory_List '$os','$smid'");
     var map = jsonDecode(res);
     catlist.clear();
@@ -571,7 +705,48 @@ class Controller extends ChangeNotifier {
     print("categoryList...................-$res");
 
     isCategoryLoading = false;
-    notifyListeners();
+    notifyListeners();}
+    catch (e) {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+      return [];
+      // Handle other types of exceptions
+    } finally {
+      if (SqlConn.isConnected) {
+        debugPrint("Database connected, not popping context.");
+      } else {
+        // If not connected, pop context to dismiss the dialog
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
   }
 
 ///////////////////////////////////
@@ -583,10 +758,11 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-
+    
     print("catttt iidd----$catlID---$cartNo----$os");
     isLoading = true;
     notifyListeners();
+    try{
     var res = await SqlConn.readData("Kot_ItemList '$catlID','$cartNo','$os'");
     var valueMap = json.decode(res);
     print("item list----------$valueMap");
@@ -599,20 +775,87 @@ class Controller extends ChangeNotifier {
     isSearch = false;
     notifyListeners();
     qty = List.generate(itemlist.length, (index) => TextEditingController());
+    descr = List.generate(itemlist.length, (index) => TextEditingController());
     isAdded = List.generate(itemlist.length, (index) => false);
     response = List.generate(itemlist.length, (index) => 0);
     for (int i = 0; i < itemlist.length; i++) {
       qty[i].text = "1.0";
+      descr[i].text="";
       response[i] = 0;
     }
     isLoading = false;
-    notifyListeners();
+    notifyListeners();}
+    catch (e) {
+      print("An unexpected error occurred: $e");
+      SqlConn.disconnect();
+      // Handle other types of exceptions
+    } finally {
+      if (SqlConn.isConnected) {
+        // If connected, do not pop context as it may dismiss the error dialog
+        // Navigator.pop(context);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => MainHome()),
+        // );
+        debugPrint("Database connected, not popping context.");
+      } else {
+        // If not connected, pop context to dismiss the dialog
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Not Connected.!",
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  SpinKitCircle(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await initYearsDb(context, "");
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+        debugPrint("Database not connected, popping context.");
+      }
+    }
   }
-
+clearAllData(BuildContext context)  async {
+  tablID = "";
+  roomID = "0";
+  catlID = "";
+  roomnm="";
+  tablname="";
+  guestnm=" ";
+  cartItems.clear();
+ SharedPreferences prefs = await SharedPreferences.getInstance();
+ prefs.remove("table_id");
+ prefs.remove("table_nm");
+ prefs.remove("room_id");
+ prefs.remove("room_nm");
+ prefs.remove("gst_nm");
+ prefs.remove("cartNo");
+ notifyListeners();
+ print("cleared..");
+}
 ///////////////////////////////////
   getCartNo(
     BuildContext context,
-  ) async {
+  ) 
+  async 
+  {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
@@ -636,7 +879,16 @@ class Controller extends ChangeNotifier {
     //   }
     // }
   }
-
+getIDss()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cart_id=prefs.getInt("cartNo")!;
+    room_ID=prefs.getString("room_id");
+    tabl_ID=prefs.getString("table_id")!;
+    tabl_name=prefs.getString("table_nm")!;
+    room_nm=prefs.getString("room_nm");
+    guest_nm=prefs.getString("gst_nm");
+    notifyListeners();
+}
   ////////////////////////////////////
   setDate(String date1, String date2) {
     fromDate = date1;
@@ -662,6 +914,11 @@ class Controller extends ChangeNotifier {
       }
     }
   }
+ setDescr(String val, int index){
+  descr[index].text="rrrrrr";
+  notifyListeners();
+  print(("descr-----$val----${descr[index].text}"));
+ }
 
   ///////////////////////////////////
   totalItemCount(String val, String type) {
@@ -773,7 +1030,9 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartid = await prefs.getInt("cartNo");
-    int? c = prefs.getInt("cartNo");
+    String? tab=await prefs.getString("table_id");
+    String? rum=await prefs.getString("room_id");
+    String? gus=await prefs.getString("gst_nm");
     String? smid = await prefs.getString("Sm_id");
  
     isAdded[index] = true;
@@ -786,9 +1045,16 @@ class Controller extends ChangeNotifier {
       //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
     } else if (type == "from itempage") {
       // double rt=double.parse(map["SRATE"]);
-      print("Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tablID,$roomID,gust,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"",'dec',1,'',$status");
+      // if (guestnm==" ") {
+      //   String gst= ' ';
+      // }
+      // else{
+      //   gst=
+      // }
+      print("------tablRmGUS==$tab,$rum,$gus");
+      print("Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"",'$des',1,'',$status");
       res = await SqlConn.readData(
-        "Kot_Save_Cart $cartid,'$dateTime','$smid',$tablID,$roomID,gust,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
+        "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
       );
       print(
           "data added..............--------------------------------------------------------------");
@@ -803,7 +1069,83 @@ class Controller extends ChangeNotifier {
     isAdded[index] = false;
     notifyListeners();
   }
+////////////////////////////////////////////////////////
+updateCart2(
+    BuildContext context,
+    Map map,
+    int status,
+    // String desc,
+    double qty,
+  ) 
+  async 
+  {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? cid = await prefs.getString("cid");
+    // String? db = prefs.getString("db_name");
+    // String? brId = await prefs.getString("br_id");
+    String? os = await prefs.getString("os");
+    int? cartid = await prefs.getInt("cartNo");
+    int? c = prefs.getInt("cartNo");
+    String? smid = await prefs.getString("Sm_id");
+    // isAdded[index] = true;
+    notifyListeners();
+    print("stattuss----$status");
+    var res;
+    notifyListeners();
+    // if (type == "from cart") {
+    //   // res = await SqlConn.readData(
+    //   //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
+    // } else if (type == "from itempage") {
+      // double rt=double.parse(map["SRATE"]);
+      // print("Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tablID,$roomID,gust,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"",'dec',1,'',$status");
+      if(status==0){
+         res = await SqlConn.readData(
+        "Kot_Update_CartItems '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",
+      );
+      print(
+          "data Edited..........$res---------------------------------------------------");
 
+
+      }else{
+         res = await SqlConn.readData(
+        "Kot_Update_CartItems '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",
+      );
+      print(
+          "data deleted.........$res---------------------------------------------------");
+
+      }
+     
+      //getItemList(context);
+    // }
+
+    // ignore: avoid_print
+    // print("insert cart---$res");
+    var valueMap = json.decode(res);
+    // response[index] = valueMap[0]["Result"];
+    // cartTotal=valueMap[0]["TotalCount"];
+    // isAdded[index] = false;
+    // getItemList(context);
+    notifyListeners();
+  }
+finalSave(BuildContext context,) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? cid = await prefs.getString("cid");
+    // String? db = prefs.getString("db_name");
+    // String? brId = await prefs.getString("br_id");
+    String? os = await prefs.getString("os");
+    int? cartNo = await prefs.getInt("cartNo");
+    // for(var item in cartItems){
+      // if(item['Cart_Row']!=0){  
+      print("---------Kot_Save_Kot '$os',$cartNo");  
+        var res = await SqlConn.readData("Kot_Save_Kot '$os','$cartNo'");
+        print("Saveedddddddd ! $res");
+      // }
+    // }
+    // var res = await SqlConn.readData(
+    //     "Kot_Save_Cart '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",);
+    //     print("Saveedddddddd ! $res");
+
+}
   ///////////////////////////////////////////////////////
   viewCart(
     BuildContext context,
@@ -840,12 +1182,19 @@ class Controller extends ChangeNotifier {
       qty[i].text = cartItems[i]["Cart_Qty"].toString();
       sum = sum + cartItems[i]["It_Total"];
     }
+    karttotal=sum;
+    if(cartItems.isEmpty){
+      cartTotal=0;
+      notifyListeners();
+    }
 
     notifyListeners();
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////
   searchTable(String val) {
+    filteredlist.clear();
+    notifyListeners();
     filteredlist = tabllist;
     if (val.isNotEmpty) {
       isSearch = true;
@@ -854,7 +1203,7 @@ class Controller extends ChangeNotifier {
       filteredlist = tabllist
           .where((e) => e["Table_Name"]
               .toString()
-              .toLowerCase()
+              .trimLeft().toLowerCase()
               .contains(val.toLowerCase()))
           .toList();
     } else {
@@ -939,7 +1288,7 @@ class Controller extends ChangeNotifier {
 
       filteredlist = itemlist
           .where((e) =>
-              e["Product"].toString().toLowerCase().contains(val.toLowerCase()))
+              e["Product"].toString().trimLeft().toLowerCase().contains(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;
@@ -953,16 +1302,25 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////////////////////////////////////////////////////////////
-  setTableID(String id,String tbNM, BuildContext context) {
+  setTableID(String id,String tbNM, BuildContext context) async {
     tablID = id;
     tablname=tbNM;
-    print("tablID----$tablID");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("table_id", id);
+    prefs.setString("table_nm", tbNM);
+
+    print("tablID----$id");
     notifyListeners();
   }
-   setRoomID(String id,String rmnm, BuildContext context) {
+   setRoomID(String id,String rmnm, String gst,BuildContext context) async {
     roomID = id;
     roomnm=rmnm;
-    print("RoomID----$tablID, Nmae: $roomnm");
+    guestnm=gst;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("room_id", id);
+    prefs.setString("room_nm", rmnm);
+    prefs.setString("gst_nm", gst);
+    print("RoomID----$id, Nmae: $rmnm, gust -$gst");
     notifyListeners();
   }
 

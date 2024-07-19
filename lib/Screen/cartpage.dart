@@ -3,7 +3,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/controller/controller.dart';
+import 'dart:io';
 
 class CartBag extends StatefulWidget {
   const CartBag({super.key});
@@ -17,6 +19,10 @@ class _CartBagState extends State<CartBag> {
   @override
   void initState() {
     // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+     
+      Provider.of<Controller>(context, listen: false).getIDss();
+    });
     super.initState();
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
@@ -24,46 +30,207 @@ class _CartBagState extends State<CartBag> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return WillPopScope(
+      onWillPop: () => _onBackPressed(context),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          centerTitle: true,
+          title: Consumer<Controller>(
+            builder: (BuildContext context, Controller value, Widget? child) =>
+                Text(
+              "Your Order ( ${value.cart_id.toString()})", ///value.cartItems.length
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
-        centerTitle: true,
-        title: Consumer<Controller>(
-          builder: (BuildContext context, Controller value, Widget? child) =>
-              Text(
-            "Your Cart ( ${value.cartItems.length} items)",
-            style: TextStyle(
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+        bottomNavigationBar: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: Color.fromARGB(255, 197, 121, 71),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: InkWell(
+            onTap: () {
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) {
+                    Size size = MediaQuery.of(context).size;
+
+                    // Future.delayed(Duration(seconds: 2), () {
+                    //   Navigator.of(context).pop(true);
+
+                    //   Navigator.of(context).push(
+                    //     PageRouteBuilder(
+                    //         opaque: false, // set to false
+                    //         pageBuilder: (_, __, ___) => Dashboard(
+                    //             type: "return from cartList",
+                    //             areaName: areaname)
+                    //         // OrderForm(widget.areaname,"return"),
+                    //         ),
+                    //   );
+                    // });
+                    return AlertDialog(
+                        content: Container(
+                      height: 150,
+                      child: Column(
+                        children: [
+                          Text("Do you want to save"),
+                          SizedBox(
+                            height: size.height * 0.03,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await Provider.of<Controller>(context,
+                                          listen: false)
+                                      .finalSave(context);
+
+                                  showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (context) {
+                                        Size size = MediaQuery.of(context).size;
+
+                                        Future.delayed(Duration(seconds: 2),
+                                            () {
+                                          Navigator.of(context).pop(true);
+
+                                          Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                                opaque: false, // set to false
+                                                pageBuilder: (_, __, ___) =>
+                                                    HomePage()
+                                                // OrderForm(widget.areaname,"return"),
+                                                ),
+                                          );
+                                        });
+                                        return AlertDialog(
+                                            content: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Placed!!!!',
+                                              style: TextStyle(
+                                                  color: Colors.green),
+                                            ),
+                                            Icon(
+                                              Icons.done,
+                                              color: Colors.green,
+                                            )
+                                          ],
+                                        ));
+                                      });
+                                },
+                                child: Text("Yes"),
+                                style: ElevatedButton.styleFrom(
+                                    // backgroundColor:
+                                    // ,
+                                    textStyle: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              SizedBox(
+                                width: size.width * 0.03,
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("No"),
+                                style: ElevatedButton.styleFrom(
+                                    // backgroundColor:
+                                    //     P_Settings.salewaveColor,
+                                    textStyle: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ],
+                          ),
+
+                          // Text(
+                          //   '$type  Placed!!!!',
+                          //   style:
+                          //       TextStyle(color: P_Settings.extracolor),
+                          // ),
+                          // Icon(
+                          //   Icons.done,
+                          //   color: Colors.green,
+                          // )
+                        ],
+                      ),
+                    ));
+                  });
+              // Provider.of<Controller>(context, listen: false).viewCart(context);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CartBag()),
+              // );
+            },
+            child: Consumer<Controller>(
+              builder:
+                  (BuildContext context, Controller value, Widget? child) =>
+                      Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'SAVE KOT',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white),
+                    ),
+                    Text(
+                      "${value.karttotal.toStringAsFixed(2)} \u{20B9} ",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: Consumer<Controller>(
-        builder: (context, value, child) => value.isCartLoading
-            ? SpinKitCircle(
-                color: Colors.black,
-              )
-            : value.cartItems.length == 0
-                ? Container(
-                    height: size.height * 0.7,
-                    child: Center(
-                        child: Lottie.asset("assets/cart.json",
-                            height: size.height * 0.3)))
-                : ListView.builder(
-                    itemCount: value.cartItems.length,
-                    itemBuilder: (context, int index) {
-                      // return cartItems(index, size, value.cartItems[index]);
-                      return customCard(index, size, value.cartItems[index]);
-                    }),
+        body: Consumer<Controller>(
+          builder: (context, value, child) => value.isCartLoading
+              ? SpinKitCircle(
+                  color: Colors.black,
+                )
+              : value.cartItems.length == 0
+                  ? Container(
+                      height: size.height * 0.7,
+                      child: Center(
+                          child: Lottie.asset("assets/cart.json",
+                              height: size.height * 0.3)))
+                  : ListView.builder(
+                      itemCount: value.cartItems.length,
+                      itemBuilder: (context, int index) {
+                        // return cartItems(index, size, value.cartItems[index]);
+                        return customCard(index, size, value.cartItems[index]);
+                      }),
+        ),
       ),
     );
   }
@@ -84,8 +251,8 @@ class _CartBagState extends State<CartBag> {
                       children: [
                         Flexible(
                             child: Text(
-                          "product name",
-                          // "${map["Prod_Name"].toUpperCase()} ( ${map["Cart_Batch"]} )",
+                          // "product name",
+                          "${map["Prod_Name"].toUpperCase().toString().trimLeft()}"??"",
                           style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
@@ -94,74 +261,6 @@ class _CartBagState extends State<CartBag> {
                       ],
                     ),
                     Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            map["Pkg"] == null || map["Pkg"].isEmpty
-                                ? Container()
-                                : Text("Pkg    : "),
-                            map["Pkg"] == null || map["Pkg"].isEmpty
-                                ? Container()
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 235, 234, 234),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0,
-                                          right: 8,
-                                          bottom: 4,
-                                          top: 4),
-                                      child: Text(
-                                        "pakage",
-                                        // map["Pkg"],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                      ),
-                                    ),
-                                  ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            map["Unit"] == null || map["Unit"].isEmpty
-                                ? Container()
-                                : Text("Unit : "),
-                            map["Unit"] == null || map["Unit"].isEmpty
-                                ? Container()
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 250, 205, 220),
-                                      borderRadius: BorderRadius.circular(10),
-                                      // border: Border.all(color: Colors.green)
-                                      // color: Colors.yellow,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0,
-                                          right: 8,
-                                          bottom: 4,
-                                          top: 4),
-                                      child: Text(
-                                        "cart unit",
-                                        // "${map["Cart_Unit"]}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                          ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -177,8 +276,8 @@ class _CartBagState extends State<CartBag> {
                                 padding: const EdgeInsets.only(
                                     left: 8.0, right: 8, bottom: 4, top: 4),
                                 child: Text(
-                                  "cart rate",
-                                  // "\u{20B9}${map["Cart_Rate"].toStringAsFixed(2)}",
+                                  // "cart rate",
+                                  "${map["Cart_Rate"].toStringAsFixed(2)} \u{20B9} ",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
@@ -191,28 +290,27 @@ class _CartBagState extends State<CartBag> {
                           children: [
                             InkWell(
                                 onTap: () async {
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .setQty(1.0, index, "dec");
-                                  // Provider.of<Controller>(context,
-                                  //         listen: false)
-                                  //     .updateCart(
-                                  //         context,
-                                  //         map,
-                                  //         date!,
-                                  //         value.customerId.toString(),
-                                  //         double.parse(value.qty[index].text),
-                                  //         index,
-                                  //         "from cart",
-                                  //         0,
-                                  //         '');
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) async {
+                                   await Provider.of<Controller>(context,
+                                            listen: false)
+                                        .setQty(1.0, index, "dec");
 
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .viewCart(
-                                    context,
-                                    
-                                  );
+                                    // await Provider.of<Controller>(context,
+                                    //         listen: false)
+                                    //     .updateCart2(
+                                    //   context,
+                                    //   map,
+                                    //   0,
+                                    //   double.parse(value.qty[index].text),
+                                    // );
+
+                                    // Provider.of<Controller>(context,
+                                    //         listen: false)
+                                    //     .viewCart(
+                                    //   context,
+                                    // );
+                                  });
                                 },
                                 child: Icon(
                                   Icons.remove,
@@ -243,12 +341,11 @@ class _CartBagState extends State<CartBag> {
                                   //         0,
                                   //         "");
 
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .viewCart(
-                                    context,
-                                  
-                                  );
+                                  // Provider.of<Controller>(context,
+                                  //         listen: false)
+                                  //     .viewCart(
+                                  //   context,
+                                  // );
                                 },
                                 controller: value.qty[index],
                                 textAlign: TextAlign.center,
@@ -273,35 +370,100 @@ class _CartBagState extends State<CartBag> {
                             ),
                             InkWell(
                                 onTap: () {
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .setQty(1.0, index, "inc");
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) async {
+                                  await Provider.of<Controller>(context,
+                                            listen: false)
+                                        .setQty(1.0, index, "inc");
 
-                                  // Provider.of<Controller>(context,
-                                  //         listen: false)
-                                  //     .updateCart(
-                                  //         context,
-                                  //         map,
-                                  //         date!,
-                                  //         value.customerId.toString(),
-                                  //         double.parse(value.qty[index].text),
-                                  //         index,
-                                  //         "from cart",
-                                  //         0,
-                                  //         "");
+                                    // await Provider.of<Controller>(context,
+                                    //         listen: false)
+                                    //     .updateCart2(
+                                    //   context,
+                                    //   map,
+                                    //   0,
+                                    //   double.parse(value.qty[index].text),
+                                    // );
 
-                                  Provider.of<Controller>(context,
-                                          listen: false)
-                                      .viewCart(
-                                    context,
-                                    
-                                  );
+                                    // Provider.of<Controller>(context,
+                                    //         listen: false)
+                                    //     .viewCart(
+                                    //   context,
+                                    // );
+                                  });
                                 },
                                 child: Icon(
                                   Icons.add,
                                   color: Colors.green,
                                 )),
                           ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        // Container(
+                        //   margin: EdgeInsets.only(left: 10, right: 7),
+                        //   width: size.width * 0.48,
+                        //   height: size.height * 0.08,
+                        //   child: TextField(
+                        //     onTap: () {
+                        //       print("ddddddddddd=================${value.descr[index].text}");
+                        //       value.descr[index].selection = TextSelection(
+                        //           baseOffset: 0,
+                        //           extentOffset:
+                        //               value.descr[index].value.text.length);
+                        //     },
+                        //     onSubmitted: (val) {
+                        //       // Provider.of<Controller>(context,
+                        //       //         listen: false)
+                        //       //     .updateCart(
+                        //       //         context,
+                        //       //         map,
+                        //       //         date!,
+                        //       //         value.customerId.toString(),
+                        //       //         double.parse(val),
+                        //       //         index,
+                        //       //         "from cart",
+                        //       //         0,
+                        //       //         "");
+
+                        //       // Provider.of<Controller>(context, listen: false)
+                        //       //     .viewCart(
+                        //       //   context,
+                        //       // );
+                        //     },
+                        //     controller: value.descr[index],
+                        //     textAlign: TextAlign.center,
+                        //     style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontSize: 12,
+                        //         fontWeight: FontWeight.w600),
+                        //     decoration: InputDecoration(
+                        //       contentPadding: EdgeInsets.all(10),
+                        //       enabledBorder: OutlineInputBorder(
+                        //         borderSide: BorderSide(
+                        //             width: 1,
+                        //             color: Colors.grey), //<-- SEE HERE
+                        //       ),
+                        //       focusedBorder: OutlineInputBorder(
+                        //         borderSide: BorderSide(
+                        //             width: 1,
+                        //             color: Colors.grey), //<-- SEE HERE
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        // Text("---${value.descr[index].text.toString()}")
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8, bottom: 4, top: 4),
+                          child: Text(
+                            // "cart rate",
+                            "${map["Cart_Description"].toString().trimLeft()}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
                         ),
                       ],
                     ),
@@ -313,61 +475,66 @@ class _CartBagState extends State<CartBag> {
                           children: [
                             Text("Total : "),
                             Text(
-                              "total",
-                              // "\u{20B9}${map["It_Total"].toStringAsFixed(2)}",
+                              // "total",
+                              "${map["It_Total"].toStringAsFixed(2)} \u{20B9}",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ],
                         ),
-                        InkWell(
-                            onTap: () async {
-                              await showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      content:
-                                          Text('Delete ${map["Product"]}?'),
-                                      actions: <Widget>[
-                                        new TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context,
-                                                    rootNavigator: true)
-                                                .pop(
-                                                    false); // dismisses only the dialog and returns false
-                                          },
-                                          child: Text('No'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            // Provider.of<Controller>(context,
-                                            //         listen: false)
-                                            //     .updateCart(
-                                            //         context,
-                                            //         map,
-                                            //         date!,
-                                            //         value.customerId.toString(),
-                                            //         double.parse(
-                                            //             value.qty[index].text),
-                                            //         index,
-                                            //         "from cart",
-                                            //         1,
-                                            //         "");
-                                            Provider.of<Controller>(context,
-                                                    listen: false)
-                                                .viewCart(
-                                              context,
-                                             
-                                            );
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('Yes'),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                            child: Row(
+                        Row(
+                          children: [
+                            InkWell(
+                                onTap: () async {
+                                    WidgetsBinding.instance
+                                      .addPostFrameCallback((_) async {
+                                  await Provider.of<Controller>(context,
+                                          listen: false)
+                                      .updateCart2(
+                                    context,
+                                    map,
+                                    0,
+                                    // value.descr[index].text,
+                                    double.parse(value.qty[index].text),
+                                  );
+                                  await Provider.of<Controller>(context,
+                                          listen: false)
+                                      .viewCart(
+                                    context,
+                                  ); });
+                                  // Navigator.pop(context);
+                               
+                                },
+                                child: Text(
+                                  "Update",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                            SizedBox(
+                              width: 10,
+                            ),
+                              InkWell(
+                                onTap: () async {
+                                    WidgetsBinding.instance
+                                      .addPostFrameCallback((_) async {
+                                  await Provider.of<Controller>(context,
+                                          listen: false)
+                                      .updateCart2(
+                                    context,
+                                    map,
+                                    1,
+                                    // value.descr[index].text,
+                                    double.parse(value.qty[index].text),
+                                  );
+                                  await Provider.of<Controller>(context,
+                                          listen: false)
+                                      .viewCart(
+                                    context,
+                                  );});
+                                  // Navigator.pop(context);
+                                },
+                                child:   Row(
                               children: [
                                 Text(
                                   "Delete",
@@ -381,7 +548,11 @@ class _CartBagState extends State<CartBag> {
                                   color: Colors.red,
                                 )
                               ],
-                            )),
+                            )
+                                ),
+                          
+                          ],
+                        ),
                       ],
                     )
                   ],
@@ -389,4 +560,38 @@ class _CartBagState extends State<CartBag> {
               ),
             ));
   }
+}
+
+Future<bool> _onBackPressed(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        // title: const Text('AlertDialog Title'),
+        content: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ListBody(
+            children: const <Widget>[
+              Text('Do you want to exit from this app'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text('Ok'),
+            onPressed: () {
+              exit(0);
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

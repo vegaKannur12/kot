@@ -9,6 +9,7 @@ import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:restaurent_kot/db_helper.dart';
 import 'package:restaurent_kot/tableList.dart';
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,8 +27,8 @@ class _HomePageState extends State<HomePage> {
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<Controller>(context, listen: false).getTableList();
-      Provider.of<Controller>(context, listen: false).getRoomList();
+      Provider.of<Controller>(context, listen: false).getTableList(context);
+      Provider.of<Controller>(context, listen: false).getRoomList(context);
       // Provider.of<Controller>(context, listen: false)
       //     .qtyadd();           //tempry adding qty
 
@@ -41,233 +42,267 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      extendBody: true,
-      appBar: AppBar(
-        toolbarHeight: 80,
-        backgroundColor: const Color.fromARGB(255, 111, 128, 228),
-        title: Consumer<Controller>(
-            builder: (BuildContext context, Controller value, Widget? child) =>
-                Text(
-                  value.os.toString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
+    return WillPopScope(
+      onWillPop: () => _onBackPressed(context),
+      child: Scaffold(
+        extendBody: true,
+        appBar: AppBar(
+          toolbarHeight: 80,
+          backgroundColor: const Color.fromARGB(255, 111, 128, 228),
+          title: Consumer<Controller>(
+              builder:
+                  (BuildContext context, Controller value, Widget? child) =>
+                      Text(
+                        value.os.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      )),
+          actions: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.calendar_month,
+                    color: Colors.white,
                   ),
-                )),
-        actions: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(
-                  Icons.calendar_month,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  date.toString(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    date.toString(),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: () async {
-              List<Map<String, dynamic>> list =
-                  await KOT.instance.getListOfTables();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TableList(list: list)),
-              );
-            },
-            icon: Icon(Icons.table_bar, color: Colors.green),
-          ),
-        ],
-      ),
-      bottomNavigationBar: Provider.of<Controller>(context, listen: false)
-              .tablID!
-              .isEmpty
-          ? Container()
-          : Consumer<Controller>(
-              builder: (BuildContext context, Controller value, Widget? child) {
-                return Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 197, 121, 71),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    // height: 200,
-                                    height: value.roomlist.isNotEmpty
-                                        ? MediaQuery.of(context).size.height *
-                                            0.65
-                                        : size.height * 0.2,
-                                    color: Colors.white,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        value.roomlist.isNotEmpty
-                                            ? Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      icon: const Icon(
-                                                          Icons.close))
-                                                ],
-                                              )
-                                            : Container(),
-                                        TextFormField(
-                                          controller: seacrhRoom,
-                                          //   decoration: const InputDecoration(,
-                                          onChanged: (val) {
-                                            Provider.of<Controller>(context,
-                                                    listen: false)
-                                                .searchRoom(val.toString());
-                                          },
-                                          decoration: InputDecoration(
-                                            prefixIcon: const Icon(
-                                              Icons.search,
-                                              color: Colors.black,
-                                            ),
-                                            suffixIcon: IconButton(
-                                              icon: const Icon(Icons.cancel),
-                                              onPressed: () {
-                                                seacrhRoom.clear();
-                                                value.isRoomSearch = false;
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .searchRoom("");
-                                              },
-                                            ),
-                                            focusedBorder: UnderlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              borderSide: const BorderSide(
-                                                  color: Colors.blue,
-                                                  width: 1.0),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              borderSide: const BorderSide(
-                                                  color: Colors.black,
-                                                  width: 1.0),
-                                            ),
-                                            hintText: "Search room...",
-                                          ),
-                                        ),
-                                        value.isRoomSearch
-                                            ? roomWidget(
-                                                size, value.filteredroomlist,context)
-                                            : roomWidget(size, value.roomlist,context)
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.cabin, color: Colors.white),
-                                Text(
-                                  'Room Credit',
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white),
-                                )
-                              ],
-                            ),
-                          ),
-                          ElevatedButton(
-                              onPressed: () {
-                                if (value.tablID!.isNotEmpty) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CategoryScreen(
-                                              tablId: value.tablname.toString(),
-                                              roomId: value.roomnm.toString(),
-                                            )),
-                                  );
-                                } else {
-                                  CustomSnackbar snackbar = CustomSnackbar();
-                                  snackbar.showSnackbar(
-                                      context, "Select Table", "");
-                                }
-                              },
-                              child: Text("Proceed"))
-                        ],
-                      ),
-                    ),
-                  ),
+            IconButton(
+              onPressed: () async {
+                List<Map<String, dynamic>> list =
+                    await KOT.instance.getListOfTables();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TableList(list: list)),
                 );
               },
+              icon: Icon(Icons.table_bar, color: Colors.green),
             ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer<Controller>(
-          builder: (context, value, child) => Column(
-            children: [
-              TextFormField(
-                controller: seacrh,
-                //   decoration: const InputDecoration(,
-                onChanged: (val) {
-                  Provider.of<Controller>(context, listen: false)
-                      .searchTable(val.toString());
+          ],
+        ),
+        bottomNavigationBar: Provider.of<Controller>(context, listen: false)
+                .tablID!
+                .isEmpty
+            ? Container()
+            : Consumer<Controller>(
+                builder:
+                    (BuildContext context, Controller value, Widget? child) {
+                  return Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 197, 121, 71),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: InkWell(
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet<void>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      // height: 200,
+                                      height: value.roomlist.isNotEmpty
+                                          ? MediaQuery.of(context).size.height *
+                                              0.65
+                                          : size.height * 0.2,
+                                      color: Colors.white,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          value.roomlist.isNotEmpty
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        icon: const Icon(
+                                                            Icons.close))
+                                                  ],
+                                                )
+                                              : Container(),
+                                          TextFormField(
+                                            controller: seacrhRoom,
+                                            //   decoration: const InputDecoration(,
+                                            onChanged: (val) {
+                                              Provider.of<Controller>(context,
+                                                      listen: false)
+                                                  .searchRoom(val.toString());
+                                            },
+                                            decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.search,
+                                                color: Colors.black,
+                                              ),
+                                              suffixIcon: IconButton(
+                                                icon: const Icon(Icons.cancel),
+                                                onPressed: () {
+                                                  seacrhRoom.clear();
+                                                  value.isRoomSearch = false;
+                                                  Provider.of<Controller>(
+                                                          context,
+                                                          listen: false)
+                                                      .searchRoom("");
+                                                },
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                                borderSide: const BorderSide(
+                                                    color: Colors.blue,
+                                                    width: 1.0),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                                borderSide: const BorderSide(
+                                                    color: Colors.black,
+                                                    width: 1.0),
+                                              ),
+                                              hintText: "Search room...",
+                                            ),
+                                          ),
+                                          value.isRoomSearch
+                                              ? roomWidget(
+                                                  size,
+                                                  value.filteredroomlist,
+                                                  context)
+                                              : roomWidget(
+                                                  size, value.roomlist, context)
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(Icons.cabin, color: Colors.white),
+                                  Text(
+                                    'Room Credit',
+                                    textScaleFactor:
+                                        ScaleSize.textScaleFactor(context),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  print("------------${value.tablID}");
+                                  if (value.tablID!.isNotEmpty) {
+                                   await Provider.of<Controller>(context, listen: false).getCategoryList(context);
+                                    Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CategoryScreen(
+                                                tablId:
+                                                    value.tablname.toString(),
+                                                roomId:
+                                                    value.roomnm.toString() ??
+                                                        "",
+                                              )),
+                              ).then((value) {
+                                // This code runs when returning from the NextScreen
+                                // You can put your refresh logic here
+                                setState(() {
+
+                                Provider.of<Controller>(context, listen: false).clearAllData(context);
+                                  // Update data or perform actions to refresh the page
+                                });
+                              });
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) => CategoryScreen(
+                                    //             tablId:
+                                    //                 value.tablname.toString(),
+                                    //             roomId:
+                                    //                 value.roomnm.toString() ??
+                                    //                     "",
+                                    //           )),
+                                    // );
+                                  } else {
+                                    CustomSnackbar snackbar = CustomSnackbar();
+                                    snackbar.showSnackbar(
+                                        context, "Select Table", "");
+                                  }
+                                },
+                                child: Text("Proceed"))
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
                 },
-                decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.blue,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: new Icon(Icons.cancel),
-                      onPressed: () {
-                        seacrh.clear();
-                        Provider.of<Controller>(context, listen: false)
-                            .searchTable("");
-                      },
-                    ),
-                    hintText: "Search Table..."),
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              value.isSearch
-                  ? tableWidget(size, value.filteredlist)
-                  : tableWidget(size, value.tabllist)
-            ],
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Consumer<Controller>(
+            builder: (context, value, child) => Column(
+              children: [
+                // TextFormField(
+                //   controller: seacrh,
+                //   //   decoration: const InputDecoration(,
+                //   onChanged: (val) {
+                //     Provider.of<Controller>(context, listen: false)
+                //         .searchTable(val.toString());
+                //   },
+                //   decoration: InputDecoration(
+                //       prefixIcon: Icon(
+                //         Icons.search,
+                //         color: Colors.blue,
+                //       ),
+                //       suffixIcon: IconButton(
+                //         icon: new Icon(Icons.cancel),
+                //         onPressed: () {
+                //           seacrh.clear();
+                //           Provider.of<Controller>(context, listen: false)
+                //               .searchTable("");
+                //         },
+                //       ),
+                //       hintText: "Search Table..."),
+                // ),
+                const SizedBox(
+                  height: 15,
+                ),
+                value.isSearch
+                    ? tableWidget(size, value.filteredlist)
+                    : tableWidget(size, value.tabllist)
+              ],
+            ),
           ),
         ),
       ),
@@ -305,15 +340,18 @@ class _HomePageState extends State<HomePage> {
                               mainAxisSpacing: 12),
                       itemBuilder: (context, index) => InkWell(
                         onTap: () async {
+
                           await value.setTableID(
-                              list[index]["Table_ID"].toString(),
                               list[index]["Table_ID"].toString().trimLeft(),
+                              list[index]["Table_Name"].toString().trimLeft(),
                               context);
                           await Provider.of<Controller>(context, listen: false)
                               .getCartNo(context);
                           CustomSnackbar snackbar = CustomSnackbar();
-                          snackbar.showSnackbar(context,
-                              "Table ${value.tablID.toString()} Selected.", "");
+                          snackbar.showSnackbar(
+                              context,
+                              "Table ${value.tablname.toString()} Selected.",
+                              "");
                           // showDialog(
                           //     barrierDismissible: false,
                           //     context: context,
@@ -366,7 +404,9 @@ class _HomePageState extends State<HomePage> {
                                   padding: const EdgeInsets.only(
                                       top: 8.0, bottom: 8),
                                   child: Text(
-                                    list[index]["Table_Name"].toString(),
+                                    list[index]["Table_Name"]
+                                        .toString()
+                                        .trimLeft(),
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
@@ -384,7 +424,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget roomWidget(Size size, List list,BuildContext context) {
+  Widget roomWidget(Size size, List list, BuildContext context) {
     return Consumer<Controller>(
       builder: (context, value, child) => value.isRoomLoading
           ? const Expanded(
@@ -416,8 +456,9 @@ class _HomePageState extends State<HomePage> {
                             await value.setRoomID(
                                 list[index]["Room_ID"].toString(),
                                 list[index]["Room_Name"].toString(),
+                                list[index]["Guest_Info"].toString(),
                                 context);
-                                // Navigator.pop(context);
+                                Navigator.pop(context);
                             // CustomSnackbar snackbar = CustomSnackbar();
                             // snackbar.showSnackbar(
                             //     context,
@@ -447,49 +488,53 @@ class _HomePageState extends State<HomePage> {
                             //       ));
                             //     });
                           },
-                          child: Card(
-                            color: Colors.grey[200],
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0, bottom: 8),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            maxLines: 2,
-                                            list[index]["Room_Name"].toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                            overflow: TextOverflow.ellipsis,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: SizedBox(width: size.width*1/4,
+                                            child: Text(
+                                              maxLines: 2,
+                                              list[index]["Room_Name"].toString().trimLeft(),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                          Text(
+                                        ),
+                                        SizedBox(width: size.width*1/5,
+                                          child: Text(
                                             maxLines: 2,
                                             list[index]["Guest_Info"]
-                                                .toString(),
+                                                .toString().trimLeft(),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 20),
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -497,4 +542,38 @@ class _HomePageState extends State<HomePage> {
             ),
     );
   }
+}
+
+Future<bool> _onBackPressed(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        // title: const Text('AlertDialog Title'),
+        content: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ListBody(
+            children: const <Widget>[
+              Text('Do you want to exit from this app'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text('Ok'),
+            onPressed: () {
+              exit(0);
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

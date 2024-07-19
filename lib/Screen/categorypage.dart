@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/itemlistpage.dart';
 import 'package:restaurent_kot/controller/controller.dart';
-
+import 'dart:io';
 class CategoryScreen extends StatefulWidget {
   String? tablId;
   String? roomId;
@@ -22,10 +22,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
     // TODO: implement initState
 
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<Controller>(context, listen: false).getCategoryList();
-      //tempry adding qty
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+     
+      Provider.of<Controller>(context, listen: false).getIDss();
     });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Provider.of<Controller>(context, listen: false).getCategoryList(context);
+    //   //tempry adding qty
+    // });
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
 
@@ -33,93 +37,95 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     print(widget.tablId.toString());
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              // Provider.of<Controller>(context, listen: false).viewCart(
-              //   context,
-              //   value.customerId.toString(),
-              // );
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )),
-        backgroundColor: Color.fromARGB(255, 139, 200, 228),
-        // Theme.of(context).primaryColor,
-
-        actions: [
-          Consumer<Controller>(
-            builder: (context, value, child) => Card(
-              shape: const StadiumBorder(),
-              color: Colors.black,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  "${widget.tablId.toString().toUpperCase()} / ${widget.roomId.toString().toUpperCase()} /${value.cartNum.toString()}",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold),
+    return WillPopScope(onWillPop: () => _onBackPressed(context),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                // Provider.of<Controller>(context, listen: false).viewCart(
+                //   context,
+                //   value.customerId.toString(),
+                // );
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              )),
+          backgroundColor: Color.fromARGB(255, 139, 200, 228),
+          // Theme.of(context).primaryColor,
+      
+          actions: [
+            Consumer<Controller>(
+              builder: (context, value, child) => Card(
+                shape: const StadiumBorder(),
+                color: Colors.black,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase()} /${value.cart_id.toString()}",
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
+            )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Consumer<Controller>(
+            builder: (context, value, child) => Column(
+              children: [
+                TextFormField(
+                  controller: seacrh,
+                  //   decoration: const InputDecoration(,
+                  onChanged: (val) {
+                    Provider.of<Controller>(context, listen: false)
+                        .searchCat(val.toString());
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: Colors.black,
+                    ),
+                    suffixIcon: IconButton(
+                      icon:  const Icon(Icons.cancel),
+                      onPressed: () {
+                        seacrh.clear();
+                        Provider.of<Controller>(context, listen: false)
+                            .searchCat("");
+                      },
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 1.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black, width: 1.0),
+                    ),
+                    hintText: "Search Category...",
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                value.isSearch
+                    ? categoryWidget(size, value.filteredlist,value.tabl_ID.toString(),value.room_ID.toString())
+                    : categoryWidget(size, value.catlist,value.tabl_ID.toString(),value.room_ID.toString())
+              ],
             ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer<Controller>(
-          builder: (context, value, child) => Column(
-            children: [
-              TextFormField(
-                controller: seacrh,
-                //   decoration: const InputDecoration(,
-                onChanged: (val) {
-                  Provider.of<Controller>(context, listen: false)
-                      .searchCat(val.toString());
-                },
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Colors.black,
-                  ),
-                  suffixIcon: IconButton(
-                    icon:  const Icon(Icons.cancel),
-                    onPressed: () {
-                      seacrh.clear();
-                      Provider.of<Controller>(context, listen: false)
-                          .searchCat("");
-                    },
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    borderSide:
-                        const BorderSide(color: Colors.blue, width: 1.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    borderSide: const BorderSide(color: Colors.black, width: 1.0),
-                  ),
-                  hintText: "Search Category...",
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              value.isSearch
-                  ? categoryWidget(size, value.filteredlist)
-                  : categoryWidget(size, value.catlist)
-            ],
           ),
         ),
       ),
     );
   }
 
-  Widget categoryWidget(Size size, List list) {
+  Widget categoryWidget(Size size, List list,String tbl,String rm) {
     return Consumer<Controller>(
       builder: (context, value, child) => value.isCategoryLoading
           ? const Expanded(
@@ -141,13 +147,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           : value.catlist.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 12, childAspectRatio: 1.5,
                               mainAxisSpacing: 12),
                       itemBuilder: (context, index) => InkWell(
                         onTap: () {
                           value.setCatID(
-                              list[index]["Cat_Id"].toString(), context);
+                              list[index]["Cat_Id"].toString().trimLeft(), context);
                           Provider.of<Controller>(context, listen: false)
                               .getItemList(context);
                           Navigator.push(
@@ -156,6 +162,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 builder: (context) => ItemList(
                                       catlId: list[index]["Cat_Id"],
                                       catName: list[index]["Cat_Name"],
+                                      // tablId: tbl,roomId: rm,
                                     )),
                           );
                         },
@@ -173,7 +180,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                   child: Center(
                                     child: Text(
                                       maxLines: 2,
-                                      list[index]["Cat_Name"].toString(),
+                                      list[index]["Cat_Name"].toString().trimLeft().toUpperCase(),
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
@@ -191,4 +198,37 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
     );
   }
+}
+Future<bool> _onBackPressed(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        // title: const Text('AlertDialog Title'),
+        content: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ListBody(
+            children: const <Widget>[
+              Text('Do you want to exit from this app'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text('Ok'),
+            onPressed: () {
+              exit(0);
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

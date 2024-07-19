@@ -73,55 +73,58 @@ class _RegistrationState extends State<Registration> {
     Size size = MediaQuery.of(context).size;
     double topInsets = MediaQuery.of(context).viewInsets.top;
     Orientation ori = MediaQuery.of(context).orientation;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-    
-     
-      body: SafeArea(
-          child: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 18.0,
-              right: 18,
+    return WillPopScope(
+      onWillPop: ()=>_onBackPressed(context),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.white,
+      
+       
+        body: SafeArea(
+            child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 18.0,
+                right: 18,
+              ),
+              child: Form(
+                  key: _formKey,
+                  child: ori == Orientation.portrait
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              height: size.height * 0.16,
+                            ),
+                            reg_img(size),
+                            // Container(height: size.height*0.16,),
+                            SizedBox(
+                              height: size.height * 0.054,
+                            ),
+                            reg_form(size, topInsets),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: size.height * 0.02,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(child: reg_img(size)),
+                                Expanded(
+                                    flex: 1, child: reg_form(size, topInsets))
+                              ],
+                            ),
+                          ],
+                        )),
             ),
-            child: Form(
-                key: _formKey,
-                child: ori == Orientation.portrait
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        // crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            height: size.height * 0.16,
-                          ),
-                          reg_img(size),
-                          // Container(height: size.height*0.16,),
-                          SizedBox(
-                            height: size.height * 0.054,
-                          ),
-                          reg_form(size, topInsets),
-                        ],
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: size.height * 0.02,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(child: reg_img(size)),
-                              Expanded(
-                                  flex: 1, child: reg_form(size, topInsets))
-                            ],
-                          ),
-                        ],
-                      )),
           ),
-        ),
-      )),
+        )),
+      ),
     );
   }
     Column reg_form(Size size, double topInsets) {
@@ -295,4 +298,37 @@ class _RegistrationState extends State<Registration> {
           fit: BoxFit.contain,
         ));
   }
+}
+Future<bool> _onBackPressed(BuildContext context) async {
+  return await showDialog(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        // title: const Text('AlertDialog Title'),
+        content: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ListBody(
+            children: const <Widget>[
+              Text('Do you want to exit from this app'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text('Ok'),
+            onPressed: () {
+              exit(0);
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
