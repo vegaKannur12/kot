@@ -243,7 +243,8 @@ class _CartBagState extends State<CartBag> {
                   ),
                 ),
               ),
-        body: Consumer<Controller>(
+        body: 
+        Consumer<Controller>(
           builder: (context, value, child) => value.isCartLoading
               ? SpinKitCircle(
                   color: Colors.black,
@@ -252,7 +253,7 @@ class _CartBagState extends State<CartBag> {
                   ? Container(
                       height: size.height * 0.7,
                       child: Center(
-                          child: Lottie.asset("assets/cart.json",
+                          child: Lottie.asset("assets/noitem.json",
                               height: size.height * 0.3)))
                   : value.isCartLoading
                       ? const Expanded(

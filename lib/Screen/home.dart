@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
+import 'package:restaurent_kot/Screen/viewkot.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -56,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                         value.os.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.red,
+                          color: Colors.black,
                         ),
                       )),
           actions: [
@@ -82,18 +83,42 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            IconButton(
-              onPressed: () async {
-                List<Map<String, dynamic>> list =
-                    await KOT.instance.getListOfTables();
+            IconButton.filled(
+              onPressed: () {
+                 Provider.of<Controller>(context, listen: false).viewKot(context,date!);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => TableList(list: list)),
+                  MaterialPageRoute(builder: (context) => ViewKot()),
                 );
               },
-              icon: Icon(Icons.table_bar, color: Colors.green),
-            ),
+              icon: Icon(
+                Icons.shopping_bag,
+                color: Colors.white,
+              ),
+            )
+            // SizedBox(
+            //   child: ElevatedButton(
+            //     child: Icon(Icons.shopping_bag_outlined,color: Colors.white,),
+            //     onPressed: () {},
+            //     style: ElevatedButton.styleFrom(
+            //         backgroundColor: Colors.black,
+            //         padding: EdgeInsets.all(5),
+            //         textStyle:
+            //             TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            //   ),
+            // ),
+            // IconButton(
+            //   onPressed: () async {
+            //     List<Map<String, dynamic>> list =
+            //         await KOT.instance.getListOfTables();
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => TableList(list: list)),
+            //     );
+            //   },
+            //   icon: Icon(Icons.table_bar, color: Colors.green),
+            // ),
           ],
         ),
         bottomNavigationBar: Provider.of<Controller>(context, listen: false)
@@ -223,27 +248,29 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () async {
                                   print("------------${value.tablID}");
                                   if (value.tablID!.isNotEmpty) {
-                                   await Provider.of<Controller>(context, listen: false).getCategoryList(context);
+                                    await Provider.of<Controller>(context,
+                                            listen: false)
+                                        .getCategoryList(context);
                                     Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CategoryScreen(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CategoryScreen(
                                                 tablId:
                                                     value.tablname.toString(),
                                                 roomId:
                                                     value.roomnm.toString() ??
                                                         "",
-                                              )
-                                              ),
-                              ).then((value) {
-                                // This code runs when returning from the NextScreen
-                                // You can put your refresh logic here
-                                setState(() {
-
-                                Provider.of<Controller>(context, listen: false).clearAllData(context);
-                                  // Update data or perform actions to refresh the page
-                                });
-                              });
+                                              )),
+                                    ).then((value) {
+                                      // This code runs when returning from the NextScreen
+                                      // You can put your refresh logic here
+                                      setState(() {
+                                        Provider.of<Controller>(context,
+                                                listen: false)
+                                            .clearAllData(context);
+                                        // Update data or perform actions to refresh the page
+                                      });
+                                    });
                                     // Navigator.push(
                                     //   context,
                                     //   MaterialPageRoute(
@@ -341,7 +368,6 @@ class _HomePageState extends State<HomePage> {
                               mainAxisSpacing: 12),
                       itemBuilder: (context, index) => InkWell(
                         onTap: () async {
-
                           await value.setTableID(
                               list[index]["Table_ID"].toString().trimLeft(),
                               list[index]["Table_Name"].toString().trimLeft(),
@@ -459,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                                 list[index]["Room_Name"].toString(),
                                 list[index]["Guest_Info"].toString(),
                                 context);
-                                Navigator.pop(context);
+                            Navigator.pop(context);
                             // CustomSnackbar snackbar = CustomSnackbar();
                             // snackbar.showSnackbar(
                             //     context,
@@ -495,7 +521,9 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                alignment: Alignment.center,decoration: BoxDecoration(border: Border.all(color: Colors.black12)),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black12)),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
                                       top: 8.0, bottom: 8),
@@ -506,10 +534,13 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(10),
-                                          child: SizedBox(width: size.width*1/4,
+                                          child: SizedBox(
+                                            width: size.width * 1 / 4,
                                             child: Text(
                                               maxLines: 2,
-                                              list[index]["Room_Name"].toString().trimLeft(),
+                                              list[index]["Room_Name"]
+                                                  .toString()
+                                                  .trimLeft(),
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
@@ -518,11 +549,13 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: size.width*1/5,
+                                        SizedBox(
+                                          width: size.width * 1 / 5,
                                           child: Text(
                                             maxLines: 2,
                                             list[index]["Guest_Info"]
-                                                .toString().trimLeft(),
+                                                .toString()
+                                                .trimLeft(),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,

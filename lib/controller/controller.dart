@@ -41,7 +41,9 @@ class Controller extends ChangeNotifier {
   bool isOrderLoading = false;
   bool isfreez = false;
   List<Map<String, dynamic>> cartItems = [];
+   List<Map<String, dynamic>> kotItems = [];
   bool isCartLoading = false;
+  bool isKOTLoading = false;
   List<Map<String, dynamic>> categoryList = [];
   List<Map<String, dynamic>> itemlist = [];
 
@@ -1033,47 +1035,44 @@ class Controller extends ChangeNotifier {
 
     isAdded[index] = true;
     notifyListeners();
-    try{
-    print("stattuss----$status");
-    var res;
-    notifyListeners();
-    if (type == "from cart") {
-      // res = await SqlConn.readData(
-      //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
-    } else if (type == "from itempage") {
-      // double rt=double.parse(map["SRATE"]);
-      // if (guestnm==" ") {
-      //   String gst= ' ';
-      // }
-      // else{
-      //   gst=
-      // }
-      print("------tablRmGUS==$tab,$rum,$gus");
-      print(
-          "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"
-          ",'$des',1,'',$status");
-      res = await SqlConn.readData(
-        "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
-      );
-      print(
-          "data added..............--------------------------------------------------------------");
-      //getItemList(context);
-    }
+    try {
+      print("stattuss----$status");
+      var res;
+      notifyListeners();
+      if (type == "from cart") {
+        // res = await SqlConn.readData(
+        //     "Flt_Update_Cart_Kot $cartid,'$dateTime','${map["Cart_Cust_ID"]}',0,'$os','${map["Cart_Batch"]}',$qty,${map["Cart_Rate"]},${map["Cart_Pid"]},'${map["Cart_Unit"]}','${map["Pkg"]}',$status");
+      } else if (type == "from itempage") {
+        // double rt=double.parse(map["SRATE"]);
+        // if (guestnm==" ") {
+        //   String gst= ' ';
+        // }
+        // else{
+        //   gst=
+        // }
+        print("------tablRmGUS==$tab,$rum,$gus");
+        print(
+            "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"
+            ",'$des',1,'',$status");
+        res = await SqlConn.readData(
+          "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
+        );
+        print(
+            "data added..............--------------------------------------------------------------");
+        //getItemList(context);
+      }
 
-    // ignore: avoid_print
-    print("insert cart---$res");
-    var valueMap = json.decode(res);
-    response[index] = valueMap[0]["Result"];
-    cartTotal = valueMap[0]["TotalCount"];
-    isAdded[index] = false;
-    notifyListeners();}
-     catch (e) 
-    {
+      // ignore: avoid_print
+      print("insert cart---$res");
+      var valueMap = json.decode(res);
+      response[index] = valueMap[0]["Result"];
+      cartTotal = valueMap[0]["TotalCount"];
+      isAdded[index] = false;
+      notifyListeners();
+    } catch (e) {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
-    } 
-    finally 
-    {
+    } finally {
       if (SqlConn.isConnected == false) {
         print("hi");
         showDialog(
@@ -1213,38 +1212,34 @@ class Controller extends ChangeNotifier {
     var res;
     // for(var item in cartItems){
     // if(item['Cart_Row']!=0){
-    try{
-    int cartlen = cartItems.length;
-    print("---------Kot_Save_Kot '$os',$cartNo,$cartlen");
-     res = await SqlConn.readData("Kot_Save_Kot '$os',$cartNo,$cartlen");
-    //  return res;
-    print("Saveedddddddd ! $res");
-    // if (res.isNotEmpty && res[0].containsKey('Save_Status')) 
-    // {
+    try {
+      int cartlen = cartItems.length;
+      print("---------Kot_Save_Kot '$os',$cartNo,$cartlen");
+      res = await SqlConn.readData("Kot_Save_Kot '$os',$cartNo,$cartlen");
+      //  return res;
+      print("Saveedddddddd ! $res");
+      // if (res.isNotEmpty && res[0].containsKey('Save_Status'))
+      // {
       // String ss=res[0]['Save_Status'].toString().trimLeft();
       // print("ssss $ss");  // Output: Success
-    // } 
-    //  else 
-    // {
-    // print('Save_Status key not found');
-    // }
-    // print("--------sa ${res[0]['Save_Status'].toString()}");
-    //  if (res) {
-       
-    //  }
-    // }
-    // }
-    // var res = await SqlConn.readData(
-    //     "Kot_Save_Cart '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",);
-    //     print("Saveedddddddd ! $res");
-    }
-     catch (e) 
-    {
+      // }
+      //  else
+      // {
+      // print('Save_Status key not found');
+      // }
+      // print("--------sa ${res[0]['Save_Status'].toString()}");
+      //  if (res) {
+
+      //  }
+      // }
+      // }
+      // var res = await SqlConn.readData(
+      //     "Kot_Save_Cart '${map["Cart_ID"]}','${map["Cart_Table_ID"]}','$os','${map["Cart_Row"]}',$qty,'${map["Cart_Description"]}',$status",);
+      //     print("Saveedddddddd ! $res");
+    } catch (e) {
       // print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
-    } 
-    finally 
-    {
+    } finally {
       if (SqlConn.isConnected == false) {
         print("hi");
         showDialog(
@@ -1326,6 +1321,36 @@ class Controller extends ChangeNotifier {
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+ viewKot(
+    BuildContext context,
+    String date,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? cid = await prefs.getString("cid");
+    // String? db = prefs.getString("db_name");
+    // String? brId = await prefs.getString("br_id");
+    String? os = await prefs.getString("os");
+    
+    isKOTLoading = true;
+    notifyListeners();
+
+    print(
+        "Kot List -------------{Kot_Open_kot'$os','$date'}");
+    var res =
+        await SqlConn.readData("Kot_Open_kot'$os','$date'");
+    var valueMap = json.decode(res);
+    isKOTLoading = false;
+    notifyListeners();
+    print("view Kot---$res");
+
+    kotItems.clear();
+    for (var item in valueMap) {
+      kotItems.add(item);
+    }
+   
+    notifyListeners();
+  }
+///////////////////////////////////////////////////////////////////////////////////
   searchTable(String val) {
     filteredlist.clear();
     notifyListeners();
