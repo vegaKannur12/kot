@@ -55,15 +55,15 @@ class _ItemWidgetState extends State<ItemWidget> {
                     return Padding(
                         padding: const EdgeInsets.only(left: 2.0, right: 2),
                         child: Card(
-                          color: 
-                          // value.response[index] > 0
-                          //     ? Colors.lightGreen
-                          //     : 
+                          color:
+                              // value.response[index] > 0
+                              //     ? Colors.lightGreen
+                              //     :
                               Colors.white,
                           child: ListTile(
-                            onTap: ()  {
+                            onTap: () {
                               cocosheet.showorderMoadlBottomsheet(widget.list,
-                                  context, size, index, decriptn_cntrlr,date);
+                                  context, size, index, decriptn_cntrlr, date);
                               // await showDialog(
                               //     context: context,
                               //     builder: (context) {
@@ -136,7 +136,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                               //                           onTap: () {
                               //                             value.response[
                               //                                 index] = 0;
-    
+
                               //                             Provider.of<Controller>(
                               //                                     context,
                               //                                     listen: false)
@@ -409,7 +409,8 @@ class _ItemWidgetState extends State<ItemWidget> {
                                 EdgeInsets.only(left: 8.0, right: 0),
                             title: Text(
                               widget.list[index]["Product"]
-                                  .toString().trimLeft()
+                                  .toString()
+                                  .trimLeft()
                                   .toUpperCase(),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -425,7 +426,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                           ),
                         ));
                   })
-    
+
                   // ListView.builder(
                   //     shrinkWrap: true,
                   //     itemCount: widget.list.length,
@@ -445,7 +446,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                   //                   widget.list[index]["Product"]
                   //                       .toString()
                   //                       .toUpperCase(),overflow: TextOverflow.ellipsis,
-    
+
                   //                   textScaleFactor:
                   //                       ScaleSize.textScaleFactor(context),
                   //                   style: TextStyle(
@@ -479,7 +480,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                   //                 ],
                   //                                          ),
                   //              ),
-    
+
                   //           ],
                   //         ),
                   //       );

@@ -137,199 +137,211 @@ class _HomePageState extends State<HomePage> {
                         topRight: Radius.circular(20),
                       ),
                     ),
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet<void>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      // height: 200,
-                                      height: value.roomlist.isNotEmpty
-                                          ? MediaQuery.of(context).size.height *
-                                              0.65
-                                          : size.height * 0.2,
-                                      color: Colors.white,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          value.roomlist.isNotEmpty
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                        icon: const Icon(
-                                                            Icons.close))
-                                                  ],
-                                                )
-                                              : Container(),
-                                          TextFormField(
-                                            controller: seacrhRoom,
-                                            //   decoration: const InputDecoration(,
-                                            onChanged: (val) {
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .searchRoom(val.toString());
-                                            },
-                                            decoration: InputDecoration(
-                                              prefixIcon: const Icon(
-                                                Icons.search,
-                                                color: Colors.black,
-                                              ),
-                                              suffixIcon: IconButton(
-                                                icon: const Icon(Icons.cancel),
-                                                onPressed: () {
-                                                  seacrhRoom.clear();
-                                                  value.isRoomSearch = false;
-                                                  Provider.of<Controller>(
-                                                          context,
-                                                          listen: false)
-                                                      .searchRoom("");
-                                                },
-                                              ),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                borderSide: const BorderSide(
-                                                    color: Colors.blue,
-                                                    width: 1.0),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                borderSide: const BorderSide(
-                                                    color: Colors.black,
-                                                    width: 1.0),
-                                              ),
-                                              hintText: "Search room...",
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    // height: 200,
+                                    height: value.roomlist.isNotEmpty
+                                        ? MediaQuery.of(context).size.height *
+                                            0.65
+                                        : size.height * 0.2,
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        value.roomlist.isNotEmpty
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context);
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.close))
+                                                ],
+                                              )
+                                            : Container(),
+                                        TextFormField(
+                                          controller: seacrhRoom,
+                                          //   decoration: const InputDecoration(,
+                                          onChanged: (val) {
+                                            Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .searchRoom(val.toString());
+                                          },
+                                          decoration: InputDecoration(
+                                            prefixIcon: const Icon(
+                                              Icons.search,
+                                              color: Colors.black,
                                             ),
+                                            suffixIcon: IconButton(
+                                              icon: const Icon(Icons.cancel),
+                                              onPressed: ()async {
+                                                // seacrhRoom.clear();
+                                                // value.isRoomSearch = false;
+                                                // Provider.of<Controller>(
+                                                //         context,
+                                                //         listen: false)
+                                                //     .searchRoom("");
+                                                  seacrhRoom.clear();
+                                                // value.isRoomSearch = false;
+                                               await Provider.of<Controller>(
+                                                        context,
+                                                        listen: false)
+                                                    .searchRoom(" ");
+                                                  await Provider.of<Controller>(
+                                                        context,
+                                                        listen: false)
+                                                    .getRoomList(context);
+                                              },
+                                            ),
+                                            focusedBorder:
+                                                UnderlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.blue,
+                                                  width: 1.0),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.black,
+                                                  width: 1.0),
+                                            ),
+                                            hintText: "Search room...",
                                           ),
-                                          value.isRoomSearch
-                                              ? roomWidget(
-                                                  size,
-                                                  value.filteredroomlist,
-                                                  context)
-                                              : roomWidget(
-                                                  size, value.roomlist, context)
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  Icon(Icons.cabin, color: Colors.white),
-                                  Text(
-                                    'Room Credit',
-                                    textScaleFactor:
-                                        ScaleSize.textScaleFactor(context),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                        color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  print("------------${value.tablID}");
-                                  if (value.tablID!.isNotEmpty) {
-                                    await Provider.of<Controller>(context,
-                                            listen: false)
-                                        .getCategoryList(context);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CategoryScreen(
-                                                tablId:
-                                                    value.tablname.toString(),
-                                                roomId:
-                                                    value.roomnm.toString() ??
-                                                        "",
-                                              )),
-                                    ).then((value) {
-                                      // This code runs when returning from the NextScreen
-                                      // You can put your refresh logic here
-                                      setState(() {
-                                        Provider.of<Controller>(context,
-                                                listen: false)
-                                            .clearAllData(context);
-                                        // Update data or perform actions to refresh the page
-                                      });
-                                    });
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => CategoryScreen(
-                                    //             tablId:
-                                    //                 value.tablname.toString(),
-                                    //             roomId:
-                                    //                 value.roomnm.toString() ??
-                                    //                     "",
-                                    //           )),
-                                    // );
-                                  } else {
-                                    CustomSnackbar snackbar = CustomSnackbar();
-                                    snackbar.showSnackbar(
-                                        context, "Select Table", "");
-                                  }
+                                        ),
+                                        value.isRoomSearch
+                                            ? roomWidget(
+                                                size,
+                                                value.filteredroomlist,
+                                                context)
+                                            : roomWidget(
+                                                size, value.roomlist, context)
+                                      ],
+                                    ),
+                                  );
                                 },
-                                child: Text("Proceed"))
-                          ],
-                        ),
+                              );
+                            },
+                            child:ElevatedButton(onPressed: (){}, child: Row(
+                              children: [
+                                Icon(Icons.cabin, color: Colors.black),
+                                SizedBox(width: 10,),
+                                Text(
+                                  'Room Credit',
+                                  textScaleFactor:
+                                      ScaleSize.textScaleFactor(context),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                )
+                              ],
+                            ),) 
+                            
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                print("------------${value.tablID}");
+                                if (value.tablID!.isNotEmpty) {
+                                  await Provider.of<Controller>(context,
+                                          listen: false)
+                                      .getCategoryList(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CategoryScreen(
+                                              tablId:
+                                                  value.tablname.toString(),
+                                              roomId:
+                                                  value.roomnm.toString() ??
+                                                      "",
+                                            )),
+                                  ).then((value) {
+                                    // This code runs when returning from the NextScreen
+                                    // You can put your refresh logic here
+                                    setState(() {
+                                      Provider.of<Controller>(context,
+                                              listen: false)
+                                          .clearAllData(context);
+                                      // Update data or perform actions to refresh the page
+                                    });
+                                  });
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => CategoryScreen(
+                                  //             tablId:
+                                  //                 value.tablname.toString(),
+                                  //             roomId:
+                                  //                 value.roomnm.toString() ??
+                                  //                     "",
+                                  //           )),
+                                  // );
+                                } else {
+                                  CustomSnackbar snackbar = CustomSnackbar();
+                                  snackbar.showSnackbar(
+                                      context, "Select Table", "");
+                                }
+                              },
+                              child: Text("Proceed"))
+                        ],
                       ),
                     ),
                   );
                 },
               ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Consumer<Controller>(
-            builder: (context, value, child) => Column(
-              children: [
-                // TextFormField(
-                //   controller: seacrh,
-                //   //   decoration: const InputDecoration(,
-                //   onChanged: (val) {
-                //     Provider.of<Controller>(context, listen: false)
-                //         .searchTable(val.toString());
-                //   },
-                //   decoration: InputDecoration(
-                //       prefixIcon: Icon(
-                //         Icons.search,
-                //         color: Colors.blue,
-                //       ),
-                //       suffixIcon: IconButton(
-                //         icon: new Icon(Icons.cancel),
-                //         onPressed: () {
-                //           seacrh.clear();
-                //           Provider.of<Controller>(context, listen: false)
-                //               .searchTable("");
-                //         },
-                //       ),
-                //       hintText: "Search Table..."),
-                // ),
-                const SizedBox(
-                  height: 15,
-                ),
-                value.isSearch
-                    ? tableWidget(size, value.filteredlist)
-                    : tableWidget(size, value.tabllist)
-              ],
+        body: RefreshIndicator(
+         onRefresh: _handleRefresh,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Consumer<Controller>(
+              builder: (context, value, child) => Column(
+                children: [
+                  // TextFormField(
+                  //   controller: seacrh,
+                  //   //   decoration: const InputDecoration(,
+                  //   onChanged: (val) {
+                  //     Provider.of<Controller>(context, listen: false)
+                  //         .searchTable(val.toString());
+                  //   },
+                  //   decoration: InputDecoration(
+                  //       prefixIcon: Icon(
+                  //         Icons.search,
+                  //         color: Colors.blue,
+                  //       ),
+                  //       suffixIcon: IconButton(
+                  //         icon: new Icon(Icons.cancel),
+                  //         onPressed: () {
+                  //           seacrh.clear();
+                  //           Provider.of<Controller>(context, listen: false)
+                  //               .searchTable("");
+                  //         },
+                  //       ),
+                  //       hintText: "Search Table..."),
+                  // ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  value.isSearch
+                      ? tableWidget(size, value.filteredlist)
+                      : tableWidget(size, value.tabllist)
+                ],
+              ),
             ),
           ),
         ),
@@ -366,53 +378,58 @@ class _HomePageState extends State<HomePage> {
                               crossAxisCount: 3,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12),
-                      itemBuilder: (context, index) => InkWell(
-                        onTap: () async {
-                          await value.setTableID(
-                              list[index]["Table_ID"].toString().trimLeft(),
-                              list[index]["Table_Name"].toString().trimLeft(),
-                              context);
-                          await Provider.of<Controller>(context, listen: false)
-                              .getCartNo(context);
-                          CustomSnackbar snackbar = CustomSnackbar();
-                          snackbar.showSnackbar(
-                              context,
-                              "Table ${value.tablname.toString()} Selected.",
-                              "");
-                          // showDialog(
-                          //     barrierDismissible: false,
-                          //     context: context,
-                          //     builder: (context) {
-                          //       Size size = MediaQuery.of(context).size;
-
-                          //       Future.delayed(Duration(seconds: 2), () {
-                          //         Navigator.of(context).pop(true);
-                          //       });
-                          //       return AlertDialog(
-                          //           content: Row(
-                          //         mainAxisAlignment: MainAxisAlignment.center,
-                          //         children: [
-                          //           Text(
-                          //             'Table ${value.tablID.toString()} Selected.',
-                          //           ),
-                          //           Icon(
-                          //             Icons.done,
-                          //             color: Colors.green,
-                          //           )
-                          //         ],
-                          //       ));
-                          //     });
-                          setState(() {});
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => CategoryScreen(
-                          //           tablId:
-                          //               list[index]["Table_ID"].toString())),
-                          // );
+                      itemBuilder: (context, index) => Container(
+                        
+                        decoration: BoxDecoration(
+                           color: list[index]["STATUS"]==1?Color.fromARGB(255, 230, 167, 167):Colors.white,
+                          border: Border.all(color: Colors.black45),borderRadius: BorderRadius.circular(10)),
+                        child: InkWell(onLongPress: () {
+                          
                         },
-                        child: Card(
-                          color: Colors.grey[200],
+                          onTap: () async {
+                            await value.setTableID(
+                                list[index]["Table_ID"].toString().trimLeft(),
+                                list[index]["Table_Name"].toString().trimLeft(),
+                                context);
+                            await Provider.of<Controller>(context, listen: false)
+                                .getCartNo(context);
+                            CustomSnackbar snackbar = CustomSnackbar();
+                            snackbar.showSnackbar(
+                                context,
+                                "Table ${value.tablname.toString().trimLeft().toUpperCase()} Selected.",
+                                "");
+                            // showDialog(
+                            //     barrierDismissible: false,
+                            //     context: context,
+                            //     builder: (context) {
+                            //       Size size = MediaQuery.of(context).size;
+                        
+                            //       Future.delayed(Duration(seconds: 2), () {
+                            //         Navigator.of(context).pop(true);
+                            //       });
+                            //       return AlertDialog(
+                            //           content: Row(
+                            //         mainAxisAlignment: MainAxisAlignment.center,
+                            //         children: [
+                            //           Text(
+                            //             'Table ${value.tablID.toString()} Selected.',
+                            //           ),
+                            //           Icon(
+                            //             Icons.done,
+                            //             color: Colors.green,
+                            //           )
+                            //         ],
+                            //       ));
+                            //     });
+                            setState(() {});
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => CategoryScreen(
+                            //           tablId:
+                            //               list[index]["Table_ID"].toString())),
+                            // );
+                          },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -442,6 +459,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
+                              // Divider(color: Colors.black,)
                             ],
                           ),
                         ),
@@ -481,9 +499,9 @@ class _HomePageState extends State<HomePage> {
                         child: InkWell(
                           onTap: () async {
                             await value.setRoomID(
-                                list[index]["Room_ID"].toString(),
-                                list[index]["Room_Name"].toString(),
-                                list[index]["Guest_Info"].toString(),
+                                list[index]["Room_ID"].toString().trimLeft(),
+                                list[index]["Room_Name"].toString().trimLeft(),
+                                list[index]["Guest_Info"].toString().trimLeft(),
                                 context);
                             Navigator.pop(context);
                             // CustomSnackbar snackbar = CustomSnackbar();
@@ -550,7 +568,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: size.width * 1 / 5,
+                                           width: size.width *1/2,
                                           child: Text(
                                             maxLines: 2,
                                             list[index]["Guest_Info"]
@@ -575,6 +593,16 @@ class _HomePageState extends State<HomePage> {
                     ),
             ),
     );
+  }
+    Future<void> _handleRefresh() async {
+    // Simulate network fetch or database query
+    await Future.delayed(Duration(seconds: 2));
+    // Update the list of items and refresh the UI
+    setState(() {
+       Provider.of<Controller>(context, listen: false).getTableList(context);
+       print("Table Refreshed----");
+      // items = List.generate(20, (index) => "Refreshed Item ${index + 1}");
+    });
   }
 }
 

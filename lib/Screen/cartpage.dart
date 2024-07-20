@@ -44,8 +44,7 @@ class _CartBagState extends State<CartBag> {
           title: Consumer<Controller>(
             builder: (BuildContext context, Controller value, Widget? child) =>
                 Text(
-              "Your Order ( ${value.cart_id.toString()})",
-
+              "Your Order ( ${value.cart_id.toString()} )",
               ///value.cartItems.length
               style: TextStyle(
                 fontSize: 19,
@@ -62,7 +61,7 @@ class _CartBagState extends State<CartBag> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : value.room_nm.toString().toUpperCase()}",
+                    "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"}",
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,

@@ -697,16 +697,21 @@ class Controller extends ChangeNotifier {
           catlist.add(item);
         }
       }
+      // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"food1"},{"Cat_Id":"VGMHD3", "Cat_Name":"food3"}];
       print("categoryList...................-$res");
-
+     
       isCategoryLoading = false;
       notifyListeners();
-    } catch (e) {
+    } 
+    catch (e) 
+    {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
       return [];
       // Handle other types of exceptions
-    } finally {
+    } 
+    finally 
+    {
       if (SqlConn.isConnected) {
         debugPrint("Database connected, not popping context.");
       } else {
@@ -1344,10 +1349,10 @@ class Controller extends ChangeNotifier {
     print("view Kot---$res");
 
     kotItems.clear();
-    for (var item in valueMap) {
-      kotItems.add(item);
-    }
-   
+    // for (var item in valueMap) {
+    //   kotItems.add(item);
+    // }
+   kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0}, {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0}, {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
     notifyListeners();
   }
 ///////////////////////////////////////////////////////////////////////////////////
@@ -1413,8 +1418,11 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  searchRoom(String val) {
-    filteredroomlist = roomlist;
+ searchRoom(String val) {
+    // filteredroomlist.clear();
+    // filteredroomlist = roomlist;
+    // notifyListeners();
+    // getRoomList(context);
     if (val.isNotEmpty) {
       isRoomSearch = true;
       notifyListeners();
@@ -1428,8 +1436,9 @@ class Controller extends ChangeNotifier {
           .toList();
     } else {
       isRoomSearch = false;
-      notifyListeners();
+     
       filteredroomlist = roomlist;
+       notifyListeners();
     }
     // qty =
     //     List.generate(filteredlist.length, (index) => TextEditingController());
@@ -1440,8 +1449,37 @@ class Controller extends ChangeNotifier {
     //   response[i] = 0;
     // }
     print("filtered_Roomm_List----------------$filteredroomlist");
-    notifyListeners();
+    // notifyListeners();
   }
+  // searchRoom(String val) {
+  //   filteredroomlist = roomlist;
+  //   if (val.isNotEmpty) {
+  //     isRoomSearch = true;
+  //     notifyListeners();
+
+  //     filteredroomlist = roomlist
+  //         .where((e) => e["Room_Name"]
+  //             .toString()
+  //             .trimLeft()
+  //             .toLowerCase()
+  //             .contains(val.toLowerCase()))
+  //         .toList();
+  //   } else {
+  //     isRoomSearch = false;
+  //     notifyListeners();
+  //     filteredroomlist = roomlist;
+  //   }
+  //   // qty =
+  //   //     List.generate(filteredlist.length, (index) => TextEditingController());
+  //   // isAdded = List.generate(filteredlist.length, (index) => false);
+  //   // response = List.generate(filteredlist.length, (index) => 0);
+  //   // for (int i = 0; i < filteredlist.length; i++) {
+  //   //   qty[i].text = "1.0";
+  //   //   response[i] = 0;
+  //   // }
+  //   print("filtered_Roomm_List----------------$filteredroomlist");
+  //   notifyListeners();
+  // }
 
   searchItem(String val) {
     filteredlist = itemlist;

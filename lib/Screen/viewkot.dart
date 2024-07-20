@@ -212,7 +212,7 @@ class _ViewKotState extends State<ViewKot> {
 
       return Card(
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(15),
           child: Column(
             children: [
               SizedBox(
@@ -221,39 +221,45 @@ class _ViewKotState extends State<ViewKot> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
+                  Flexible(flex: 3,
                       child: Text(
                     // "product name",
                     "${map["Kot_No"].toString().trimLeft().toUpperCase()}",
                     style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   )),
                   Container(
-                    color: Colors.yellow,
+                    color: map["Status"]==1?Color.fromARGB(255, 156, 233, 158):Color.fromARGB(255, 243, 225, 170),
+                  constraints: BoxConstraints(minWidth: size.width*0.3),
                     padding: EdgeInsets.all(5),
-                    child: Row(children: [
-                      Text(
-                        // "product name",
-                        "${map["Table_No"].toString().trimLeft().toUpperCase() == "NULL" || map["Table_No"].toString().trimLeft().toUpperCase() == " " ? "" : map["Table_No"].toString().trimLeft().toUpperCase()}",
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 2, 131, 236)),
+                    child: Row( mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      FittedBox(
+                        child: Text(
+                          // "product name",
+                          "${map["Table_No"].toString().trimLeft().toUpperCase() == "NULL" || map["Table_No"].toString().trimLeft().toUpperCase() == " " ? "" : map["Table_No"].toString().trimLeft().toUpperCase()}",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 27, 123, 201)),overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      Text(
-                        // "product name",
-                        "/ ${map["Room_No"].toString().trimLeft().toUpperCase() == "NULL" || map["Room_No"].toString().trimLeft().toUpperCase() == " " ? "" : map["Room_No"].toString().trimLeft().toUpperCase()}",
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 2, 131, 236)),
+                      FittedBox(
+                        child: Text(
+                          // "product name",
+                          "/ ${map["Room_No"].toString().trimLeft().toUpperCase() == "NULL" || map["Room_No"].toString().trimLeft().toUpperCase() == " " ? "" : map["Room_No"].toString().trimLeft().toUpperCase()}",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 27, 123, 201)),overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ]),
                   ),
                 ],
-              ),
+              ),SizedBox(height: size.height * 0.01,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

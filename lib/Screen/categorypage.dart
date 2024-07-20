@@ -64,7 +64,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    "${value.tabl_name.toString().toUpperCase()} / ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : value.room_nm.toString().toUpperCase()} /${value.cart_id.toString()}",
+                    "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"} / ${value.cart_id.toString()}",
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -172,8 +172,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                     )),
                           );
                         },
-                        child: Card(
-                          color: Colors.grey[200],
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.black45),
+                              borderRadius: BorderRadius.circular(10)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
