@@ -185,13 +185,15 @@ class OrderBottomSheet {
                                               context: context,
                                               builder: (context) {
                                                 return AlertDialog(
-                                                  content: TextField(
-                                                    controller: dec_ctrl,
-                                                    maxLines: 3,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16),
+                                                  content: Container( width: size.width * 1 / 2,
+                                                    child: TextField(
+                                                      controller: dec_ctrl,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16),
+                                                    ),
                                                   ),
                                                   actions: <Widget>[
                                                     ElevatedButton(

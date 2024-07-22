@@ -41,7 +41,8 @@ class Controller extends ChangeNotifier {
   bool isOrderLoading = false;
   bool isfreez = false;
   List<Map<String, dynamic>> cartItems = [];
-   List<Map<String, dynamic>> kotItems = [];
+  List<Map<String, dynamic>> kotItems = [];
+  List<Map<String, dynamic>> tableItemList = [];
   bool isCartLoading = false;
   bool isKOTLoading = false;
   List<Map<String, dynamic>> categoryList = [];
@@ -120,7 +121,7 @@ class Controller extends ChangeNotifier {
   bool isTableLoading = false;
   bool isRoomLoading = false;
   bool isCategoryLoading = false;
-
+  bool istableItemListLoading = false;
   bool isItemLoading = false;
   String? tablID = "";
   String? roomID = "0";
@@ -574,7 +575,8 @@ class Controller extends ChangeNotifier {
 
       isTableLoading = false;
       notifyListeners();
-    } catch (e) {
+    } catch (e) 
+    {
       print("An unexpected error occurred: $e");
       SqlConn.disconnect();
       return [];
@@ -1349,13 +1351,43 @@ class Controller extends ChangeNotifier {
     print("view Kot---$res");
 
     kotItems.clear();
-    // for (var item in valueMap) {
-    //   kotItems.add(item);
-    // }
-   kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0}, {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0}, {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
+    for (var item in valueMap) {
+      kotItems.add(item);
+    }
+
+  //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0}, {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0}, {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
     notifyListeners();
   }
 ///////////////////////////////////////////////////////////////////////////////////
+ viewTableItems(
+    BuildContext context,
+    String tbl
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? cid = await prefs.getString("cid");
+    // String? db = prefs.getString("db_name");
+    // String? brId = await prefs.getString("br_id");
+    String? os = await prefs.getString("os");
+    
+    istableItemListLoading = true;
+    notifyListeners();
+
+    print(
+        "TableItems List -------------{Kot_Table_Items'$tbl'}");
+    var res =
+        await SqlConn.readData("Kot_Table_Items '$tbl'");
+    var valueMap = json.decode(res);
+    istableItemListLoading = false;
+    notifyListeners();
+    print("TableItems---$res");
+    tableItemList.clear();
+    for (var item in valueMap) {
+      tableItemList.add(item);
+    }   
+  //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0}, {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0}, {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
+    notifyListeners();
+  }
+////////////////////////////////////////////////////////////////////////
   searchTable(String val) {
     filteredlist.clear();
     notifyListeners();
@@ -1418,15 +1450,13 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
- searchRoom(String val) {
-    // filteredroomlist.clear();
-    // filteredroomlist = roomlist;
-    // notifyListeners();
-    // getRoomList(context);
+
+  searchRoom(String val) {
+    filteredroomlist = roomlist;
+    print("searchroom----$val--");
     if (val.isNotEmpty) {
       isRoomSearch = true;
-      notifyListeners();
-
+     
       filteredroomlist = roomlist
           .where((e) => e["Room_Name"]
               .toString()
@@ -1434,22 +1464,15 @@ class Controller extends ChangeNotifier {
               .toLowerCase()
               .contains(val.toLowerCase()))
           .toList();
+   
     } else {
       isRoomSearch = false;
-     
+      
       filteredroomlist = roomlist;
-       notifyListeners();
+      notifyListeners();
     }
-    // qty =
-    //     List.generate(filteredlist.length, (index) => TextEditingController());
-    // isAdded = List.generate(filteredlist.length, (index) => false);
-    // response = List.generate(filteredlist.length, (index) => 0);
-    // for (int i = 0; i < filteredlist.length; i++) {
-    //   qty[i].text = "1.0";
-    //   response[i] = 0;
-    // }
     print("filtered_Roomm_List----------------$filteredroomlist");
-    // notifyListeners();
+    notifyListeners();
   }
   // searchRoom(String val) {
   //   filteredroomlist = roomlist;
