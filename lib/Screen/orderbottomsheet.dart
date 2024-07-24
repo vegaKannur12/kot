@@ -6,12 +6,16 @@ import 'package:restaurent_kot/controller/controller.dart';
 class OrderBottomSheet {
   // String? selected;
   ValueNotifier<bool> visible = ValueNotifier(false);
+  String desss = "";
+  String completeText = '';
+  String finalText = "";
+  TextEditingController searchController = TextEditingController();
   showorderMoadlBottomsheet(
     List<Map<String, dynamic>> list,
     BuildContext context,
     Size size,
     int index,
-    TextEditingController dec_ctrl,
+    // TextEditingController dec_ctrl,
     String? date,
   ) async {
     return showModalBottomSheet(
@@ -53,7 +57,8 @@ class OrderBottomSheet {
                                     children: [
                                       Text(
                                         list[index]["Product"]
-                                            .toString().trimLeft()
+                                            .toString()
+                                            .trimLeft()
                                             .toUpperCase(),
                                         style: TextStyle(
                                           fontSize: 20,
@@ -80,8 +85,10 @@ class OrderBottomSheet {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
-                                      style: TextStyle(fontSize: 15),
+                                      "\u{20B9} ${list[index]["SRATE"].toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Row(
                                       children: [
@@ -99,7 +106,9 @@ class OrderBottomSheet {
                                             )),
                                         Container(
                                           margin: EdgeInsets.only(
-                                              left: 5, right: 5,top: 5,
+                                              left: 5,
+                                              right: 5,
+                                              top: 5,
                                               bottom: 5),
                                           width: size.width * 0.14,
                                           // height: size.height * 0.05,
@@ -181,18 +190,174 @@ class OrderBottomSheet {
                                   children: [
                                     InkWell(
                                         onTap: () async {
-                                          await showDialog(barrierDismissible: false,
+                                          desss = "";
+                                          await showDialog(
+                                              barrierDismissible: false,
                                               context: context,
                                               builder: (context) {
                                                 return AlertDialog(
-                                                  content: Container( width: size.width * 1 / 2,
-                                                    child: TextField(
-                                                      controller: dec_ctrl,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16),
+                                                  content: Container(
+                                                    width: size.width * 1 / 2,
+                                                    child: SizedBox(
+                                                      width: size.width * 1 / 2,
+                                                      child: StatefulBuilder(
+                                                        builder: (BuildContext
+                                                                    context,
+                                                                void Function(
+                                                                        void
+                                                                            Function())
+                                                                    setState) =>
+                                                            Autocomplete<String>(optionsBuilder:
+                                                                (TextEditingValue
+                                                                    textEditingValue) {
+                                                          if (textEditingValue
+                                                              .text.isEmpty) {
+                                                            return value
+                                                                .suggestions;
+                                                          }
+                                                          return value
+                                                              .suggestions
+                                                              .where((suggst) => suggst
+                                                                  .toLowerCase()
+                                                                  .contains(
+                                                                      textEditingValue
+                                                                          .text
+                                                                          .toLowerCase()));
+                                                        }, optionsViewBuilder:
+                                                                (context,
+                                                                    onSelected,
+                                                                    options) {
+                                                          return Align(
+                                                            alignment: Alignment
+                                                                .topLeft,
+                                                            child: Material(
+                                                              elevation: 4.0,
+                                                              child: Container(
+                                                                width:
+                                                                    300, // Set the width of the options here
+                                                                child: ListView
+                                                                    .builder(
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              8.0),
+                                                                  itemCount:
+                                                                      options
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (BuildContext
+                                                                              context,
+                                                                          int index) {
+                                                                    final String
+                                                                        option =
+                                                                        options.elementAt(
+                                                                            index);
+
+                                                                    return GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        onSelected(
+                                                                            option);
+                                                                      },
+                                                                      child:
+                                                                          ListTile(
+                                                                        title: Text(
+                                                                            option),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }, onSelected:
+                                                                (suggestion) {
+                                                          // desss = suggestion;
+                                                          // print(
+                                                          //     "auto-----------$desss");
+                                                          // // handle user selection of a country
+                                                          setState(() {
+                                                            searchController
+                                                                .clear();
+                                                            searchController
+                                                                    .text =
+                                                                suggestion;
+                                                            searchController
+                                                                    .selection =
+                                                                TextSelection
+                                                                    .fromPosition(
+                                                              TextPosition(
+                                                                  offset:
+                                                                      suggestion
+                                                                          .length),
+                                                            );
+
+                                                            finalText =
+                                                                suggestion;
+                                                            print(
+                                                                "Complete text: $finalText");
+                                                            print(
+                                                                "Saving text: $finalText");
+                                                          });
+                                                          // print(
+                                                          //     "Complete text: $newText");
+                                                          // print(
+                                                          //     "saving text----$finalText");
+                                                        }, fieldViewBuilder: (context,
+                                                                searchController,
+                                                                focusNode,
+                                                                onEditingComplete) {
+                                                          return TextField(
+                                                            controller:
+                                                                searchController,
+                                                            focusNode:
+                                                                focusNode,
+                                                            onChanged: (text) {
+                                                              setState(() {
+                                                                completeText =
+                                                                    text;
+                                                                finalText =
+                                                                    text;
+                                                              });
+                                                              print(
+                                                                  "Text in the field: $completeText");
+                                                              print(
+                                                                  "Text in finalText: $finalText");
+                                                            },
+                                                            decoration:
+                                                                InputDecoration(
+                                                              // prefixIcon: Icon(
+                                                              //   Icons.search,
+                                                              //   color: Colors.black,
+                                                              // ),
+                                                              suffixIcon:
+                                                                  IconButton(
+                                                                icon: Icon(Icons
+                                                                    .cancel),
+                                                                onPressed: () {
+                                                                  searchController
+                                                                      .clear();
+                                                                  completeText =
+                                                                      "";
+                                                                  finalText =
+                                                                      "";
+                                                                },
+                                                              ),
+                                                              hintText:
+                                                                  "Type Here...",
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }),
+                                                      ),
                                                     ),
                                                   ),
                                                   actions: <Widget>[
@@ -206,15 +371,15 @@ class OrderBottomSheet {
                                                         child: Text('Cancel')),
                                                     ElevatedButton(
                                                         onPressed: () {
-                                                  //          Provider.of<Controller>(context,
-                                                  //     listen: false)
-                                                  // .setDescr(value.descr[index].text.toString(),index);
+                                                          //          Provider.of<Controller>(context,
+                                                          //     listen: false)
+                                                          // .setDescr(value.descr[index].text.toString(),index);
                                                           Navigator.of(context,
                                                                   rootNavigator:
                                                                       true)
                                                               .pop(false);
                                                         },
-                                                        child: Text("Save"))
+                                                        child: Text("Ok"))
                                                   ],
                                                 );
                                               });
@@ -238,32 +403,6 @@ class OrderBottomSheet {
                                             ),
                                           ],
                                         )),
-                                    // widget.list[index]["Pkg"] == null ||
-                                    //       widget.list[index]["Pkg"] == ""
-                                    //   ? Container()
-                                    //   : Container(
-                                    //       decoration: BoxDecoration(
-                                    //         color: Color.fromARGB(
-                                    //             255, 235, 234, 234),
-                                    //         borderRadius:
-                                    //             BorderRadius.circular(10),
-                                    //         // border: Border.all(
-                                    //         //     color: Colors.red)
-                                    //       ),
-                                    //       child: Padding(
-                                    //         padding: const EdgeInsets.only(
-                                    //             left: 8.0,
-                                    //             right: 8,
-                                    //             bottom: 4,
-                                    //             top: 4),
-                                    //         child: Text(
-                                    //           "Pkg :${widget.list[index]["Pkg"]}",
-                                    //           style: TextStyle(
-                                    //               fontWeight: FontWeight.bold,
-                                    //               color: Colors.black),
-                                    //         ),
-                                    //       ),
-                                    //     ),
                                   ],
                                 ),
                               ),
@@ -292,7 +431,11 @@ class OrderBottomSheet {
                                                     list[index],
                                                     date!,
                                                     double.parse(
-                                                        value.qty[index].text),dec_ctrl.text,
+                                                        value.qty[index].text),
+                                                    finalText,
+                                                    // completeText,
+                                                    // desss,
+                                                    // dec_ctrl.text,
                                                     // value.descr[index].text,
                                                     index,
                                                     "from itempage",

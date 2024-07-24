@@ -132,7 +132,8 @@ class _HomePageState extends State<HomePage> {
                   return Container(
                     height: 60,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 197, 121, 71),
+                      color: Color.fromARGB(255, 111, 128, 228),
+                      // Color.fromARGB(255, 197, 121, 71),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
@@ -149,9 +150,10 @@ class _HomePageState extends State<HomePage> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return StatefulBuilder(
-                                     builder: (BuildContext context,
+                                    builder: (BuildContext context,
                                             void Function(void Function())
-                                                setState) =>Container(
+                                                setState) =>
+                                        Container(
                                       // height: 200,
                                       height: value.roomlist.isNotEmpty
                                           ? MediaQuery.of(context).size.height *
@@ -168,7 +170,8 @@ class _HomePageState extends State<HomePage> {
                                                   children: [
                                                     IconButton(
                                                         onPressed: () {
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         },
                                                         icon: const Icon(
                                                             Icons.close))
@@ -179,10 +182,11 @@ class _HomePageState extends State<HomePage> {
                                             controller: seacrhRoom,
                                             //   decoration: const InputDecoration(,
                                             onChanged: (val) {
-                                               setState(() {
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .searchRoom(val.toString());});
+                                              setState(() {
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .searchRoom(val.toString());
+                                              });
                                             },
                                             decoration: InputDecoration(
                                               prefixIcon: const Icon(
@@ -191,19 +195,20 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               suffixIcon: IconButton(
                                                 icon: const Icon(Icons.cancel),
-                                                onPressed: ()  {
-                                                    setState(() {
-                                                        print("pressed");
-                                                        seacrhRoom.clear();
-                                                     
-                                                        Provider.of<Controller>(
-                                                                context,
-                                                                listen: false)
-                                                            .searchRoom("");
-                                                      });
+                                                onPressed: () {
+                                                  setState(() {
+                                                    print("pressed");
+                                                    seacrhRoom.clear();
+
+                                                    Provider.of<Controller>(
+                                                            context,
+                                                            listen: false)
+                                                        .searchRoom("");
+                                                  });
                                                 },
                                               ),
-                                              focusedBorder: UnderlineInputBorder(
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20.0),
                                                 borderSide: const BorderSide(
@@ -221,8 +226,10 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           value.isRoomSearch
-                                              ? roomWidget(size,
-                                                  value.filteredroomlist, context)
+                                              ? roomWidget(
+                                                  size,
+                                                  value.filteredroomlist,
+                                                  context)
                                               : roomWidget(
                                                   size, value.roomlist, context)
                                         ],
@@ -271,7 +278,8 @@ class _HomePageState extends State<HomePage> {
                                     setState(() {
                                       Provider.of<Controller>(context,
                                               listen: false)
-                                          .clearAllData(context);seacrhRoom.clear();
+                                          .clearAllData(context);
+                                      seacrhRoom.clear();
                                       // Update data or perform actions to refresh the page
                                     });
                                   });
@@ -306,6 +314,51 @@ class _HomePageState extends State<HomePage> {
             child: Consumer<Controller>(
               builder: (context, value, child) => Column(
                 children: [
+                      Container(
+                    // height: 50,
+                    // width: 250,
+                    // decoration: BoxDecoration(shape: BoxShape.rectangle),
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(255, 119, 119, 119),
+                              width: 1),
+                        ),
+                      ),
+                      isExpanded: true,
+                      hint: Text("Select Table Category"),
+                      value: value.selectedTableCat,
+                     
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          value.selectedTableCat = newValue;
+                          print(("object"));
+                          print(
+                              ("selected TableCAT==${value.selectedTableCat}"));
+                          value.selectedItemTablecat = value.tableCategoryList
+                              .firstWhere((element) =>
+                                  element['Table_Category'] == newValue);
+                          print(
+                              "${value.selectedItemTablecat!['Table_Category']}");
+                          Provider.of<Controller>(context, listen: false)
+                              .updateTableCAT(context); 
+                          // Provider.of<Controller>(context, listen: false).getTableList(context);
+                        });
+                      },
+                      items: value.tableCategoryList
+                          .map<DropdownMenuItem<String>>(
+                              (Map<String, dynamic> item) {
+                        return DropdownMenuItem<String>(
+                          value: item['Table_Category'],
+                          child: Text(item['Table_Category']),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+
+
                   // TextFormField(
                   //   controller: seacrh,
                   //   //   decoration: const InputDecoration(,
@@ -333,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   value.isSearch
                       ? tableWidget(size, value.filteredlist)
-                      : tableWidget(size, value.tabllist)
+                      : tableWidget(size, value.tabllistCAT)
                 ],
               ),
             ),
@@ -362,16 +415,16 @@ class _HomePageState extends State<HomePage> {
                       // height: size.height * 0.7,
                       child: Center(child: Text("no data")))
                   : GridView.builder(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
+                      // shrinkWrap: true,
+                      // physics: const ScrollPhysics(),
                       itemCount: value.isSearch
                           ? value.filteredlist.length
-                          : value.tabllist.length,
+                          : value.tabllistCAT.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12),
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8),
                       itemBuilder: (context, index) => Container(
                         decoration: BoxDecoration(
                             color: list[index]["STATUS"] == 1
@@ -387,7 +440,8 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     list[index]["Table_Name"]
                                         .toString()
-                                        .trimLeft());
+                                        .trimLeft(),
+                                    0);
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -395,7 +449,14 @@ class _HomePageState extends State<HomePage> {
                                   title: Column(
                                     children: [
                                       Text(
-                                          'Pending Orders( ${value.tableItemList.length} )',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500,color: Color.fromARGB(255, 111, 128, 228),)),Divider()
+                                          'Pending Orders( ${value.tableItemList.length} )',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color.fromARGB(
+                                                255, 111, 128, 228),
+                                          )),
+                                      Divider()
                                     ],
                                   ),
                                   content: Container(
@@ -407,15 +468,25 @@ class _HomePageState extends State<HomePage> {
                                       itemBuilder:
                                           (BuildContext context, int index) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(bottom: 10),
+                                          padding:
+                                              const EdgeInsets.only(bottom: 10),
                                           child: Row(
                                             children: [
                                               Expanded(
                                                 child: Text(
-                                                    " ${value.tableItemList[index]['Item'].toString().trimLeft().toUpperCase()}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),overflow: TextOverflow.ellipsis,),
+                                                  " ${value.tableItemList[index]['Item'].toString().trimLeft().toUpperCase()}",
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                               Text(
-                                                  " ${value.tableItemList[index]['Qty'].toStringAsFixed(0)}",overflow: TextOverflow.ellipsis,),
+                                                " ${value.tableItemList[index]['Qty'].toStringAsFixed(0)}",
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ],
                                           ),
                                         );
@@ -497,7 +568,7 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,mainAxisSize: MainAxisSize.min,
                             children: [
                               // Expanded(
                               //   child: Image.asset(
@@ -560,83 +631,66 @@ class _HomePageState extends State<HomePage> {
                       //         crossAxisSpacing: 12,
                       //         mainAxisSpacing: 12),
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () {},
-                        child: InkWell(
-                          onTap: () async {
-                            await value.setRoomID(
-                                list[index]["Room_ID"].toString().trimLeft(),
-                                list[index]["Room_Name"].toString().trimLeft(),
-                                list[index]["Guest_Info"].toString().trimLeft(),
-                                context);
-                            Navigator.pop(context);
-                            // CustomSnackbar snackbar = CustomSnackbar();
-                            // snackbar.showSnackbar(
-                            //     context,
-                            //     "Room ${value.roomID.toString()} Selected.",
-                            //     "");
-                            // showDialog(
-                            //     barrierDismissible: false,
-                            //     context: context,
-                            //     builder: (context) {
-                            //       Size size = MediaQuery.of(context).size;
-
-                            //       Future.delayed(Duration(seconds: 2), () {
-                            //         Navigator.of(context).pop(true);
-                            //       });
-                            //       return AlertDialog(
-                            //           content: Row(
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         children: [
-                            //           Text(
-                            //             'Room ${value.roomID.toString()} Selected.',
-                            //           ),
-                            //           Icon(
-                            //             Icons.done,
-                            //             color: Colors.green,
-                            //           )
-                            //         ],
-                            //       ));
-                            //     });
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black12)),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 8),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: SizedBox(
-                                            width: size.width * 1 / 4,
-                                            child: Text(
-                                              maxLines: 2,
-                                              list[index]["Room_Name"]
-                                                  .toString()
-                                                  .trimLeft(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: size.width * 1 / 2,
+                        onTap: () async {
+                          await value.setRoomID(
+                              list[index]["Room_ID"].toString().trimLeft(),
+                              list[index]["Room_Name"].toString().trimLeft(),
+                              list[index]["Guest_Info"].toString().trimLeft(),
+                              context);
+                          Navigator.pop(context);
+                          // CustomSnackbar snackbar = CustomSnackbar();
+                          // snackbar.showSnackbar(
+                          //     context,
+                          //     "Room ${value.roomID.toString()} Selected.",
+                          //     "");
+                          // showDialog(
+                          //     barrierDismissible: false,
+                          //     context: context,
+                          //     builder: (context) {
+                          //       Size size = MediaQuery.of(context).size;
+                      
+                          //       Future.delayed(Duration(seconds: 2), () {
+                          //         Navigator.of(context).pop(true);
+                          //       });
+                          //       return AlertDialog(
+                          //           content: Row(
+                          //         mainAxisAlignment: MainAxisAlignment.center,
+                          //         children: [
+                          //           Text(
+                          //             'Room ${value.roomID.toString()} Selected.',
+                          //           ),
+                          //           Icon(
+                          //             Icons.done,
+                          //             color: Colors.green,
+                          //           )
+                          //         ],
+                          //       ));
+                          //     });
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black12)),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10,top: 8.0, bottom: 8),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10,right: 10),
+                                        child: SizedBox(
+                                          width: size.width * 1 / 4.4,
                                           child: Text(
                                             maxLines: 2,
-                                            list[index]["Guest_Info"]
+                                            list[index]["Room_Name"]
                                                 .toString()
                                                 .trimLeft(),
                                             style: TextStyle(
@@ -646,13 +700,28 @@ class _HomePageState extends State<HomePage> {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      Container(
+                                        // color: Colors.yellow,
+                                        width: size.width * 1 / 2,
+                                        child: Text(
+                                          maxLines: 2,
+                                          list[index]["Guest_Info"]
+                                              .toString()
+                                              .trimLeft(),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

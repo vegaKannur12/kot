@@ -231,6 +231,8 @@ class _LoginPageState extends State<LoginPage> {
                             .verifyStaff(password.text, context);
                     print("$i");
                     if (i == 1) {
+                       SharedPreferences prefs = await SharedPreferences.getInstance();
+                       prefs.setString("table_cat","ALL");
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => HomePage()));
                     } else {

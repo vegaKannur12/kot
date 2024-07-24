@@ -128,6 +128,7 @@ class _DBSelectionState extends State<DBSelection> {
                                                   listen: false)
                                               .initYearsDb(context, "");
                                          Provider.of<Controller>(context, listen: false).getLogin(context);
+                                         Provider.of<Controller>(context, listen: false).getTableCtegory(context);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

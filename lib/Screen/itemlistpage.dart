@@ -42,204 +42,215 @@ class _ItemListState extends State<ItemList> {
     print("catid====${widget.catlId}");
     print("catnm====${widget.catName}");
 
-    return WillPopScope(
-      onWillPop: () => _onBackPressed(context),
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-            onPressed: () async{
-             await Provider.of<Controller>(context, listen: false).viewCart(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CartBag()),
-              ).then((value) {
-                // This code runs when returning from the NextScreen
-                // You can put your refresh logic here
-                setState(() {
-                  Provider.of<Controller>(context, listen: false)
-                      .getItemList(context);
-                  // Update data or perform actions to refresh the page
-                });
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          onPressed: () async{
+           await Provider.of<Controller>(context, listen: false).viewCart(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CartBag()),
+            ).then((value) {
+              // This code runs when returning from the NextScreen
+              // You can put your refresh logic here
+              setState(() {
+                Provider.of<Controller>(context, listen: false)
+                    .getItemList(context);
+                // Update data or perform actions to refresh the page
               });
-              // Navigator.of(context).push(
-              //   PageRouteBuilder(
-              //       opaque: false, // set to false
-              //       pageBuilder: (_, __, ___) => CartBag()),
-              // );
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CartBag()),
-              // );
-            },
-            child: Consumer<Controller>(
-                builder: (context, value, child) => Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: badges.Badge(
-                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
-                        position:
-                            badges.BadgePosition.topEnd(top: -14, end: -15),
-                        showBadge: true,
-                        badgeContent: Text(
-                          value.cartTotal.toString(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        child: Icon(Icons.shopping_cart, color: Colors.white),
+            });
+            // Navigator.of(context).push(
+            //   PageRouteBuilder(
+            //       opaque: false, // set to false
+            //       pageBuilder: (_, __, ___) => CartBag()),
+            // );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //       builder: (context) => CartBag()),
+            // );
+          },
+          child: Consumer<Controller>(
+              builder: (context, value, child) => Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: badges.Badge(
+                      badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
+                      position:
+                          badges.BadgePosition.topEnd(top: -14, end: -15),
+                      showBadge: true,
+                      badgeContent: Text(
+                        value.cartTotal.toString(),
+                        style: TextStyle(color: Colors.white),
                       ),
-                    ))),
-        appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                // Provider.of<Controller>(context, listen: false).viewCart(
-                //   context,
-                //   value.customerId.toString(),
-                // );
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              )),
-          backgroundColor: Color.fromARGB(255, 139, 200, 228),
-          // Theme.of(context).primaryColor,
-
-          actions: [
-            Consumer<Controller>(
-              builder: (context, value, child) => Card(
-                shape: const StadiumBorder(),
-                color: Colors.black,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"} / ${value.cart_id.toString()}",
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold),
+                      child: Icon(Icons.shopping_cart, color: Colors.white),
+                    ),
+                  ))),
+      appBar: AppBar(
+          title:  Container(
+                  width: double.infinity,
+                  height: 50,
+                  color: Color.fromARGB(255, 139, 200, 228),
+                  child: Center(
+                    child: Text(
+                      "${widget.catName.toString().toUpperCase()}",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
-            )
-            // Consumer<Controller>(
-            //     builder: (context, value, child) => Padding(
-            //           padding: EdgeInsets.only(right: 10),
-            //           child: badges.Badge(
-            //             badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
-            //             position: badges.BadgePosition.topEnd(top: -5, end: -10),
-            //             showBadge: true,
-            //             badgeContent: Text(
-            //               value.cartTotal.toString(),
-            //               style: TextStyle(color: Colors.white),
-            //             ),
-            //             child: OutlinedButton(
-            //                 style: ButtonStyle(
-            //                     backgroundColor: MaterialStatePropertyAll(
-            //                         Colors.orangeAccent)),
-            //                 onPressed: () {
-            //                   Provider.of<Controller>(context, listen: false)
-            //                       .viewCart(context);
-            //                   Navigator.push(
-            //                     context,
-            //                     MaterialPageRoute(
-            //                         builder: (context) => CartBag()),
-            //                   );
-            //                 },
-            //                 child:
-            //                     Icon(Icons.shopping_cart, color: Colors.white)),
-            //           ),
-            //         ))
-          ],
-        ),
-        // bottomNavigationBar: Consumer<Controller>(
-        //   builder: (context, value, child) => Row(mainAxisAlignment: MainAxisAlignment.end,
-        //     children: [
-        //       FloatingActionButton(
-        //           onPressed: () {},
-        //           child: Text(
-        //             "VIEW",
-        //             style: const TextStyle(color: Colors.black),
-        //           )),
-        //     ],
-        //   ),
-        // ),
-        body: Consumer<Controller>(
-          builder: (context, value, child) => value.isLoading
-              ? SpinKitCircle(
-                  color: Colors.black,
-                )
-              : Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      color: Color.fromARGB(255, 139, 200, 228),
-                      child: Center(
-                        child: Text(
-                          "${widget.catName.toString().toUpperCase()}",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: seacrh,
-                        //   decoration: const InputDecoration(,
-                        onChanged: (val) {
-                          Provider.of<Controller>(context, listen: false)
-                              .searchItem(val.toString());
-                        },
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.black,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: new Icon(Icons.cancel),
-                            onPressed: () {
-                              seacrh.clear();
-                              Provider.of<Controller>(context, listen: false)
-                                  .searchItem("");
-                            },
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                            borderSide: const BorderSide(
-                                color: Colors.black, width: 1.0),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                            borderSide: const BorderSide(
-                                color: Colors.blue, width: 1.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 1.0),
-                          ),
-                          // filled: true,
-                          hintStyle:
-                              TextStyle(color: Colors.black, fontSize: 13),
-                          hintText: "Search Item here.. ",
-                          // fillColor: Colors.grey[100]
-                        ),
-                      ),
-                    ),
-                    value.isSearch
-                        ? ItemWidget(
-                            list: value.filteredlist,
-                            catId: widget.catlId.toString(),
-                          )
-                        : ItemWidget(
-                            list: value.itemlist,
-                            catId: widget.catlId.toString())
-                  ],
+        leading: IconButton(
+            onPressed: () {
+              // Provider.of<Controller>(context, listen: false).viewCart(
+              //   context,
+              //   value.customerId.toString(),
+              // );
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
+        backgroundColor: Color.fromARGB(255, 139, 200, 228),
+        // Theme.of(context).primaryColor,
+    
+        actions: [
+          Consumer<Controller>(
+            builder: (context, value, child) => Card(
+              shape: const StadiumBorder(),
+              color: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"} / ${value.cart_id.toString()}",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold),
                 ),
-        ),
+              ),
+            ),
+          )
+          // Consumer<Controller>(
+          //     builder: (context, value, child) => Padding(
+          //           padding: EdgeInsets.only(right: 10),
+          //           child: badges.Badge(
+          //             badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
+          //             position: badges.BadgePosition.topEnd(top: -5, end: -10),
+          //             showBadge: true,
+          //             badgeContent: Text(
+          //               value.cartTotal.toString(),
+          //               style: TextStyle(color: Colors.white),
+          //             ),
+          //             child: OutlinedButton(
+          //                 style: ButtonStyle(
+          //                     backgroundColor: MaterialStatePropertyAll(
+          //                         Colors.orangeAccent)),
+          //                 onPressed: () {
+          //                   Provider.of<Controller>(context, listen: false)
+          //                       .viewCart(context);
+          //                   Navigator.push(
+          //                     context,
+          //                     MaterialPageRoute(
+          //                         builder: (context) => CartBag()),
+          //                   );
+          //                 },
+          //                 child:
+          //                     Icon(Icons.shopping_cart, color: Colors.white)),
+          //           ),
+          //         ))
+        ],
+      ),
+      // bottomNavigationBar: Consumer<Controller>(
+      //   builder: (context, value, child) => Row(mainAxisAlignment: MainAxisAlignment.end,
+      //     children: [
+      //       FloatingActionButton(
+      //           onPressed: () {},
+      //           child: Text(
+      //             "VIEW",
+      //             style: const TextStyle(color: Colors.black),
+      //           )),
+      //     ],
+      //   ),
+      // ),
+      body: Consumer<Controller>(
+        builder: (context, value, child) => value.isLoading
+            ? SpinKitCircle(
+                color: Colors.black,
+              )
+            : Column(
+                children: [
+                  // Container(
+                  //   width: double.infinity,
+                  //   height: 50,
+                  //   color: Color.fromARGB(255, 139, 200, 228),
+                  //   child: Center(
+                  //     child: Text(
+                  //       "${widget.catName.toString().toUpperCase()}",
+                  //       style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 20,
+                  //           fontWeight: FontWeight.bold),
+                  //     ),
+                  //   ),
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: seacrh,
+                      //   decoration: const InputDecoration(,
+                      onChanged: (val) {
+                        Provider.of<Controller>(context, listen: false)
+                            .searchItem(val.toString());
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.black,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: new Icon(Icons.cancel),
+                          onPressed: () {
+                            seacrh.clear();
+                            Provider.of<Controller>(context, listen: false)
+                                .searchItem("");
+                          },
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          borderSide: const BorderSide(
+                              color: Colors.black, width: 1.0),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          borderSide: const BorderSide(
+                              color: Colors.blue, width: 1.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          borderSide:
+                              BorderSide(color: Colors.black, width: 1.0),
+                        ),
+                        // filled: true,
+                        hintStyle:
+                            TextStyle(color: Colors.black, fontSize: 13),
+                        hintText: "Search Item here.. ",
+                        // fillColor: Colors.grey[100]
+                      ),
+                    ),
+                  ),
+                  value.isSearch
+                      ? ItemWidget(
+                          list: value.filteredlist,
+                          catId: widget.catlId.toString(),
+                        )
+                      : ItemWidget(
+                          list: value.itemlist,
+                          catId: widget.catlId.toString())
+                ],
+              ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/itemlistpage.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'dart:io';
@@ -38,21 +39,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
     print(widget.tablId.toString());
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
-      onWillPop: () => _onBackPressed(context),
+      onWillPop: () => _handleBackPressed(context),
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                // Provider.of<Controller>(context, listen: false).viewCart(
-                //   context,
-                //   value.customerId.toString(),
-                // );
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              )),
+          automaticallyImplyLeading: false,
           backgroundColor: Color.fromARGB(255, 139, 200, 228),
           // Theme.of(context).primaryColor,
 
@@ -212,6 +202,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 }
 
+Future<bool> _handleBackPressed(BuildContext context) async {
+  final cartNotEmpty =
+     await Provider.of<Controller>(context, listen: false).cartItems.isNotEmpty;
+  if (cartNotEmpty) {
+    return await _onBackPressed(context);
+  } else {
+     await Provider.of<Controller>(context, listen: false)
+                  .clearAllData(context);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
+    return false;
+  }
+}
+
 Future<bool> _onBackPressed(BuildContext context) async {
   return await showDialog(
     context: context,
@@ -223,21 +227,26 @@ Future<bool> _onBackPressed(BuildContext context) async {
           scrollDirection: Axis.vertical,
           child: ListBody(
             children: const <Widget>[
-              Text('Do you want to exit from this app'),
+              Text('Your Cart will be cleared \nWant to proceed?'),
             ],
           ),
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('cancel'),
+            child: const Text('No'),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           TextButton(
-            child: const Text('Ok'),
-            onPressed: () {
-              exit(0);
+            child: const Text('Yes'),
+            onPressed: () async{
+             await Provider.of<Controller>(context, listen: false)
+                  .clearAllData(context);
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
+              
+              // exit(0);
             },
           ),
         ],

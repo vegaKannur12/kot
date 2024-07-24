@@ -6,14 +6,20 @@ import 'package:restaurent_kot/controller/controller.dart';
 class OrderEditBottomSheet {
   // String? selected;
   ValueNotifier<bool> visible = ValueNotifier(false);
-  showorderMoadlBottomsheet(
-    List<Map<String, dynamic>> list,
+  // TextEditingController dect = TextEditingController();
+  String dess = "";
+  String completeText = '';
+  String finalText = "";
+  TextEditingController searchController = TextEditingController();
+  showorderEditMoadlBottomsheet(
+    Map map,
     BuildContext context,
     Size size,
     int index,
     // TextEditingController dec_ctrl,
     String? date,
   ) async {
+    // dect.text = map["Cart_Description"].toString().trimLeft();
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -52,8 +58,9 @@ class OrderEditBottomSheet {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        list[index]["Product"]
-                                            .toString().trimLeft()
+                                        map["Prod_Name"]
+                                            .toString()
+                                            .trimLeft()
                                             .toUpperCase(),
                                         style: TextStyle(
                                           fontSize: 20,
@@ -80,18 +87,38 @@ class OrderEditBottomSheet {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
-                                      style: TextStyle(fontSize: 15),
+                                      "\u{20B9}${map["Cart_Rate"].toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Row(
                                       children: [
                                         InkWell(
-                                            onTap: () {
-                                              value.response[index] = 0;
+                                            onTap: () async {
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback(
+                                                      (_) async {
+                                                await Provider.of<Controller>(
+                                                        context,
+                                                        listen: false)
+                                                    .setQty(1.0, index, "dec");
 
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .setQty(1.0, index, "dec");
+                                                // await Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .updateCart2(
+                                                //   context,
+                                                //   map,
+                                                //   0,
+                                                //   double.parse(value.qty[index].text),
+                                                // );
+
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .viewCart(
+                                                //   context,
+                                                // );
+                                              });
                                             },
                                             child: Icon(
                                               Icons.remove,
@@ -99,7 +126,9 @@ class OrderEditBottomSheet {
                                             )),
                                         Container(
                                           margin: EdgeInsets.only(
-                                              left: 5, right: 5,top: 5,
+                                              left: 5,
+                                              right: 5,
+                                              top: 5,
                                               bottom: 5),
                                           width: size.width * 0.14,
                                           // height: size.height * 0.05,
@@ -115,22 +144,24 @@ class OrderEditBottomSheet {
                                                           .length);
                                             },
                                             onSubmitted: (val) {
-                                              value.response[index] = 0;
                                               // Provider.of<Controller>(context,
                                               //         listen: false)
-                                              // .updateCart(
+                                              //     .updateCart(
                                               //         context,
-                                              //         widget.list[index],
+                                              //         map,
                                               //         date!,
                                               //         value.customerId.toString(),
                                               //         double.parse(val),
                                               //         index,
-                                              //         "from itempage",
+                                              //         "from cart",
                                               //         0,
-                                              //         widget.catId);
-                                            },
-                                            onChanged: (val) {
-                                              value.response[index] = 0;
+                                              //         "");
+
+                                              // Provider.of<Controller>(context,
+                                              //         listen: false)
+                                              //     .viewCart(
+                                              //   context,
+                                              // );
                                             },
                                             controller: value.qty[index],
                                             textAlign: TextAlign.center,
@@ -157,22 +188,203 @@ class OrderEditBottomSheet {
                                         ),
                                         InkWell(
                                             onTap: () {
-                                              value.response[index] = 0;
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .setQty(1.0, index, "inc");
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback(
+                                                      (_) async {
+                                                await Provider.of<Controller>(
+                                                        context,
+                                                        listen: false)
+                                                    .setQty(1.0, index, "inc");
+
+                                                // await Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .updateCart2(
+                                                //   context,
+                                                //   map,
+                                                //   0,
+                                                //   double.parse(value.qty[index].text),
+                                                // );
+
+                                                // Provider.of<Controller>(context,
+                                                //         listen: false)
+                                                //     .viewCart(
+                                                //   context,
+                                                // );
+                                              });
                                             },
                                             child: Icon(
                                               Icons.add,
                                               color: Colors.green,
                                             )),
                                       ],
-                                    )
+                                    ),
                                     // Spacer(),
                                   ],
                                 ),
                               ),
-                            
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 15, right: 8, bottom: 4, top: 4),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 300,
+                                      child: StatefulBuilder(
+                                        builder: (BuildContext context,
+                                                void Function(void Function())
+                                                    setState) =>
+                                            Autocomplete<String>(
+                                                initialValue: TextEditingValue(
+                                                    text:
+                                                        map["Cart_Description"]
+                                                            .toString()
+                                                            .trimLeft()),
+                                                optionsBuilder:
+                                                    (TextEditingValue
+                                                        textEditingValue) {
+                                                  if (textEditingValue
+                                                      .text.isEmpty) {
+                                                    return value.suggestions;
+                                                  }
+                                                  return value.suggestions
+                                                      .where((suggst) => suggst
+                                                          .toLowerCase()
+                                                          .contains(
+                                                              textEditingValue
+                                                                  .text
+                                                                  .toLowerCase()));
+                                                },
+                                                optionsViewBuilder: (context,
+                                                    onSelected, options) {
+                                                  return Align(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    child: Material(
+                                                      elevation: 4.0,
+                                                      child: Container(
+                                                        width:
+                                                            300, // Set the width of the options here
+                                                        child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  8.0),
+                                                          itemCount:
+                                                              options.length,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int index) {
+                                                            final String
+                                                                option = options
+                                                                    .elementAt(
+                                                                        index);
+
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                onSelected(
+                                                                    option);
+                                                              },
+                                                              child: ListTile(
+                                                                title: Text(
+                                                                    option),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                onSelected: (suggestion) {
+                                                  // desss = suggestion;
+                                                  // print(
+                                                  //     "auto-----------$desss");
+                                                  // // handle user selection of a country
+                                                  setState(() {
+                                                    searchController.clear();
+                                                    searchController.text =
+                                                        suggestion;
+                                                    searchController.selection =
+                                                        TextSelection
+                                                            .fromPosition(
+                                                      TextPosition(
+                                                          offset: suggestion
+                                                              .length),
+                                                    );
+
+                                                    finalText = suggestion;
+                                                    print(
+                                                        "Complete text: $finalText");
+                                                    print(
+                                                        "Saving text: $finalText");
+                                                  });
+                                                  // print(
+                                                  //     "Complete text: $newText");
+                                                  // print(
+                                                  //     "saving text----$finalText");
+                                                },
+                                                fieldViewBuilder: (context,
+                                                    searchController,
+                                                    focusNode,
+                                                    onEditingComplete) {
+                                                  return TextField(
+                                                    controller:
+                                                        searchController,
+                                                    focusNode: focusNode,
+                                                    onChanged: (text) {
+                                                      setState(() {
+                                                        completeText = text;
+                                                        finalText = text;
+                                                      });
+                                                      print(
+                                                          "Text in the field: $completeText");
+                                                      print(
+                                                          "Text in finalText: $finalText");
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      // prefixIcon: Icon(
+                                                      //   Icons.search,
+                                                      //   color: Colors.black,
+                                                      // ),
+                                                      suffixIcon: IconButton(
+                                                        icon:
+                                                            Icon(Icons.cancel),
+                                                        onPressed: () {
+                                                          searchController
+                                                              .clear();
+                                                          completeText = "";
+                                                          finalText = "";
+                                                        },
+                                                      ),
+                                                      hintText: "Type Here...",
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20.0),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                      ),
+                                    ),
+                                    // SizedBox(
+                                    //   width: 180,
+                                    //   child: TextFormField(
+                                    //     controller: dect,
+                                    //   ),
+                                    // ),
+                                    // Text(
+                                    //   // "cart rate",
+                                    //   "${map["Cart_Description"].toString().trimLeft()}",
+                                    //   style: TextStyle(
+                                    //       fontWeight: FontWeight.bold,
+                                    //       fontSize: 16),
+                                    // ),
+                                  ],
+                                ),
+                              ),
                               Divider(
                                 thickness: 1,
                               ),
@@ -187,28 +399,35 @@ class OrderEditBottomSheet {
                                       child: ElevatedButton.icon(
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.white),
-                                          onPressed:  () {
-                                                  // Provider.of<Controller>(
-                                                  //         context,
-                                                  //         listen: false)
-                                                  //     .updateCart(
-                                                  //   context,
-                                                  //   list[index],
-                                                  //   date!,
-                                                  //   double.parse(
-                                                  //       value.qty[index].text),dec_ctrl.text,
-                                                  //   // value.descr[index].text,
-                                                  //   index,
-                                                  //   "from itempage",
-                                                  //   0,
-                                                  // );
-                                                  // Navigator.of(context,
-                                                  //         rootNavigator: true)
-                                                  //     .pop(false);
-                                                },
-                                          // icon: value.response[index] > 0
-                                          //     ? Icon(Icons.done)
-                                          //     : Icon(Icons.shopping_cart),
+                                          onPressed: () async {
+                                            WidgetsBinding.instance
+                                                .addPostFrameCallback(
+                                                    (_) async {
+                                              await Provider.of<Controller>(
+                                                      context,
+                                                      listen: false)
+                                                  .updateCart2(
+                                                context,
+                                                map,
+                                                0,
+                                                // newText,
+                                                finalText,
+                                                // completeText,
+                                                // dess,
+                                                // dect.text,
+                                                // value.descr[index].text,
+                                                double.parse(
+                                                    value.qty[index].text),
+                                              );
+                                              await Provider.of<Controller>(
+                                                      context,
+                                                      listen: false)
+                                                  .viewCart(
+                                                context,
+                                              );
+                                            });
+                                            Navigator.pop(context);
+                                          },
                                           label: Text("Update")),
                                     )
                                   ],
@@ -224,87 +443,4 @@ class OrderEditBottomSheet {
         });
   }
 
-  //////////////////
-  // dropDownUnit(
-  //   Size size,
-  //   int index,
-  // ) {
-  //   double qty;
-  //   return Consumer<Controller>(
-  //     builder: (context, value, child) {
-  //       // value.selectedunit_X001 = null;
-  //       // selected=null;
-  //       print(
-  //           "value.prUnitSaleListData2----${value.prUnitSaleListData2}----$index--${value.selectedItem}");
-  //       return Padding(
-  //         padding: const EdgeInsets.only(left: 0, right: 0),
-  //         child: Container(
-  //           width: size.height * 0.2,
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(10.0),
-  //             border: Border.all(
-  //                 color: P_Settings.blue1,
-  //                 style: BorderStyle.solid,
-  //                 width: 0.4),
-  //           ),
-  //           child: DropdownButton<String>(
-  //             isExpanded: true,
-  //             value: value.selectedItem,
-  //             // isDense: true,
-  //             hint: Padding(
-  //               padding: const EdgeInsets.all(10.0),
-  //               child: Text(value.frstDropDown.toString()),
-  //               // child: Text(value.selectedunit_X001 == null
-  //               //     ? "Select Unit"
-  //               //     : value.selectedunit_X001.toString()),
-  //             ),
-  //             autofocus: true,
-  //             underline: SizedBox(),
-  //             elevation: 0,
-
-  //             items: value.prUnitSaleListData2
-  //                 .map((item) => DropdownMenuItem<String>(
-  //                     value: item.toString(),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.start,
-  //                       children: [
-  //                         Padding(
-  //                           padding: const EdgeInsets.all(8.0),
-  //                           child: Text(
-  //                             item.toString(),
-  //                             style: TextStyle(fontSize: 14),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     )))
-  //                 .toList(),
-  //             onChanged: (item) {
-  //               print("clicked");
-  //               if (item != null) {
-  //                 Provider.of<Controller>(context, listen: false).fromDb =
-  //                     false;
-  //                 value.selectedItem = item;
-
-  //                 value.setUnitOrder_X001(value.selectedItem!, index);
-  //                 print("ratjhd------${value.calculatedRate}");
-  //                 if (value.qty[index].text == null ||
-  //                     value.qty[index].text.isEmpty) {
-  //                   qty = 1;
-  //                 } else {
-  //                   qty = double.parse(value.qty[index].text);
-  //                   // Provider.of<Controller>(context, listen: false)
-  //                   //     .calculateOrderNetAmount(
-  //                   //   index,
-  //                   //   value.calculatedRate!,
-  //                   //   double.parse(value.qty[index].text),
-  //                   // );
-  //                 }
-  //               }
-  //             },
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-}
+ }
