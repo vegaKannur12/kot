@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
@@ -11,6 +12,8 @@ import 'package:restaurent_kot/controller/controller.dart';
 import 'package:restaurent_kot/db_helper.dart';
 import 'package:restaurent_kot/tableList.dart';
 import 'dart:io';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -178,51 +181,56 @@ class _HomePageState extends State<HomePage> {
                                                   ],
                                                 )
                                               : Container(),
-                                          TextFormField(
-                                            controller: seacrhRoom,
-                                            //   decoration: const InputDecoration(,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .searchRoom(val.toString());
-                                              });
-                                            },
-                                            decoration: InputDecoration(
-                                              prefixIcon: const Icon(
-                                                Icons.search,
-                                                color: Colors.black,
+                                          Container(
+                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
+color: Color.fromARGB(241, 235, 236, 236),),
+                                            child: TextFormField(
+                                              controller: seacrhRoom,
+                                              //   decoration: const InputDecoration(,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  Provider.of<Controller>(context,
+                                                          listen: false)
+                                                      .searchRoom(val.toString());
+                                                });
+                                              },
+                                              decoration: InputDecoration(
+                                                prefixIcon: const Icon(
+                                                  Icons.search,
+                                                  color: Colors.black,
+                                                ),
+                                                suffixIcon: IconButton(
+                                                  icon: const Icon(Icons.cancel),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      print("pressed");
+                                                      seacrhRoom.clear();
+                                            
+                                                      Provider.of<Controller>(
+                                                              context,
+                                                              listen: false)
+                                                          .searchRoom("");
+                                                    });
+                                                  },
+                                                ),border: InputBorder.none,
+                                                // focusedBorder:
+                                                //     UnderlineInputBorder(
+                                                //   borderRadius:
+                                                //       BorderRadius.circular(20.0),
+                                                //   borderSide: const BorderSide(
+                                                //       color: Colors.blue,
+                                                //       width: 1.0),
+                                                // ),
+                                                enabledBorder: InputBorder.none,
+                                                // OutlineInputBorder(
+                                                //   borderRadius:
+                                                //       BorderRadius.circular(20.0),
+                                                //   borderSide: const BorderSide(
+                                                //       color: Colors.black,
+                                                //       width: 1.0),
+                                                // ),
+                                                hintText: "Search room...",
                                               ),
-                                              suffixIcon: IconButton(
-                                                icon: const Icon(Icons.cancel),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    print("pressed");
-                                                    seacrhRoom.clear();
-
-                                                    Provider.of<Controller>(
-                                                            context,
-                                                            listen: false)
-                                                        .searchRoom("");
-                                                  });
-                                                },
-                                              ),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                borderSide: const BorderSide(
-                                                    color: Colors.blue,
-                                                    width: 1.0),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                borderSide: const BorderSide(
-                                                    color: Colors.black,
-                                                    width: 1.0),
-                                              ),
-                                              hintText: "Search room...",
                                             ),
                                           ),
                                           value.isRoomSearch
@@ -261,39 +269,39 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () async {
                                 print("------------${value.tablID}");
                                 if (value.tablID!.isNotEmpty) {
-                                  await Provider.of<Controller>(context,
-                                          listen: false)
-                                      .getCategoryList(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CategoryScreen(
-                                              tablId: value.tablname.toString(),
-                                              roomId:
-                                                  value.roomnm.toString() ?? "",
-                                            )),
-                                  ).then((value) {
-                                    // This code runs when returning from the NextScreen
-                                    // You can put your refresh logic here
-                                    setState(() {
-                                      Provider.of<Controller>(context,
-                                              listen: false)
-                                          .clearAllData(context);
-                                      seacrhRoom.clear();
-                                      // Update data or perform actions to refresh the page
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  int? c = prefs.getInt("cartNo");
+                                  if (c != 0) {
+                                    await Provider.of<Controller>(context,
+                                            listen: false)
+                                        .getCategoryList(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CategoryScreen(
+                                                tablId:
+                                                    value.tablname.toString(),
+                                                roomId:
+                                                    value.roomnm.toString() ??
+                                                        "",
+                                              )),
+                                    ).then((value) {
+                                      // This code runs when returning from the NextScreen
+                                      // You can put your refresh logic here
+                                      setState(() {
+                                        Provider.of<Controller>(context,
+                                                listen: false)
+                                            .clearAllData(context);
+                                        seacrhRoom.clear();
+                                        // Update data or perform actions to refresh the page
+                                      });
                                     });
-                                  });
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => CategoryScreen(
-                                  //             tablId:
-                                  //                 value.tablname.toString(),
-                                  //             roomId:
-                                  //                 value.roomnm.toString() ??
-                                  //                     "",
-                                  //           )),
-                                  // );
+                                  } else {
+                                    CustomSnackbar snackbar = CustomSnackbar();
+                                    snackbar.showSnackbar(
+                                        context, "Error getting Cart Number", "");
+                                  }
                                 } else {
                                   CustomSnackbar snackbar = CustomSnackbar();
                                   snackbar.showSnackbar(
@@ -314,23 +322,24 @@ class _HomePageState extends State<HomePage> {
             child: Consumer<Controller>(
               builder: (context, value, child) => Column(
                 children: [
-                      Container(
+                  Container(
                     // height: 50,
                     // width: 250,
-                    // decoration: BoxDecoration(shape: BoxShape.rectangle),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Color.fromARGB(241, 235, 236, 236),),
                     child: DropdownButtonFormField<String>(
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          borderSide: const BorderSide(
-                              color: Color.fromARGB(255, 119, 119, 119),
-                              width: 1),
-                        ),
+                        // fillColor: Color.fromARGB(255, 119, 119, 119),
+                        border: InputBorder.none
+                        // OutlineInputBorder(
+                        //   borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                        //   borderSide: const BorderSide(
+                        //       color: Color.fromARGB(241, 235, 236, 236),
+                        //       width: 1),
+                        // ),
                       ),
                       isExpanded: true,
                       hint: Text("Select Table Category"),
                       value: value.selectedTableCat,
-                     
                       onChanged: (String? newValue) {
                         setState(() {
                           value.selectedTableCat = newValue;
@@ -343,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                           print(
                               "${value.selectedItemTablecat!['Table_Category']}");
                           Provider.of<Controller>(context, listen: false)
-                              .updateTableCAT(context); 
+                              .updateTableCAT(context);
                           // Provider.of<Controller>(context, listen: false).getTableList(context);
                         });
                       },
@@ -352,12 +361,14 @@ class _HomePageState extends State<HomePage> {
                               (Map<String, dynamic> item) {
                         return DropdownMenuItem<String>(
                           value: item['Table_Category'],
-                          child: Text(item['Table_Category']),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10,right: 10),
+                            child: Text(item['Table_Category']),
+                          ),
                         );
                       }).toList(),
                     ),
                   ),
-
 
                   // TextFormField(
                   //   controller: seacrh,
@@ -412,8 +423,10 @@ class _HomePageState extends State<HomePage> {
           : Expanded(
               child: list.length == 0
                   ? Container(
-                      // height: size.height * 0.7,
-                      child: Center(child: Text("no data")))
+                  height: size.height * 0.7,
+                  child: Center(
+                      child: Lottie.asset("assets/noitem.json",
+                          height: size.height * 0.3)))
                   : GridView.builder(
                       // shrinkWrap: true,
                       // physics: const ScrollPhysics(),
@@ -568,7 +581,8 @@ class _HomePageState extends State<HomePage> {
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               // Expanded(
                               //   child: Image.asset(
@@ -648,7 +662,7 @@ class _HomePageState extends State<HomePage> {
                           //     context: context,
                           //     builder: (context) {
                           //       Size size = MediaQuery.of(context).size;
-                      
+
                           //       Future.delayed(Duration(seconds: 2), () {
                           //         Navigator.of(context).pop(true);
                           //       });
@@ -678,14 +692,14 @@ class _HomePageState extends State<HomePage> {
                                   border: Border.all(color: Colors.black12)),
                               child: Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 10,top: 8.0, bottom: 8),
+                                    left: 10, top: 8.0, bottom: 8),
                                 child: Center(
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 10,right: 10),
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
                                         child: SizedBox(
                                           width: size.width * 1 / 4.4,
                                           child: Text(

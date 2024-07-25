@@ -127,9 +127,7 @@ class _ViewKotState extends State<ViewKot> {
   @override
   void initState() {
     // TODO: implement initState
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Provider.of<Controller>(context, listen: false).getIDss();
-    });
+  
     super.initState();
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }

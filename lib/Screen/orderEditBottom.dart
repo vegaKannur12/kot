@@ -400,9 +400,9 @@ class OrderEditBottomSheet {
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.white),
                                           onPressed: () async {
-                                            WidgetsBinding.instance
-                                                .addPostFrameCallback(
-                                                    (_) async {
+                                            // WidgetsBinding.instance
+                                            //     .addPostFrameCallback(
+                                            //         (_) async {
                                               await Provider.of<Controller>(
                                                       context,
                                                       listen: false)
@@ -425,8 +425,10 @@ class OrderEditBottomSheet {
                                                   .viewCart(
                                                 context,
                                               );
-                                            });
-                                            Navigator.pop(context);
+                                            // });
+                                            Navigator.of(context,
+                                                          rootNavigator: true)
+                                                      .pop(false);
                                           },
                                           label: Text("Update")),
                                     )

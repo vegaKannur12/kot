@@ -194,50 +194,54 @@ class _ItemListState extends State<ItemList> {
                   //     ),
                   //   ),
                   // ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: seacrh,
-                      //   decoration: const InputDecoration(,
-                      onChanged: (val) {
-                        Provider.of<Controller>(context, listen: false)
-                            .searchItem(val.toString());
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.black,
+                  Container(  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Color.fromARGB(241, 235, 236, 236),),
+                    
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: seacrh,
+                        //   decoration: const InputDecoration(,
+                        onChanged: (val) {
+                          Provider.of<Controller>(context, listen: false)
+                              .searchItem(val.toString());
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.black,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: new Icon(Icons.cancel),
+                            onPressed: () {
+                              seacrh.clear();
+                              Provider.of<Controller>(context, listen: false)
+                                  .searchItem("");
+                            },
+                          ),
+                          // contentPadding: const EdgeInsets.symmetric(
+                          //     horizontal: 5, vertical: 0),
+                              border: InputBorder.none,
+                          // border: OutlineInputBorder(
+                          //   borderRadius: BorderRadius.circular(20.0),
+                          //   borderSide: const BorderSide(
+                          //       color: Colors.black, width: 1.0),
+                          // ),
+                          // focusedBorder: UnderlineInputBorder(
+                          //   borderRadius: BorderRadius.circular(20.0),
+                          //   borderSide: const BorderSide(
+                          //       color: Colors.blue, width: 1.0),
+                          // ),
+                          // enabledBorder: OutlineInputBorder(
+                          //   borderRadius: BorderRadius.circular(20.0),
+                          //   borderSide:
+                          //       BorderSide(color: Colors.black, width: 1.0),
+                          // ),
+                          // filled: true,
+                          hintStyle:
+                              TextStyle(color: Colors.black, fontSize: 13),
+                          hintText: "Search Item here.. ",
+                          // fillColor: Colors.grey[100]
                         ),
-                        suffixIcon: IconButton(
-                          icon: new Icon(Icons.cancel),
-                          onPressed: () {
-                            seacrh.clear();
-                            Provider.of<Controller>(context, listen: false)
-                                .searchItem("");
-                          },
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 18, vertical: 0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: const BorderSide(
-                              color: Colors.black, width: 1.0),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: const BorderSide(
-                              color: Colors.blue, width: 1.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
-                        ),
-                        // filled: true,
-                        hintStyle:
-                            TextStyle(color: Colors.black, fontSize: 13),
-                        hintText: "Search Item here.. ",
-                        // fillColor: Colors.grey[100]
                       ),
                     ),
                   ),

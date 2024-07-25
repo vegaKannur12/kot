@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/itemlistpage.dart';
@@ -70,37 +71,40 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Consumer<Controller>(
             builder: (context, value, child) => Column(
               children: [
-                TextFormField(
-                  controller: seacrh,
-                  //   decoration: const InputDecoration(,
-                  onChanged: (val) {
-                    Provider.of<Controller>(context, listen: false)
-                        .searchCat(val.toString());
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.black,
+                Container( decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Color.fromARGB(241, 235, 236, 236),),
+                    
+                  child: TextFormField(
+                    controller: seacrh,
+                    //   decoration: const InputDecoration(,
+                    onChanged: (val) {
+                      Provider.of<Controller>(context, listen: false)
+                          .searchCat(val.toString());
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.cancel),
+                        onPressed: () {
+                          seacrh.clear();
+                          Provider.of<Controller>(context, listen: false)
+                              .searchCat("");
+                        },
+                      ),border: InputBorder.none,
+                      // focusedBorder: UnderlineInputBorder(
+                      //   borderRadius: BorderRadius.circular(20.0),
+                      //   borderSide:
+                      //       const BorderSide(color: Colors.blue, width: 1.0),
+                      // ),
+                      // enabledBorder: OutlineInputBorder(
+                      //   borderRadius: BorderRadius.circular(20.0),
+                      //   borderSide:
+                      //       const BorderSide(color: Colors.black, width: 1.0),
+                      // ),
+                      hintText: "Search Category...",
                     ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.cancel),
-                      onPressed: () {
-                        seacrh.clear();
-                        Provider.of<Controller>(context, listen: false)
-                            .searchCat("");
-                      },
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide:
-                          const BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 1.0),
-                    ),
-                    hintText: "Search Category...",
                   ),
                 ),
                 const SizedBox(
@@ -132,7 +136,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             )
           : Expanded(
               child: list.isEmpty
-                  ? const Center(child: Text("no data"))
+                  ? Container(
+                  height: size.height * 0.7,
+                  child: Center(
+                      child: Lottie.asset("assets/noitem.json",
+                          height: size.height * 0.3)))
                   : GridView.builder(
                       shrinkWrap: true,
                       physics: const ScrollPhysics(),

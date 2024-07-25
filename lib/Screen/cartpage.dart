@@ -118,64 +118,86 @@ class _CartBagState extends State<CartBag> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                     await Provider.of<Controller>(context,
-                                              listen: false)
-                                          .finalSave(context);
-                                          // print("res----${res}");
-    
-                                      showDialog(
-                                          barrierDismissible: false,
-                                          context: context,
-                                          builder: (context) {
-                                            Size size =
-                                                MediaQuery.of(context).size;
-    
-                                            Future.delayed(
-                                                Duration(seconds: 3), () {
-                                              Navigator.of(context).pop(true);
-                                              Provider.of<Controller>(context,
-                                              listen: false)
-                                          .clearAllData(context);
-    
-                                              Navigator.of(context).push(
-                                                PageRouteBuilder(
-                                                    opaque:
-                                                        false, // set to false
-                                                    pageBuilder:
-                                                        (_, __, ___) =>
-                                                            HomePage()
-                                                    // OrderForm(widget.areaname,"return"),
-                                                    ),
-                                              );
-                                            });
-                                            return AlertDialog(
+                                   ElevatedButton(
+                                      onPressed: () async {
+                                        bool isSuccess =
+                                            await Provider.of<Controller>(
+                                                    context,
+                                                    listen: false)
+                                                .finalSave(context);
+
+                                        if (isSuccess) {
+                                          showDialog(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (context) {
+                                              Size size =
+                                                  MediaQuery.of(context).size;
+
+                                              Future.delayed(
+                                                  Duration(seconds: 3), () {
+                                                Navigator.of(context).pop(true);
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
+                                                    .clearAllData(context);
+
+                                                Navigator.of(context).push(
+                                                  PageRouteBuilder(
+                                                    opaque: false,
+                                                    pageBuilder: (_, __, ___) =>
+                                                        HomePage(),
+                                                  ),
+                                                );
+                                              });
+                                              return AlertDialog(
                                                 content: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  'KOT Saved!!!!',
-                                                  style: TextStyle(
-                                                      color: Colors.green),
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'KOT Saved!!!!',
+                                                      style: TextStyle(
+                                                          color: Colors.green),
+                                                    ),
+                                                    Icon(
+                                                      Icons.done,
+                                                      color: Colors.green,
+                                                    )
+                                                  ],
                                                 ),
-                                                Icon(
-                                                  Icons.done,
-                                                  color: Colors.green,
-                                                )
-                                              ],
-                                            ));
-                                          });
-                                    },
-                                    child: Text("Yes"),
-                                    style: ElevatedButton.styleFrom(
-                                        // backgroundColor:
-                                        // ,
-                                        textStyle: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text('Save Failed'),
+                                                content: Text(
+                                                    'An error occurred while saving the KOT. Please try again.'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text('OK'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
+                                      },
+                                      child: Text("Yes"),
+                                      style: ElevatedButton.styleFrom(
+                                          // backgroundColor:
+                                          // ,
+                                          textStyle: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
                                   SizedBox(
                                     width: size.width * 0.03,
                                   ),
@@ -241,35 +263,33 @@ class _CartBagState extends State<CartBag> {
                 ),
               ),
             ),
-      body: 
+      body: Column(children: [
       Consumer<Controller>(
         builder: (context, value, child) => value.isCartLoading
-            ? SpinKitCircle(
-                color: Colors.black,
-              )
-            : value.cartItems.length == 0
-                ? Container(
-                    height: size.height * 0.7,
-                    child: Center(
-                        child: Lottie.asset("assets/noitem.json",
-                            height: size.height * 0.3)))
-                : value.isCartLoading
-                    ? const Expanded(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: SpinKitCircle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: value.cartItems.length,
-                        itemBuilder: (context, int index) {
-                          // return cartItems(index, size, value.cartItems[index]);
-                          return customCard(
-                              index, size, value.cartItems[index]);
-                        }),
-      ),
+            ? Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: SpinKitCircle(
+                  color: Colors.black,
+                ),
+              ),
+            ):Expanded(child: 
+             value.cartItems.length == 0
+              ? Container(
+                  height: size.height * 0.7,
+                  child: Center(
+                      child: Lottie.asset("assets/noitem.json",
+                          height: size.height * 0.3)))
+              
+                 
+                  : ListView.builder(shrinkWrap: true,
+                      itemCount: value.cartItems.length,
+                      itemBuilder: (context, int index) {
+                        // return cartItems(index, size, value.cartItems[index]);
+                        return customCard(
+                            index, size, value.cartItems[index]);
+                      }))
+      ),])
     );
   }
 
@@ -400,10 +420,10 @@ class _CartBagState extends State<CartBag> {
                                               child: Text('No'),
                                             ),
                                             TextButton(
-                                              onPressed: () {
-                                                WidgetsBinding.instance
-                                                    .addPostFrameCallback(
-                                                        (_) async {
+                                              onPressed: ()async {
+                                                // WidgetsBinding.instance
+                                                //     .addPostFrameCallback(
+                                                //         (_) async {
                                                   await Provider.of<Controller>(
                                                           context,
                                                           listen: false)
@@ -421,7 +441,7 @@ class _CartBagState extends State<CartBag> {
                                                       .viewCart(
                                                     context,
                                                   );
-                                                });
+                                                // });
                                                 // setState(() {});
                                                 Navigator.pop(context);
                                               },
