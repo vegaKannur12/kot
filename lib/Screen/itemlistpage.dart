@@ -44,8 +44,9 @@ class _ItemListState extends State<ItemList> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-          onPressed: () async{
-           await Provider.of<Controller>(context, listen: false).viewCart(context);
+          onPressed: () async {
+            await Provider.of<Controller>(context, listen: false)
+                .viewCart(context);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CartBag()),
@@ -74,8 +75,7 @@ class _ItemListState extends State<ItemList> {
                     padding: EdgeInsets.only(right: 10),
                     child: badges.Badge(
                       badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
-                      position:
-                          badges.BadgePosition.topEnd(top: -14, end: -15),
+                      position: badges.BadgePosition.topEnd(top: -14, end: -15),
                       showBadge: true,
                       badgeContent: Text(
                         value.cartTotal.toString(),
@@ -85,20 +85,20 @@ class _ItemListState extends State<ItemList> {
                     ),
                   ))),
       appBar: AppBar(
-          title:  Container(
-                  width: double.infinity,
-                  height: 50,
-                  color: Color.fromARGB(255, 139, 200, 228),
-                  child: Center(
-                    child: Text(
-                      "${widget.catName.toString().toUpperCase()}",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+        title: Container(
+          width: double.infinity,
+          height: 50,
+          color: Color.fromARGB(255, 139, 200, 228),
+          child: Center(
+            child: Text(
+              "${widget.catName.toString().toUpperCase()}",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
         leading: IconButton(
             onPressed: () {
               // Provider.of<Controller>(context, listen: false).viewCart(
@@ -113,7 +113,7 @@ class _ItemListState extends State<ItemList> {
             )),
         backgroundColor: Color.fromARGB(255, 139, 200, 228),
         // Theme.of(context).primaryColor,
-    
+
         actions: [
           Consumer<Controller>(
             builder: (context, value, child) => Card(
@@ -179,7 +179,7 @@ class _ItemListState extends State<ItemList> {
                 color: Colors.black,
               )
             : Column(
-                children: [
+                children: [SizedBox(height: 10,),
                   // Container(
                   //   width: double.infinity,
                   //   height: 50,
@@ -194,54 +194,53 @@ class _ItemListState extends State<ItemList> {
                   //     ),
                   //   ),
                   // ),
-                  Container(  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Color.fromARGB(241, 235, 236, 236),),
-                    
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: seacrh,
-                        //   decoration: const InputDecoration(,
-                        onChanged: (val) {
-                          Provider.of<Controller>(context, listen: false)
-                              .searchItem(val.toString());
-                        },
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.black,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: new Icon(Icons.cancel),
-                            onPressed: () {
-                              seacrh.clear();
-                              Provider.of<Controller>(context, listen: false)
-                                  .searchItem("");
-                            },
-                          ),
-                          // contentPadding: const EdgeInsets.symmetric(
-                          //     horizontal: 5, vertical: 0),
-                              border: InputBorder.none,
-                          // border: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(20.0),
-                          //   borderSide: const BorderSide(
-                          //       color: Colors.black, width: 1.0),
-                          // ),
-                          // focusedBorder: UnderlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(20.0),
-                          //   borderSide: const BorderSide(
-                          //       color: Colors.blue, width: 1.0),
-                          // ),
-                          // enabledBorder: OutlineInputBorder(
-                          //   borderRadius: BorderRadius.circular(20.0),
-                          //   borderSide:
-                          //       BorderSide(color: Colors.black, width: 1.0),
-                          // ),
-                          // filled: true,
-                          hintStyle:
-                              TextStyle(color: Colors.black, fontSize: 13),
-                          hintText: "Search Item here.. ",
-                          // fillColor: Colors.grey[100]
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Color.fromARGB(241, 235, 236, 236),
+                    ),
+                    child: TextFormField(
+                      controller: seacrh,
+                      //   decoration: const InputDecoration(,
+                      onChanged: (val) {
+                        Provider.of<Controller>(context, listen: false)
+                            .searchItem(val.toString());
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.black,
                         ),
+                        suffixIcon: IconButton(
+                          icon: new Icon(Icons.cancel),
+                          onPressed: () {
+                            seacrh.clear();
+                            Provider.of<Controller>(context, listen: false)
+                                .searchItem("");
+                          },
+                        ),
+                        // contentPadding: const EdgeInsets.symmetric(
+                        //     horizontal: 5, vertical: 0),
+                        border: InputBorder.none,
+                        // border: OutlineInputBorder(
+                        //   borderRadius: BorderRadius.circular(20.0),
+                        //   borderSide: const BorderSide(
+                        //       color: Colors.black, width: 1.0),
+                        // ),
+                        // focusedBorder: UnderlineInputBorder(
+                        //   borderRadius: BorderRadius.circular(20.0),
+                        //   borderSide: const BorderSide(
+                        //       color: Colors.blue, width: 1.0),
+                        // ),
+                        // enabledBorder: OutlineInputBorder(
+                        //   borderRadius: BorderRadius.circular(20.0),
+                        //   borderSide:
+                        //       BorderSide(color: Colors.black, width: 1.0),
+                        // ),
+                        // filled: true,
+                        hintStyle: TextStyle(color: Colors.black, fontSize: 13),
+                        hintText: "Search Item here.. ",
+                        // fillColor: Colors.grey[100]
                       ),
                     ),
                   ),
@@ -251,8 +250,7 @@ class _ItemListState extends State<ItemList> {
                           catId: widget.catlId.toString(),
                         )
                       : ItemWidget(
-                          list: value.itemlist,
-                          catId: widget.catlId.toString())
+                          list: value.itemlist, catId: widget.catlId.toString())
                 ],
               ),
       ),

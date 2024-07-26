@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  bool loginLoad = false;
   bool pageload = false;
   Unreg popup = Unreg();
   // List<LoginModel> res = [];
@@ -38,12 +39,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     pageload = false;
-     Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     double topInsets = MediaQuery.of(context).viewInsets.top;
     Orientation ori = MediaQuery.of(context).orientation;
 
     return WillPopScope(
-       onWillPop: () => _onBackPressed(context),
+      onWillPop: () => _onBackPressed(context),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
@@ -81,49 +82,50 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.black,
               )
             : Consumer<Controller>(
-                builder: (BuildContext context, Controller value, Widget? child) {
+                builder:
+                    (BuildContext context, Controller value, Widget? child) {
                   return SafeArea(
                     child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 18.0,
-                right: 18,
-              ),
-              child: Form(
-                  key: _formKey,
-                  child: ori == Orientation.portrait
-                      ? Column(
-                          // mainAxisAlignment: MainAxisAlignment.end,
-                          // crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              height: size.height * 0.14,
-                            ),
-                            login_img(),
-                            SizedBox(
-                              height: size.height * 0.054,
-                            ),
-                            login_form(size, topInsets)
-                          ],
-                        )
-                      : Column(
-                        children: [
-                           Container(
-                              height: size.height * 0.14,
-                            ),
-                          Row(
-                              children: [
-                                
-                                Expanded(child: login_img()),
-                                Expanded(
-                                  flex: 1,
-                                  child: login_form(size, topInsets))
-                              ],
-                            ),
-                        ],
-                      )),
-            ),
-          ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 18.0,
+                          right: 18,
+                        ),
+                        child: Form(
+                            key: _formKey,
+                            child: ori == Orientation.portrait
+                                ? Column(
+                                    // mainAxisAlignment: MainAxisAlignment.end,
+                                    // crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        height: size.height * 0.14,
+                                      ),
+                                      login_img(),
+                                      SizedBox(
+                                        height: size.height * 0.054,
+                                      ),
+                                      login_form(size, topInsets)
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      Container(
+                                        height: size.height * 0.14,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(child: login_img()),
+                                          Expanded(
+                                              flex: 1,
+                                              child:
+                                                  login_form(size, topInsets))
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                      ),
+                    ),
                   );
                 },
               ),
@@ -132,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   login_form(Size size, double topInsets) {
-   return  Consumer<Controller>(
+    return Consumer<Controller>(
       builder: (BuildContext context, Controller value, Widget? child) {
         return Column(
           children: [
@@ -157,13 +159,12 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(shape: BoxShape.rectangle),
               child: DropdownButtonFormField<String>(
                 decoration: InputDecoration(
-    
-        border: OutlineInputBorder(
-           borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              borderSide: const BorderSide(
-                  color: Color.fromARGB(255, 119, 119, 119), width: 1),
-        ),
-      ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 119, 119, 119), width: 1),
+                  ),
+                ),
                 isExpanded: true,
                 hint: Text("Select Staff"),
                 value: value.selectedSmName,
@@ -226,13 +227,15 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
+                    loginLoad = true;
                     int i =
                         await Provider.of<Controller>(context, listen: false)
                             .verifyStaff(password.text, context);
                     print("$i");
                     if (i == 1) {
-                       SharedPreferences prefs = await SharedPreferences.getInstance();
-                       prefs.setString("table_cat","ALL");
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString("table_cat", "ALL");
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => HomePage()));
                     } else {
@@ -240,22 +243,27 @@ class _LoginPageState extends State<LoginPage> {
                       // ignore: use_build_context_synchronously
                       snackbar.showSnackbar(context, "Incorrect Password", "");
                     }
+                    loginLoad = false;
                     //  Provider.of<Controller>(context, listen: false)
                     //     .getLogin(
                     //         'DHANUSH', '3804', context);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.black),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 12.0, bottom: 12),
-                    child: Text(
-                      "LOGIN",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          color: Theme.of(context).secondaryHeaderColor),
-                    ),
+                    child: loginLoad
+                        ? const SpinKitThreeBounce(
+                            color: Colors.black,
+                            size: 16,
+                          )
+                        : Text(
+                            "LOGIN",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Theme.of(context).secondaryHeaderColor),
+                          ),
                   ),
                 )
               ],
@@ -274,6 +282,7 @@ class _LoginPageState extends State<LoginPage> {
     ));
   }
 }
+
 Future<bool> _onBackPressed(BuildContext context) async {
   return await showDialog(
     context: context,

@@ -382,6 +382,7 @@ class Controller extends ChangeNotifier {
   }
 
   verifyStaff(String pwd, BuildContext context) {
+
     print("pwd , selpwd ====$pwd ,${selectedItemStaff!['PWD']}");
     if (pwd == selectedItemStaff!['PWD'].toString().trim()) {
       return 1;
@@ -1373,7 +1374,12 @@ class Controller extends ChangeNotifier {
         kotItems.add(item);
       }
 
-      //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0}, {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0}, {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
+      //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0},
+      //   {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1},  {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1},  {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1},  {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
       notifyListeners();
     } on PlatformException catch (e) {
       debugPrint("PlatformException Kot List: ${e.message}");

@@ -22,23 +22,20 @@ Future<void> main() async {
   isLoggedIn = await checkLogin();
   isRegistered = await checkRegistration();
   requestPermission();
-  SystemChrome.setPreferredOrientations(
-    [
+  SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
     DeviceOrientation.landscapeLeft,
     DeviceOrientation.landscapeRight,
   ]);
 
-  runApp(
-    MultiProvider(
+  runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => Controller()),
       // ChangeNotifierProvider(create: (_) => RegistrationController()),
     ],
     child: const MyApp(),
-  )
-  );
+  ));
   // FlutterNativeSplash.remove();
 }
 
@@ -63,12 +60,9 @@ checkLogin() async {
   final stUname = prefs.getString("st_uname");
   final stPwd = prefs.getString("st_pwd");
 
-  if (stUname != null && stPwd != null) 
-  {
+  if (stUname != null && stPwd != null) {
     isAuthenticated = true;
-  } 
-  else 
-  {
+  } else {
     isAuthenticated = false;
   }
   return isAuthenticated;
@@ -101,13 +95,12 @@ class MyApp extends StatelessWidget {
         secondaryHeaderColor: Color.fromARGB(255, 237, 231, 232),
       ),
       debugShowCheckedModeBanner: false,
-      home:  
-          SplashScreen(),
-          // LoginPage(),
-          // Registration(),
-          // const HomePage(),
-          // CartBag(),
-          // MyTextFieldScreen(),
+      home: SplashScreen(),
+      // LoginPage(),
+      // Registration(),
+      // const HomePage(),
+      // CartBag(),
+      // MyTextFieldScreen(),
     );
   }
 }

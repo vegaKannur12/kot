@@ -182,16 +182,22 @@ class _HomePageState extends State<HomePage> {
                                                 )
                                               : Container(),
                                           Container(
-                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
-color: Color.fromARGB(241, 235, 236, 236),),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: Color.fromARGB(
+                                                  241, 235, 236, 236),
+                                            ),
                                             child: TextFormField(
                                               controller: seacrhRoom,
                                               //   decoration: const InputDecoration(,
                                               onChanged: (val) {
                                                 setState(() {
-                                                  Provider.of<Controller>(context,
+                                                  Provider.of<Controller>(
+                                                          context,
                                                           listen: false)
-                                                      .searchRoom(val.toString());
+                                                      .searchRoom(
+                                                          val.toString());
                                                 });
                                               },
                                               decoration: InputDecoration(
@@ -200,19 +206,21 @@ color: Color.fromARGB(241, 235, 236, 236),),
                                                   color: Colors.black,
                                                 ),
                                                 suffixIcon: IconButton(
-                                                  icon: const Icon(Icons.cancel),
+                                                  icon:
+                                                      const Icon(Icons.cancel),
                                                   onPressed: () {
                                                     setState(() {
                                                       print("pressed");
                                                       seacrhRoom.clear();
-                                            
+
                                                       Provider.of<Controller>(
                                                               context,
                                                               listen: false)
                                                           .searchRoom("");
                                                     });
                                                   },
-                                                ),border: InputBorder.none,
+                                                ),
+                                                border: InputBorder.none,
                                                 // focusedBorder:
                                                 //     UnderlineInputBorder(
                                                 //   borderRadius:
@@ -299,8 +307,8 @@ color: Color.fromARGB(241, 235, 236, 236),),
                                     });
                                   } else {
                                     CustomSnackbar snackbar = CustomSnackbar();
-                                    snackbar.showSnackbar(
-                                        context, "Error getting Cart Number", "");
+                                    snackbar.showSnackbar(context,
+                                        "Error getting Cart Number", "");
                                   }
                                 } else {
                                   CustomSnackbar snackbar = CustomSnackbar();
@@ -325,18 +333,12 @@ color: Color.fromARGB(241, 235, 236, 236),),
                   Container(
                     // height: 50,
                     // width: 250,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Color.fromARGB(241, 235, 236, 236),),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Color.fromARGB(241, 235, 236, 236),
+                    ),
                     child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        // fillColor: Color.fromARGB(255, 119, 119, 119),
-                        border: InputBorder.none
-                        // OutlineInputBorder(
-                        //   borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        //   borderSide: const BorderSide(
-                        //       color: Color.fromARGB(241, 235, 236, 236),
-                        //       width: 1),
-                        // ),
-                      ),
+                      decoration: InputDecoration(border: InputBorder.none),
                       isExpanded: true,
                       hint: Text("Select Table Category"),
                       value: value.selectedTableCat,
@@ -353,7 +355,6 @@ color: Color.fromARGB(241, 235, 236, 236),),
                               "${value.selectedItemTablecat!['Table_Category']}");
                           Provider.of<Controller>(context, listen: false)
                               .updateTableCAT(context);
-                          // Provider.of<Controller>(context, listen: false).getTableList(context);
                         });
                       },
                       items: value.tableCategoryList
@@ -362,7 +363,7 @@ color: Color.fromARGB(241, 235, 236, 236),),
                         return DropdownMenuItem<String>(
                           value: item['Table_Category'],
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 10,right: 10),
+                            padding: const EdgeInsets.only(left: 10, right: 10),
                             child: Text(item['Table_Category']),
                           ),
                         );
@@ -423,12 +424,12 @@ color: Color.fromARGB(241, 235, 236, 236),),
           : Expanded(
               child: list.length == 0
                   ? Container(
-                  height: size.height * 0.7,
-                  child: Center(
-                      child: Lottie.asset("assets/noitem.json",
-                          height: size.height * 0.3)))
+                      height: size.height * 0.7,
+                      child: Center(
+                          child: Lottie.asset("assets/noitem.json",
+                              height: size.height * 0.3)))
                   : GridView.builder(
-                      // shrinkWrap: true,
+                      shrinkWrap: true,
                       // physics: const ScrollPhysics(),
                       itemCount: value.isSearch
                           ? value.filteredlist.length
@@ -547,37 +548,8 @@ color: Color.fromARGB(241, 235, 236, 236),),
                                 context,
                                 "Table ${value.tablname.toString().trimLeft().toUpperCase()} Selected.",
                                 "");
-                            // showDialog(
-                            //     barrierDismissible: false,
-                            //     context: context,
-                            //     builder: (context) {
-                            //       Size size = MediaQuery.of(context).size;
 
-                            //       Future.delayed(Duration(seconds: 2), () {
-                            //         Navigator.of(context).pop(true);
-                            //       });
-                            //       return AlertDialog(
-                            //           content: Row(
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         children: [
-                            //           Text(
-                            //             'Table ${value.tablID.toString()} Selected.',
-                            //           ),
-                            //           Icon(
-                            //             Icons.done,
-                            //             color: Colors.green,
-                            //           )
-                            //         ],
-                            //       ));
-                            //     });
                             setState(() {});
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => CategoryScreen(
-                            //           tablId:
-                            //               list[index]["Table_ID"].toString())),
-                            // );
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
