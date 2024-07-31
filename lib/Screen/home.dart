@@ -325,12 +325,12 @@ class _HomePageState extends State<HomePage> {
               ),
         body: RefreshIndicator(
           onRefresh: _handleRefresh,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Consumer<Controller>(
-              builder: (context, value, child) => Column(
-                children: [
-                  Container(
+          child: CustomScrollView(slivers: [
+            SliverToBoxAdapter(
+              child: Consumer<Controller>(
+                builder: (context, value, child) => Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Container(
                     // height: 50,
                     // width: 250,
                     decoration: BoxDecoration(
@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                     child: DropdownButtonFormField<String>(
                       decoration: InputDecoration(border: InputBorder.none),
                       isExpanded: true,
-                      hint: Text("Select Table Category"),
+                      hint: Text(" Select Table Category"),
                       value: value.selectedTableCat,
                       onChanged: (String? newValue) {
                         setState(() {
@@ -370,39 +370,45 @@ class _HomePageState extends State<HomePage> {
                       }).toList(),
                     ),
                   ),
-
-                  // TextFormField(
-                  //   controller: seacrh,
-                  //   //   decoration: const InputDecoration(,
-                  //   onChanged: (val) {
-                  //     Provider.of<Controller>(context, listen: false)
-                  //         .searchTable(val.toString());
-                  //   },
-                  //   decoration: InputDecoration(
-                  //       prefixIcon: Icon(
-                  //         Icons.search,
-                  //         color: Colors.blue,
-                  //       ),
-                  //       suffixIcon: IconButton(
-                  //         icon: new Icon(Icons.cancel),
-                  //         onPressed: () {
-                  //           seacrh.clear();
-                  //           Provider.of<Controller>(context, listen: false)
-                  //               .searchTable("");
-                  //         },
-                  //       ),
-                  //       hintText: "Search Table..."),
-                  // ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  value.isSearch
-                      ? tableWidget(size, value.filteredlist)
-                      : tableWidget(size, value.tabllistCAT)
-                ],
+                ),
               ),
             ),
-          ),
+            Consumer<Controller>(builder: (context, value, child) {
+              if (value.isTableLoading) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: SpinKitCircle(
+                      color: Colors.black,
+                    ),
+                  ),
+                );
+              } else if (value.tabllistCAT.isEmpty) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Lottie.asset(
+                      "assets/noitem.json",
+                      height: size.height * 0.3,
+                    ),
+                  ),
+                );
+              } else {
+                return SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return tableWidget(
+                          size, value.tabllistCAT[index], context);
+                    },
+                    childCount: value.tabllistCAT.length,
+                  ),
+                );
+              }
+            })
+          ]),
         ),
       ),
     );
@@ -410,184 +416,124 @@ class _HomePageState extends State<HomePage> {
 
 // ItemList(catlId: map["catid"],catName: map["catname"],)
 /////////////////////////////////////////////////////////////////
-  Widget tableWidget(Size size, List list) {
+  Widget tableWidget(
+      Size size, Map<String, dynamic> list, BuildContext context) {
     return Consumer<Controller>(
-      builder: (context, value, child) => value.isTableLoading
-          ? Expanded(
-              child: Align(
-                alignment: Alignment.center,
-                child: SpinKitCircle(
-                  color: Colors.black,
-                ),
-              ),
-            )
-          : Expanded(
-              child: list.length == 0
-                  ? Container(
-                      height: size.height * 0.7,
-                      child: Center(
-                          child: Lottie.asset("assets/noitem.json",
-                              height: size.height * 0.3)))
-                  : GridView.builder(
+      builder: (context, value, child) => Container(
+        decoration: BoxDecoration(
+            color: list["STATUS"] == 1
+                ? Color.fromARGB(255, 230, 167, 167)
+                : Colors.white,
+            border: Border.all(color: Colors.black45),
+            borderRadius: BorderRadius.circular(10)),
+        child: InkWell(
+          onLongPress: () async {
+            await Provider.of<Controller>(context, listen: false)
+                .viewTableItems(
+                    context, list["Table_Name"].toString().trimLeft(), 0);
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Column(
+                    children: [
+                      Text('Pending Orders( ${value.tableItemList.length} )',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Color.fromARGB(255, 111, 128, 228),
+                          )),
+                      Divider()
+                    ],
+                  ),
+                  content: Container(
+                    width: size.width * 1 / 2,
+                    // width: double.maxFinite,
+                    child: ListView.builder(
                       shrinkWrap: true,
-                      // physics: const ScrollPhysics(),
-                      itemCount: value.isSearch
-                          ? value.filteredlist.length
-                          : value.tabllistCAT.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8),
-                      itemBuilder: (context, index) => Container(
-                        decoration: BoxDecoration(
-                            color: list[index]["STATUS"] == 1
-                                ? Color.fromARGB(255, 230, 167, 167)
-                                : Colors.white,
-                            border: Border.all(color: Colors.black45),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: InkWell(
-                          onLongPress: () async {
-                            await Provider.of<Controller>(context,
-                                    listen: false)
-                                .viewTableItems(
-                                    context,
-                                    list[index]["Table_Name"]
-                                        .toString()
-                                        .trimLeft(),
-                                    0);
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Column(
-                                    children: [
-                                      Text(
-                                          'Pending Orders( ${value.tableItemList.length} )',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500,
-                                            color: Color.fromARGB(
-                                                255, 111, 128, 228),
-                                          )),
-                                      Divider()
-                                    ],
-                                  ),
-                                  content: Container(
-                                    width: size.width * 1 / 2,
-                                    // width: double.maxFinite,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: value.tableItemList.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 10),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  " ${value.tableItemList[index]['Item'].toString().trimLeft().toUpperCase()}",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              Text(
-                                                " ${value.tableItemList[index]['Qty'].toStringAsFixed(0)}",
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                            // showDialog(
-                            //     barrierDismissible: false,
-                            //     context: context,
-                            //     builder: (context) {
-                            //       Size size = MediaQuery.of(context).size;
-
-                            //       // Future.delayed(Duration(seconds: 5), () {
-                            //       //   Navigator.of(context).pop(true);
-                            //       // });
-                            //       return AlertDialog(
-                            //           content: Row(
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         children: [
-                            //           Text(
-                            //             'jghjgjgj',
-                            //           ),
-
-                            //           Icon(
-                            //             Icons.done,
-                            //             color: Colors.green,
-                            //           )
-                            //         ],
-                            //       ));
-                            //     });
-                          },
-                          onTap: () async {
-                            await value.setTableID(
-                                list[index]["Table_ID"].toString().trimLeft(),
-                                list[index]["Table_Name"].toString().trimLeft(),
-                                context);
-                            await Provider.of<Controller>(context,
-                                    listen: false)
-                                .getCartNo(context);
-                            CustomSnackbar snackbar = CustomSnackbar();
-                            snackbar.showSnackbar(
-                                context,
-                                "Table ${value.tablname.toString().trimLeft().toUpperCase()} Selected.",
-                                "");
-
-                            setState(() {});
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+                      itemCount: value.tableItemList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
                             children: [
-                              // Expanded(
-                              //   child: Image.asset(
-                              //     "assets/sweets.png",
-                              //     height: size.height * 0.09,
-                              //     width: size.width * 0.15,
-                              //     // fit: BoxFit.contain,
-                              //   ),
-                              // ),
-                              Container(
-                                alignment: Alignment.center,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 8),
-                                  child: Text(
-                                    list[index]["Table_Name"]
-                                        .toString()
-                                        .trimLeft(),
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                              Expanded(
+                                child: Text(
+                                  " ${value.tableItemList[index]['Item'].toString().trimLeft().toUpperCase()}",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              // Divider(color: Colors.black,)
+                              Text(
+                                " ${value.tableItemList[index]['Qty'].toStringAsFixed(0)}",
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
+                  ),
+                );
+              },
+            );
+            // showDialog(
+            //     barrierDismissible: false,
+            //     context: context,
+            //     builder: (context) {
+            //       Size size = MediaQuery.of(context).size;
+
+            //       // Future.delayed(Duration(seconds: 5), () {
+            //       //   Navigator.of(context).pop(true);
+            //       // });
+            //       return AlertDialog(
+            //           content: Row(
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         children: [
+            //           Text(
+            //             'jghjgjgj',
+            //           ),
+
+            //           Icon(
+            //             Icons.done,
+            //             color: Colors.green,
+            //           )
+            //         ],
+            //       ));
+            //     });
+          },
+          onTap: () async {
+            await value.setTableID(list["Table_ID"].toString().trimLeft(),
+                list["Table_Name"].toString().trimLeft(), context);
+            await Provider.of<Controller>(context, listen: false)
+                .getCartNo(context);
+            CustomSnackbar snackbar = CustomSnackbar();
+            snackbar.showSnackbar(
+                context,
+                "Table ${value.tablname.toString().trimLeft().toUpperCase()} Selected.",
+                "");
+
+            setState(() {});
+          },
+          child: Container(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+              child: Text(
+                // "SDFGGGTHHJJJJJJJJSSS",
+                list["Table_Name"].toString().trimLeft(),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+          ),
+        ),
+      ),
     );
   }
 

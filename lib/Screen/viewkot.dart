@@ -196,12 +196,10 @@ class _ViewKotState extends State<ViewKot> {
     return Consumer<Controller>(builder: (context, value, child) {
       String dateTimeString = map["kot_Date"].toString().trimLeft();
       DateTime dateTime = DateTime.parse(dateTimeString);
-
       String formattedDate =
           "${dateTime.day.toString().padLeft(2, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.year}";
       String dateTimeString1 = map["kot_time"].toString().trimLeft();
       DateTime dateTime1 = DateTime.parse(dateTimeString1);
-
       DateFormat dateFormat = DateFormat("hh:mm:ss a");
       String formattedTime = dateFormat.format(dateTime1);
 

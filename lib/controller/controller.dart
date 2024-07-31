@@ -369,20 +369,18 @@ class Controller extends ChangeNotifier {
       }
       isLoginLoading = false;
       notifyListeners();
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException Table: ${e.message}");
+      debugPrint("not connected..Table..");
+      // Navigator.pop(context);
+      showConnectionDialog(context, "LOG", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
-      SqlConn.disconnect();
-    } finally {
-      if (SqlConn.isConnected == false) {
-        print("hi");
-        showConnectionDialog(context, "LOG");
-        debugPrint("Database not connected, popping context.");
-      }
+      // SqlConn.disconnect();
     }
   }
 
   verifyStaff(String pwd, BuildContext context) {
-
     print("pwd , selpwd ====$pwd ,${selectedItemStaff!['PWD']}");
     if (pwd == selectedItemStaff!['PWD'].toString().trim()) {
       return 1;
@@ -417,7 +415,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..db  select..");
       debugPrint(e.toString());
       Navigator.pop(context);
-      await showConnectionDialog(context, "DB");
+      await showConnectionDialog(context, "DB", e.toString());
 
       //   showDialog(
       //   context: context,
@@ -470,6 +468,7 @@ class Controller extends ChangeNotifier {
     String? multi_db = prefs.getString("multi_db");
 
     debugPrint("Connecting selected DB...$db----");
+    debugPrint("Connecting ...$ip---$port----$un----$pw-");
     try {
       isYearSelectLoading = true;
       notifyListeners();
@@ -500,14 +499,14 @@ class Controller extends ChangeNotifier {
           );
         },
       );
-      if (multi_db == "1") {
-        await SqlConn.connect(
-            ip: ip!,
-            port: port!,
-            databaseName: db!,
-            username: un!,
-            password: pw!);
-      }
+      // if (multi_db == "1") {
+      await SqlConn.connect(
+          ip: ip!,
+          port: port!,
+          databaseName: db!,
+          username: un!,
+          password: pw!);
+      // }
       debugPrint("Connected selected DB!----$ip------$db");
       // getDatabasename(context, type);
       Navigator.pop(context);
@@ -551,13 +550,15 @@ class Controller extends ChangeNotifier {
       //   await viewKot(context);
       // }
       else {}
-    } catch (e) {
+    } on PlatformException catch (e) {
       debugPrint(e.toString());
       debugPrint("not connected..init-YRDB..");
       Navigator.pop(context);
-      await showConnectionDialog(context, "INYR");
-    } finally {
-      // Navigator.pop(context);
+      await showConnectionDialog(context, "INYR", e.toString());
+    } catch (e) {
+      print("An unexpected error occurred: $e");
+      // SqlConn.disconnect();
+      // return [];
     }
   }
 
@@ -606,7 +607,7 @@ class Controller extends ChangeNotifier {
       debugPrint(e.toString());
       debugPrint("not connected..initDB..");
       Navigator.pop(context);
-      await showConnectionDialog(context, "INDB");
+      await showINITConnectionDialog(context, "INDB", e.toString());
 
       //   showDialog(
       //   context: context,
@@ -676,7 +677,7 @@ class Controller extends ChangeNotifier {
       debugPrint("PlatformException Table: ${e.message}");
       debugPrint("not connected..Table..");
       // Navigator.pop(context);
-      await showConnectionDialog(context, "TBL");
+      await showConnectionDialog(context, "TBL", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -746,16 +747,27 @@ class Controller extends ChangeNotifier {
         }
         print("Table_CategoryList----$tableCategoryList");
       }
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException Table_CategoryList: ${e.message}");
+      debugPrint("not connected..Table_CategoryList..");
+      // Navigator.pop(context);
+      await showConnectionDialog(context, "TCAT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
-      SqlConn.disconnect();
-    } finally {
-      if (SqlConn.isConnected == false) {
-        print("hi");
-        showConnectionDialog(context, "TCAT");
-        debugPrint("Database not connected, popping context.");
-      }
+      // SqlConn.disconnect();
+      // return [];
     }
+    // catch (e) {
+    //   print("An unexpected error occurred: $e");
+    //   SqlConn.disconnect();
+    // }
+    // finally {
+    //   if (SqlConn.isConnected == false) {
+    //     print("hi");
+    //     showConnectionDialog(context, "TCAT");
+    //     debugPrint("Database not connected, popping context.");
+    //   }
+    // }
   }
 
   getRoomList(BuildContext context) async {
@@ -783,7 +795,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..Room..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "ROM");
+      await showConnectionDialog(context, "ROM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -859,7 +871,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..Cat List..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "CAT");
+      await showConnectionDialog(context, "CAT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -910,7 +922,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..Item List..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "ITM");
+      await showConnectionDialog(context, "ITM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -964,7 +976,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..CARTNO..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "CAR");
+      await showConnectionDialog(context, "CAR", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -1169,7 +1181,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..ADD IITEM..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "ADDITEM");
+      await showConnectionDialog(context, "ADDITEM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -1235,7 +1247,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..UPD IITEM..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "UPDITEM");
+      await showConnectionDialog(context, "UPDITEM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -1281,7 +1293,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..Kot_Save_Kot..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "FIN");
+      await showConnectionDialog(context, "FIN", e.toString());
       return false;
     } catch (e) {
       print("An unexpected error occurred: $e");
@@ -1309,7 +1321,7 @@ class Controller extends ChangeNotifier {
       var res =
           await SqlConn.readData("Kot_Get_Unsaved_Cart $cartNo,'$tb','$os'");
       var valueMap = json.decode(res);
-    
+
       notifyListeners();
       print("view cart---$res");
 
@@ -1332,14 +1344,14 @@ class Controller extends ChangeNotifier {
         cartTotal = 0;
         notifyListeners();
       }
-       isCartLoading = false;
+      isCartLoading = false;
       notifyListeners();
     } on PlatformException catch (e) {
       debugPrint("PlatformException Viw CART: ${e.message}");
       debugPrint("not connected..Viw CART..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "VCART");
+      await showConnectionDialog(context, "VCART", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -1386,7 +1398,7 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..Kot List..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      await showConnectionDialog(context, "VWKOT");
+      await showConnectionDialog(context, "VWKOT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
@@ -1675,7 +1687,8 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> showConnectionDialog(BuildContext context, String from) {
+  Future<void> showConnectionDialog(
+      BuildContext context, String from, String er) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -1693,13 +1706,218 @@ class Controller extends ChangeNotifier {
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () async {
+            InkWell(
+              child: Text('Connect'),
+              onLongPress: () async {
+                await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text(er),
+                      );
+                    });
+              },
+              onTap: () async {
                 await initYearsDb(context, from);
                 Navigator.of(context).pop();
               },
+            )
+            // TextButton(
+            //   onPressed: () async {
+            //     await initYearsDb(context, from);
+            //     Navigator.of(context).pop();
+            //   },
+            //   child: Text('Connect'),
+            // ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showINITConnectionDialog(
+      BuildContext context, String from, String er) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Not Connected..!",
+                style: TextStyle(fontSize: 13),
+              ),
+              SpinKitCircle(
+                color: Colors.green,
+              ),
+            ],
+          ),
+          actions: [
+            InkWell(
               child: Text('Connect'),
-            ),
+              onLongPress: () async {
+                TextEditingController dbc = TextEditingController();
+                TextEditingController ipc = TextEditingController();
+                TextEditingController usrc = TextEditingController();
+                TextEditingController portc = TextEditingController();
+                TextEditingController pwdc = TextEditingController();
+                bool pressed = false;
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String? db = prefs.getString("db_name");
+                String? ip = prefs.getString("ip");
+                String? port = prefs.getString("port");
+                String? un = prefs.getString("usern");
+                String? pw = prefs.getString("pass_w");
+                await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return StatefulBuilder(
+                        builder: (BuildContext context,
+                                void Function(void Function()) setState) =>
+                            AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                  onLongPress: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            content: Text(er),
+                                          );
+                                        });
+                                  },
+                                  child: Icon(
+                                    Icons.error_outline,
+                                    color: Colors.redAccent,
+                                  )),
+                              IconButton(
+                                  style: ButtonStyle(),
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop(false);
+                                  },
+                                  icon: Icon(Icons.close))
+                            ],
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('DB Deatails'),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(width: 90, child: Text("DB")),
+                                  pressed
+                                      ? SizedBox(
+                                          width: 150,
+                                          child: TextFormField(
+                                            controller: dbc,
+                                          ))
+                                      : Text(" :  ${db.toString()}")
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(width: 90, child: Text("IP")),
+                                  pressed
+                                      ? SizedBox(
+                                          width: 140,
+                                          child: TextFormField(
+                                            controller: ipc,
+                                          ))
+                                      : Text(" :  ${ip.toString()}")
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(width: 90, child: Text("PORT")),
+                                  pressed
+                                      ? SizedBox(
+                                          width: 150,
+                                          child: TextFormField(
+                                            controller: portc,
+                                          ))
+                                      : Text(" :  ${port.toString()}")
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(width: 90, child: Text("USERNAME")),
+                                  pressed
+                                      ? SizedBox(
+                                          width: 150,
+                                          child: TextFormField(
+                                            controller: usrc,
+                                          ))
+                                      : Text(" :  ${un.toString()}")
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(width: 90, child: Text("PASSWORD")),
+                                  pressed
+                                      ? SizedBox(
+                                          width: 150,
+                                          child: TextFormField(
+                                            controller: pwdc,
+                                          ))
+                                      : Text(" :  ${pw.toString()}")
+                                ],
+                              )
+                            ],
+                          ),
+                          actions: <Widget>[
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    pressed = true;
+                                  });
+
+                                  dbc.text = db.toString();
+                                  ipc.text = ip.toString();
+                                  portc.text = port.toString();
+                                  usrc.text = un.toString();
+                                  pwdc.text = pw.toString();
+                                  print("pressed---$pressed");
+                                },
+                                icon: Icon(Icons.edit)),
+                            TextButton(
+                              onPressed: () {
+                                prefs.setString(
+                                    "old_db_name", dbc.text.toString());
+                                prefs.setString("db_name", dbc.text.toString());
+                                prefs.setString("ip", ipc.text.toString());
+                                prefs.setString("port", portc.text.toString());
+                                prefs.setString("usern", usrc.text.toString());
+                                prefs.setString("pass_w", pwdc.text.toString());
+                                // setState(() {});
+                                Navigator.of(context, rootNavigator: true).pop(
+                                    false); // dismisses only the dialog and returns false
+                              },
+                              child: Text('UPDATE'),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              },
+              onTap: () async {
+                await initDb(context, "");
+                Navigator.of(context).pop();
+              },
+            )
+            // TextButton(
+            //   onPressed: () async {
+            //     await initDb(context,"");
+            //     Navigator.of(context).pop();
+            //   },
+            //   child: Text('Connect'),
+            // ),
           ],
         );
       },

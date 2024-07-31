@@ -188,6 +188,16 @@ class OrderBottomSheet {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    // Container(
+                                    //     decoration: BoxDecoration(
+                                    //         color: Colors.yellow,
+                                    //         borderRadius:
+                                    //             BorderRadius.circular(8)),
+                                    //     width: size.width * 1 / 1.7,
+                                    //     child: Padding(
+                                    //       padding: const EdgeInsets.all(8),
+                                    //       child: Text(finalText,style: TextStyle(fontSize: 18,fontWeight: FontWeight.w400,overflow: TextOverflow.ellipsis),),
+                                    //     )),
                                     InkWell(
                                         onTap: () async {
                                           desss = "";
@@ -387,17 +397,18 @@ class OrderBottomSheet {
                                         child: Row(
                                           children: [
                                             SizedBox(
-                                              height: 25,
-                                              width: 18,
-                                              child: Image.asset(
-                                                "assets/instructions.png",
-                                                fit: BoxFit.contain,
-                                                width: 300,
-                                                height: 300,
-                                              ),
-                                            ),
+                                                height: 25,
+                                                width: 18,
+                                                child: Icon(Icons.add)
+                                                // Image.asset(
+                                                //   "assets/instructions.png",
+                                                //   fit: BoxFit.contain,
+                                                //   width: 300,
+                                                //   height: 300,
+                                                // ),
+                                                ),
                                             Text(
-                                              "Add Instructions",
+                                              " Instructions",
                                               style:
                                                   TextStyle(color: Colors.red),
                                             ),

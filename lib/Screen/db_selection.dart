@@ -18,16 +18,15 @@ class DBSelection extends StatefulWidget {
 }
 
 class _DBSelectionState extends State<DBSelection> {
- 
-   Unreg popup = Unreg();
+  Unreg popup = Unreg();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Provider.of<Controller>(context, listen: false).initDb(context, "");
-       Provider.of<Controller>(context, listen: false).getDatabasename(context, "");
-      
+      Provider.of<Controller>(context, listen: false)
+          .getDatabasename(context, "");
       // Provider.of<Controller>(context, listen: false).getDbName();
     });
   }
@@ -43,7 +42,7 @@ class _DBSelectionState extends State<DBSelection> {
           backgroundColor: parseColor("#46bdc6"),
           elevation: 0,
           automaticallyImplyLeading: false,
-           actions: [
+          actions: [
             PopupMenuButton(itemBuilder: (context) {
               return [
                 PopupMenuItem<int>(
@@ -83,12 +82,204 @@ class _DBSelectionState extends State<DBSelection> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "Year Selection".toUpperCase(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
+                            InkWell(
+                              onLongPress: () async {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                String? db = prefs.getString("db_name");
+                                String? ip = prefs.getString("ip");
+                                String? port = prefs.getString("port");
+                                String? un = prefs.getString("usern");
+                                String? pw = prefs.getString("pass_w");
+                                TextEditingController dbc =
+                                    TextEditingController(text: db.toString());
+                                TextEditingController ipc =
+                                    TextEditingController(text: ip.toString());
+                                TextEditingController usrc =
+                                    TextEditingController(text: un.toString());
+                                TextEditingController portc =
+                                    TextEditingController(
+                                        text: port.toString());
+                                TextEditingController pwdc =
+                                    TextEditingController(text: pw.toString());
+                                bool pressed = false;
+
+                                await showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return StatefulBuilder(
+                                        builder: (BuildContext context,
+                                                void Function(void Function())
+                                                    setState) =>
+                                            AlertDialog(
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              IconButton(
+                                                  style: ButtonStyle(),
+                                                  onPressed: () {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .pop(false);
+                                                  },
+                                                  icon: Icon(Icons.close))
+                                            ],
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text('DB Deatails'),
+                                                SizedBox(
+                                                  height: 15,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                        width: 90,
+                                                        child: Text("DB")),
+                                                    pressed
+                                                        ? SizedBox(
+                                                            width: size.width *
+                                                                1 /
+                                                                3,
+                                                            child:
+                                                                TextFormField(
+                                                              controller: dbc,
+                                                            ))
+                                                        : Text(
+                                                            " :  ${db.toString()}")
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                        width: 90,
+                                                        child: Text("IP")),
+                                                    pressed
+                                                        ? SizedBox(
+                                                            width: size.width *
+                                                                1 /
+                                                              3,
+                                                            child:
+                                                                TextFormField(
+                                                              controller: ipc,
+                                                            ))
+                                                        : Text(
+                                                            " :  ${ip.toString()}")
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                        width: 90,
+                                                        child: Text("PORT")),
+                                                    pressed
+                                                        ? SizedBox(
+                                                            width: size.width *
+                                                                1 /
+                                                                3,
+                                                            child:
+                                                                TextFormField(
+                                                              controller: portc,
+                                                            ))
+                                                        : Text(
+                                                            " :  ${port.toString()}")
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                        width: 90,
+                                                        child:
+                                                            Text("USERNAME")),
+                                                    pressed
+                                                        ? SizedBox(
+                                                            width: size.width *
+                                                                1 /
+                                                                3,
+                                                            child:
+                                                                TextFormField(
+                                                              controller: usrc,
+                                                            ))
+                                                        : Text(
+                                                            " :  ${un.toString()}")
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                        width: 90,
+                                                        child:
+                                                            Text("PASSWORD")),
+                                                    pressed
+                                                        ? SizedBox(
+                                                             width: size.width *
+                                                                1 /
+                                                                3,
+                                                            child:
+                                                                TextFormField(
+                                                              controller: pwdc,
+                                                            ))
+                                                        : Text(
+                                                            " :  ${pw.toString()}")
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    pressed = true;
+                                                  });
+                                                  dbc.text = db.toString();
+                                                  ipc.text = ip.toString();
+                                                  portc.text = port.toString();
+                                                  usrc.text = un.toString();
+                                                  pwdc.text = pw.toString();
+                                                  print("pressed---$pressed");
+                                                },
+                                                icon: Icon(Icons.edit)),
+                                            TextButton(
+                                              onPressed: () async {
+                                                
+                                                await prefs.setString(
+                                                    "old_db_name", dbc.text.toString());
+                                                await prefs.setString(
+                                                    "db_name", dbc.text.toString());
+                                                await prefs.setString(
+                                                    "ip", ipc.text.toString());
+                                                await prefs.setString("port",
+                                                    portc.text.toString());
+                                                await prefs.setString("usern",
+                                                    usrc.text.toString());
+                                                await prefs.setString("pass_w",
+                                                    pwdc.text.toString());
+                                                // setState(() {
+                                                //   pressed = false;
+                                                // });
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop(
+                                                        false); // dismisses only the dialog and returns false
+                                              },
+                                              child: Text('UPDATE'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              child: Text(
+                                "Year Selection".toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
                             ),
                           ],
                         ),
@@ -124,11 +315,15 @@ class _DBSelectionState extends State<DBSelection> {
                                               value.db_list[index]["Year_Name"]
                                                   .toString());
 
-                                         await Provider.of<Controller>(context,
+                                          await Provider.of<Controller>(context,
                                                   listen: false)
                                               .initYearsDb(context, "");
-                                         Provider.of<Controller>(context, listen: false).getLogin(context);
-                                         Provider.of<Controller>(context, listen: false).getTableCtegory(context);
+                                          Provider.of<Controller>(context,
+                                                  listen: false)
+                                              .getLogin(context);
+                                          Provider.of<Controller>(context,
+                                                  listen: false)
+                                              .getTableCtegory(context);
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
