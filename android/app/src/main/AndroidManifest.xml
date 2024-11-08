@@ -5,7 +5,7 @@
    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <application
-        android:label="restaurent_kot"
+        android:label="Trafiq_KOT"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

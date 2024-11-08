@@ -47,10 +47,11 @@ class _ItemWidgetState extends State<ItemWidget> {
                   child: Center(
                       child: Lottie.asset("assets/noitem.json",
                           height: size.height * 0.3)))
-              : ResponsiveGridList(horizontalGridSpacing: 0,
+              : ResponsiveGridList(
+                  horizontalGridSpacing: 0,
                   minItemWidth: size.width / 1.2, //300
                   minItemsPerRow: 1,
-                  maxItemsPerRow: 2,
+                  // maxItemsPerRow: 2,
                   children: List.generate(widget.list.length, (index) {
                     return Padding(
                         padding: const EdgeInsets.only(left: 8, right: 8,),
@@ -413,6 +414,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                 contentPadding:
                                     EdgeInsets.only(left: 8.0, right: 0),
                                 title: Text(
+                                  // "fgfhgfhgfjgfj hfghfgjhgfjgfjfgj gffyrytuyukj,j,j,n,n,,",
                                   widget.list[index]["Product"]
                                       .toString()
                                       .trimLeft()
@@ -422,6 +424,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                                       fontSize: 17,
                                       color:
                                           const Color.fromARGB(255, 3, 100, 180)),
+                                          overflow: TextOverflow.ellipsis,
                                 ),
                                 subtitle: Text(
                                   "\u{20B9}${widget.list[index]["SRATE"].toStringAsFixed(2)}",

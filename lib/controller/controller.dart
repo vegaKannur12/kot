@@ -520,9 +520,11 @@ class Controller extends ChangeNotifier {
       // prefs.setString("yr_name", yrnam.toString());
       // getDbName();
       // getBranches(context);
-      if (type == "DB") {
+      if (type == "DB") 
+      {
         await getDatabasename(context, "");
-      } else if (type == "INDB") {
+      } 
+      else if (type == "INDB") {
         await initDb(context, "");
       } else if (type == "INYR") {
         await initYearsDb(context, "");
@@ -545,6 +547,8 @@ class Controller extends ChangeNotifier {
         await viewCart(context);
       } else if (type == "FIN") {
         await finalSave(context);
+      } else if (type == "FINP") {
+        await finalPrint(context);
       }
       // else if (type == "VWKOT") {
       //   await viewKot(context);
@@ -673,7 +677,8 @@ class Controller extends ChangeNotifier {
       print("tablelistCAT-$tabllistCAT");
       isTableLoading = false;
       notifyListeners();
-    } on PlatformException catch (e) {
+    } 
+    on PlatformException catch (e) {
       debugPrint("PlatformException Table: ${e.message}");
       debugPrint("not connected..Table..");
       // Navigator.pop(context);
@@ -741,7 +746,9 @@ class Controller extends ChangeNotifier {
       // print("login details----------$res");
       if (valueMap != null) {
         // LoginModel logModel = LoginModel.fromJson(valueMap);
-        for (var item in valueMap) {
+        
+        for (var item in valueMap) 
+        {
           tableCategoryList.add(item);
           notifyListeners();
         }
@@ -861,7 +868,7 @@ class Controller extends ChangeNotifier {
           catlist.add(item);
         }
       }
-      // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"food1"},{"Cat_Id":"VGMHD3", "Cat_Name":"food3"}];
+      // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"black coffee"},{"Cat_Id":"VGMHD3", "Cat_Name":"FOOD"},{"Cat_Id":"VGMHD3", "Cat_Name":"RICE"},{"Cat_Id":"VGMHD3", "Cat_Name":"SALAD"},{"Cat_Id":"VGMHD3", "Cat_Name":"SNACKS"},];
       print("categoryList...................-$res");
 
       isCategoryLoading = false;
@@ -1255,6 +1262,43 @@ class Controller extends ChangeNotifier {
     }
   }
 
+  finalPrint(
+    BuildContext context,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? cid = await prefs.getString("cid");
+    String? fbn = await prefs.getString("FBNO");
+    try {
+      print("---------Kot_Print_kot $fbn");
+      var res = await SqlConn.readData("Kot_Print_kot '$fbn'");
+      // if (res.isNotEmpty)
+      //   if (res[0]["Save_Status"] == "Success") {
+      //     print("Saveedddddddd ! $res");
+      //     // print("Saved successfully! FB_no: ${response['FB_no']}");
+      //     return true;
+      //   } else {
+      //     print("Save failed: $res");
+      //     return false;
+      //   }
+      // } else {
+      //   print("No data returned or empty result: $res");
+      //   return false;
+      // }
+      print("Print success ! $res");
+      // return true;
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException Kot_Print_Kot: ${e.message}");
+      debugPrint("not connected..Kot_Print_Kot..");
+      debugPrint(e.toString());
+      // Navigator.pop(context);
+      await showConnectionDialog(context, "FINP", e.toString());
+      // return false;
+    } catch (e) {
+      print("An unexpected error occurred: $e");
+      // return false;
+    }
+  }
+
   finalSave(
     BuildContext context,
   ) async {
@@ -1268,10 +1312,35 @@ class Controller extends ChangeNotifier {
     // for(var item in cartItems){
     // if(item['Cart_Row']!=0){
     try {
+      List r = [];
       var res;
       int cartlen = cartItems.length;
       print("---------Kot_Save_Kot '$os',$cartNo,$cartlen");
       res = await SqlConn.readData("Kot_Save_Kot '$os',$cartNo,$cartlen");
+      print("ress==${res.runtimeType}");
+      //  res=  [{"FB_no":"ZV13", "Save_Status":"Success"}];
+      if (res is String) {
+        // Convert JSON string to List
+        res = jsonDecode(res);
+      }
+      if (res.isNotEmpty) {
+        r.add(res[0]);
+        if (r[0]['Save_Status'].toString().trimLeft().toLowerCase() ==
+            "success") {
+          print("Saveedddddddd ! $res");
+          print("List rr=${r[0]['FB_no'].toString()}");
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString("FBNO", r[0]['FB_no'].toString().trimLeft());
+          print("okkkk");
+          notifyListeners();
+          return true;
+        } else {
+          print("Savee failed ! $res");
+          return false;
+        }
+      } else {
+        return false;
+      }
       // if (res.isNotEmpty) {
 
       //   if (res[0]["Save_Status"] == "Success") {
@@ -1286,8 +1355,6 @@ class Controller extends ChangeNotifier {
       //   print("No data returned or empty result: $res");
       //   return false;
       // }
-      print("Saveedddddddd ! $res");
-      return true;
     } on PlatformException catch (e) {
       debugPrint("PlatformException Kot_Save_Kot: ${e.message}");
       debugPrint("not connected..Kot_Save_Kot..");
@@ -1619,13 +1686,21 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////........................../////////////////////////////
-  setCatID(String id, BuildContext context) {
-    catlID = id;
+  // setCatID(String id, BuildContext context) {
+  //   catlID = id;
 
-    print("catlID----$catlID");
+  //   print("catlID----$catlID");
+  //   notifyListeners();
+  // }
+  setCatID(String id,String nm, BuildContext context) async {
+    // catlID = id;
+    // catNM=nm;
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("CAT_id", id);
+    prefs.setString("CAT_nm", nm);
+    print("cat_ID----$id,  cat_nm---$nm");
     notifyListeners();
   }
-
   /////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////
@@ -1677,7 +1752,9 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  getOs() async {
+  getOs() 
+  async 
+  {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");

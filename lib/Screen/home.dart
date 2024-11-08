@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
+import 'package:restaurent_kot/Screen/2categoryPage.dart';
 import 'package:restaurent_kot/Screen/viewkot.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
@@ -46,6 +47,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    print("width===${size.width}");
+    print("height===${size.height}");
+
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
@@ -263,8 +267,8 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 Text(
                                   'Room Credit',
-                                  textScaleFactor:
-                                      ScaleSize.textScaleFactor(context),
+                                  // textScaleFactor:
+                                  //     ScaleSize.textScaleFactor(context),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
@@ -287,7 +291,8 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => CategoryScreen(
+                                        builder: (context) => CatTEST(
+                                          // builder: (context) => CategoryScreen(
                                                 tablId:
                                                     value.tablname.toString(),
                                                 roomId:
@@ -316,7 +321,11 @@ class _HomePageState extends State<HomePage> {
                                       context, "Select Table", "");
                                 }
                               },
-                              child: Text("Proceed"))
+                              child: Text("Proceed", style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.black
+                                      ),))
                         ],
                       ),
                     ),
@@ -394,7 +403,7 @@ class _HomePageState extends State<HomePage> {
               } else {
                 return SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
+                    crossAxisCount: size.width >= 420 ? 4 : 3,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
@@ -522,13 +531,15 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 8),
               child: Text(
+                textAlign: TextAlign.center,
+                maxLines: 2,
                 // "SDFGGGTHHJJJJJJJJSSS",
-                list["Table_Name"].toString().trimLeft(),
+                list["Table_Name"].toString().trimLeft().toUpperCase(),
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 25),
-                overflow: TextOverflow.ellipsis,
+                    fontSize:size.width >= 420 ? 25 : 20),
+                    overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -622,6 +633,7 @@ class _HomePageState extends State<HomePage> {
                                           width: size.width * 1 / 4.4,
                                           child: Text(
                                             maxLines: 2,
+
                                             list[index]["Room_Name"]
                                                 .toString()
                                                 .trimLeft(),
@@ -638,6 +650,7 @@ class _HomePageState extends State<HomePage> {
                                         width: size.width * 1 / 2,
                                         child: Text(
                                           maxLines: 2,
+                                          // "gfgfhfh dgdhfhfhf fhyfhfhjfjhfhj eteteteteye",
                                           list[index]["Guest_Info"]
                                               .toString()
                                               .trimLeft(),
