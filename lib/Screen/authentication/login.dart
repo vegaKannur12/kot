@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         // appBar: AppBar(
@@ -225,45 +226,65 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    loginLoad = true;
-                    int i =
-                        await Provider.of<Controller>(context, listen: false)
-                            .verifyStaff(password.text, context);
-                    print("$i");
-                    if (i == 1) {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString("table_cat", "ALL");
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    } else {
-                      CustomSnackbar snackbar = CustomSnackbar();
-                      // ignore: use_build_context_synchronously
-                      snackbar.showSnackbar(context, "Incorrect Password", "");
-                    }
-                    loginLoad = false;
-                    //  Provider.of<Controller>(context, listen: false)
-                    //     .getLogin(
-                    //         'DHANUSH', '3804', context);
-                  },
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12.0, bottom: 12),
-                    child: loginLoad
-                        ? const SpinKitThreeBounce(
-                            color: Colors.black,
-                            size: 16,
-                          )
-                        : Text(
-                            "LOGIN",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Theme.of(context).secondaryHeaderColor),
-                          ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 67, 83, 155),
+                        Color.fromARGB(255, 50, 71, 190),
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      loginLoad = true;
+                      int i =
+                          await Provider.of<Controller>(context, listen: false)
+                              .verifyStaff(password.text, context);
+                      print("$i");
+                      if (i == 1) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        prefs.setString("table_cat", "ALL");
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage()));
+                      } else {
+                        CustomSnackbar snackbar = CustomSnackbar();
+                        // ignore: use_build_context_synchronously
+                        snackbar.showSnackbar(
+                            context, "Incorrect Password", "");
+                      }
+                      loginLoad = false;
+                      //  Provider.of<Controller>(context, listen: false)
+                      //     .getLogin(
+                      //         'DHANUSH', '3804', context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors
+                          .transparent, // Make button background transparent
+                      shadowColor: Colors.transparent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 12),
+                      child: loginLoad
+                          ? const SpinKitThreeBounce(
+                              color: Colors.white,
+                              size: 16,
+                            )
+                          : Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                  color:
+                                      Theme.of(context).secondaryHeaderColor),
+                            ),
+                    ),
                   ),
                 )
               ],

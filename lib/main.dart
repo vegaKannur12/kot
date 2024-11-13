@@ -95,7 +95,8 @@ class MyApp extends StatelessWidget {
         secondaryHeaderColor: Color.fromARGB(255, 237, 231, 232),
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: 
+      SplashScreen(),
       // LoginPage(),
       // Registration(),
       // const HomePage(),

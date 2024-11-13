@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -201,198 +202,648 @@ class OrderBottomSheet {
                                     InkWell(
                                         onTap: () async {
                                           desss = "";
+//                                           await showDialog(
+//   barrierDismissible: false,
+//   context: context,
+//   builder: (context) {
+//     return AlertDialog(
+//       content: Container(
+//         width: size.width * 0.8,
+//         height: size.height * 0.8, // Set height to 80% of screen height
+//         child: StatefulBuilder(
+//           builder: (BuildContext context, void Function(void Function()) setState) {
+//             return Column(
+//               children: [
+//                 TextField(
+//                   controller: searchController,
+//                   onChanged: (text) {
+//                     setState(() {
+//                       // Filter suggestions based on text input
+//                       value.filteredSuggestions = value.suggestions
+//                           .where((suggst) => suggst.toLowerCase().contains(text.toLowerCase()))
+//                           .toList();
+//                     });
+//                   },
+//                   decoration: InputDecoration(
+//                     hintText: "Type Here...",
+//                     border: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(20.0),
+//                     ),
+//                     suffixIcon: IconButton(
+//                       icon: Icon(Icons.cancel),
+//                       onPressed: () {
+//                         searchController.clear();
+//                         setState(() {
+//                           value.filteredSuggestions = value.suggestions; // Reset suggestions
+//                         });
+//                       },
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(height: 10),
+//                 Expanded(
+//                   child: ListView.builder(
+//                     itemCount: value.suggestions.length,
+//                     itemBuilder: (BuildContext context, int index) {
+//                       final suggestion = value.suggestions[index];
+//                       return ListTile(
+//                         title: Text(suggestion),
+//                         onTap: () {
+//                           setState(() {
+//                             finalText = suggestion;
+//                           });
+//                           print("Selected text: $finalText");
+//                           Navigator.of(context, rootNavigator: true).pop(); // Close dialog on selection
+//                         },
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             );
+//           },
+//         ),
+//       ),
+//       actions: <Widget>[
+//         ElevatedButton(
+//           onPressed: () {
+//             Navigator.of(context, rootNavigator: true).pop();
+//           },
+//           child: Text('Cancel'),
+//         ),
+//         ElevatedButton(
+//           onPressed: () {
+//             // Handle OK action here
+//             Navigator.of(context, rootNavigator: true).pop();
+//           },
+//           child: Text("Ok"),
+//         ),
+//       ],
+//     );
+//   },
+// );
                                           await showDialog(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  content: Container(
-                                                    width: size.width * 1 / 2,
-                                                    child: SizedBox(
-                                                      width: size.width * 1 / 2,
-                                                      child: StatefulBuilder(
-                                                        builder: (BuildContext
-                                                                    context,
-                                                                void Function(
-                                                                        void
-                                                                            Function())
-                                                                    setState) =>
-                                                            Autocomplete<String>(optionsBuilder:
+                                            barrierDismissible: false,
+                                            context: context,
+                                            builder: (context) {
+                                              Size size =
+                                                  MediaQuery.of(context).size;
+
+                                              return Dialog(
+                                                backgroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                child: Container(
+                                                  constraints: BoxConstraints(
+                                                    maxHeight: size.height *
+                                                        0.8, // Sets maximum height
+                                                    maxWidth: size.width *
+                                                        0.8, // Adjusts dialog width
+                                                  ),
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  decoration: BoxDecoration(
+                                                    // gradient: LinearGradient(
+                                                    //   colors: [
+                                                    //     Colors.blueAccent,
+                                                    //     Colors.deepPurple
+                                                    //   ],
+                                                    //   begin: Alignment.topLeft,
+                                                    //   end:
+                                                    //       Alignment.bottomRight,
+                                                    // ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            "Select Option",
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                          IconButton(
+                                                            icon: Icon(
+                                                                Icons.close,
+                                                                color: Colors
+                                                                    .black),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context,
+                                                                      rootNavigator:
+                                                                          true)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Divider(
+                                                          color:
+                                                              Colors.black45),
+                                                      SizedBox(height: 10),
+                                                      SingleChildScrollView(
+                                                        child: StatefulBuilder(
+                                                          builder: (BuildContext
+                                                                      context,
+                                                                  void Function(
+                                                                          void
+                                                                              Function())
+                                                                      setState) =>
+                                                              Autocomplete<
+                                                                  String>(
+                                                            optionsBuilder:
                                                                 (TextEditingValue
                                                                     textEditingValue) {
-                                                          if (textEditingValue
-                                                              .text.isEmpty) {
-                                                            return value
-                                                                .suggestions;
-                                                          }
-                                                          return value
-                                                              .suggestions
-                                                              .where((suggst) => suggst
-                                                                  .toLowerCase()
-                                                                  .contains(
-                                                                      textEditingValue
+                                                              if (textEditingValue
+                                                                  .text
+                                                                  .isEmpty) {
+                                                                return value
+                                                                    .suggestions;
+                                                              }
+                                                              return value
+                                                                  .suggestions
+                                                                  .where((suggst) => suggst
+                                                                      .toLowerCase()
+                                                                      .contains(textEditingValue
                                                                           .text
                                                                           .toLowerCase()));
-                                                        }, optionsViewBuilder:
+                                                            },
+                                                            optionsViewBuilder:
                                                                 (context,
                                                                     onSelected,
                                                                     options) {
-                                                          return Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Material(
-                                                              elevation: 4.0,
-                                                              child: Container(
-                                                                width:
-                                                                    300, // Set the width of the options here
-                                                                child: ListView
-                                                                    .builder(
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              8.0),
-                                                                  itemCount:
-                                                                      options
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (BuildContext
-                                                                              context,
-                                                                          int index) {
-                                                                    final String
-                                                                        option =
-                                                                        options.elementAt(
-                                                                            index);
-
-                                                                    return GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        onSelected(
-                                                                            option);
+                                                              return Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topLeft,
+                                                                child: Material(
+                                                                  elevation:
+                                                                      4.0,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  child:
+                                                                      Container(
+                                                                    width:
+                                                                        size.width *
+                                                                            0.5,
+                                                                    child: ListView
+                                                                        .builder(
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8),
+                                                                      shrinkWrap:
+                                                                          true,
+                                                                      itemCount:
+                                                                          options
+                                                                              .length,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        final String
+                                                                            option =
+                                                                            options.elementAt(index);
+                                                                        return Container(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          child:
+                                                                              ListTile(
+                                                                            onTap: () =>
+                                                                                onSelected(option),
+                                                                            title:
+                                                                                Text(option),
+                                                                          ),
+                                                                        );
                                                                       },
-                                                                      child:
-                                                                          ListTile(
-                                                                        title: Text(
-                                                                            option),
-                                                                      ),
-                                                                    );
-                                                                  },
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }, onSelected:
+                                                              );
+                                                            },
+                                                            onSelected:
                                                                 (suggestion) {
-                                                          // desss = suggestion;
-                                                          // print(
-                                                          //     "auto-----------$desss");
-                                                          // // handle user selection of a country
-                                                          setState(() {
-                                                            searchController
-                                                                .clear();
-                                                            searchController
-                                                                    .text =
-                                                                suggestion;
-                                                            searchController
-                                                                    .selection =
-                                                                TextSelection
-                                                                    .fromPosition(
-                                                              TextPosition(
-                                                                  offset:
-                                                                      suggestion
+                                                              setState(() {
+                                                                searchController
+                                                                    .clear();
+                                                                searchController
+                                                                        .text =
+                                                                    suggestion;
+                                                                searchController
+                                                                        .selection =
+                                                                    TextSelection
+                                                                        .fromPosition(
+                                                                  TextPosition(
+                                                                      offset: suggestion
                                                                           .length),
-                                                            );
-
-                                                            finalText =
-                                                                suggestion;
-                                                            print(
-                                                                "Complete text: $finalText");
-                                                            print(
-                                                                "Saving text: $finalText");
-                                                          });
-                                                          // print(
-                                                          //     "Complete text: $newText");
-                                                          // print(
-                                                          //     "saving text----$finalText");
-                                                        }, fieldViewBuilder: (context,
+                                                                );
+                                                                finalText =
+                                                                    suggestion;
+                                                              });
+                                                            },
+                                                            fieldViewBuilder: (context,
                                                                 searchController,
                                                                 focusNode,
                                                                 onEditingComplete) {
-                                                          return TextField(
-                                                            controller:
-                                                                searchController,
-                                                            focusNode:
-                                                                focusNode,
-                                                            onChanged: (text) {
-                                                              setState(() {
-                                                                completeText =
-                                                                    text;
-                                                                finalText =
-                                                                    text;
-                                                              });
-                                                              print(
-                                                                  "Text in the field: $completeText");
-                                                              print(
-                                                                  "Text in finalText: $finalText");
-                                                            },
-                                                            decoration:
-                                                                InputDecoration(
-                                                              // prefixIcon: Icon(
-                                                              //   Icons.search,
-                                                              //   color: Colors.black,
-                                                              // ),
-                                                              suffixIcon:
-                                                                  IconButton(
-                                                                icon: Icon(Icons
-                                                                    .cancel),
-                                                                onPressed: () {
-                                                                  searchController
-                                                                      .clear();
-                                                                  completeText =
-                                                                      "";
-                                                                  finalText =
-                                                                      "";
+                                                              return TextField(
+                                                                controller:
+                                                                    searchController,
+                                                                focusNode:
+                                                                    focusNode,
+                                                                onChanged:
+                                                                    (text) {
+                                                                  setState(() {
+                                                                    completeText =
+                                                                        text;
+                                                                    finalText =
+                                                                        text;
+                                                                  });
                                                                 },
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  suffixIcon:
+                                                                      IconButton(
+                                                                    icon: Icon(Icons
+                                                                        .cancel),
+                                                                    onPressed:
+                                                                        () {
+                                                                      searchController
+                                                                          .clear();
+                                                                      completeText =
+                                                                          "";
+                                                                      finalText =
+                                                                          "";
+                                                                    },
+                                                                  ),
+                                                                  hintText:
+                                                                      "Type Here...",
+                                                                  filled: true,
+                                                                  fillColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  border:
+                                                                      OutlineInputBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            15.0),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 20),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              gradient:
+                                                                  LinearGradient(
+                                                                colors: [
+                                                                  // Color.fromARGB(255, 253, 192, 123),
+                                                                  // Color.fromARGB(255, 50, 71, 190),
+                                                                  // Color.fromARGB(255, 48, 54, 90),
+                                                                  // Colors.indigo,
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          67,
+                                                                          83,
+                                                                          155),
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          50,
+                                                                          71,
+                                                                          190),
+                                                                ],
+                                                                begin: Alignment
+                                                                    .centerLeft,
+                                                                end: Alignment
+                                                                    .centerRight,
                                                               ),
-                                                              hintText:
-                                                                  "Type Here...",
-                                                              border:
-                                                                  OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20.0),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30),
+                                                            ),
+                                                            child:
+                                                                ElevatedButton(
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent, // Make button background transparent
+                                                                shadowColor: Colors
+                                                                    .transparent,
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context,
+                                                                        rootNavigator:
+                                                                            true)
+                                                                    .pop();
+                                                              },
+                                                              child: Text(
+                                                                'Cancel',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        18,
+                                                                    color: Colors
+                                                                        .white),
                                                               ),
                                                             ),
-                                                          );
-                                                        }),
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              gradient:
+                                                                  LinearGradient(
+                                                                colors: [
+                                                                  // Color.fromARGB(255, 253, 192, 123),
+                                                                  // Color.fromARGB(255, 50, 71, 190),
+                                                                  // Color.fromARGB(255, 48, 54, 90),
+                                                                  // Colors.indigo,
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          67,
+                                                                          83,
+                                                                          155),
+                                                                  Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          50,
+                                                                          71,
+                                                                          190),
+                                                                ],
+                                                                begin: Alignment
+                                                                    .centerLeft,
+                                                                end: Alignment
+                                                                    .centerRight,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30),
+                                                            ),
+                                                            child:
+                                                                ElevatedButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context,
+                                                                        rootNavigator:
+                                                                            true)
+                                                                    .pop();
+                                                              },
+                                                              child: Text(
+                                                                "Ok",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        18,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent, // Make button background transparent
+                                                                shadowColor: Colors
+                                                                    .transparent,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                  actions: <Widget>[
-                                                    ElevatedButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context,
-                                                                  rootNavigator:
-                                                                      true)
-                                                              .pop(false);
-                                                        },
-                                                        child: Text('Cancel')),
-                                                    ElevatedButton(
-                                                        onPressed: () {
-                                                          //          Provider.of<Controller>(context,
-                                                          //     listen: false)
-                                                          // .setDescr(value.descr[index].text.toString(),index);
-                                                          Navigator.of(context,
-                                                                  rootNavigator:
-                                                                      true)
-                                                              .pop(false);
-                                                        },
-                                                        child: Text("Ok"))
-                                                  ],
-                                                );
-                                              });
+                                                ),
+                                              );
+                                            },
+                                          );
+
+                                          // await showDialog(
+                                          //     barrierDismissible: false,
+                                          //     context: context,
+                                          //     builder: (context) {
+                                          //       return AlertDialog(
+                                          //         content: Container(
+                                          //           width: size.width * 1 / 2,
+                                          //           child: SizedBox(
+                                          //             width: size.width * 1 / 2,
+                                          //             child: StatefulBuilder(
+                                          //               builder: (BuildContext
+                                          //                           context,
+                                          //                       void Function(
+                                          //                               void
+                                          //                                   Function())
+                                          //                           setState) =>
+                                          //                   Autocomplete<String>(optionsBuilder:
+                                          //                       (TextEditingValue
+                                          //                           textEditingValue) {
+                                          //                 if (textEditingValue
+                                          //                     .text.isEmpty) {
+                                          //                   return value
+                                          //                       .suggestions;
+                                          //                 }
+                                          //                 return value
+                                          //                     .suggestions
+                                          //                     .where((suggst) => suggst
+                                          //                         .toLowerCase()
+                                          //                         .contains(
+                                          //                             textEditingValue
+                                          //                                 .text
+                                          //                                 .toLowerCase()));
+                                          //               }, optionsViewBuilder:
+                                          //                       (context,
+                                          //                           onSelected,
+                                          //                           options) {
+                                          //                 return Align(
+                                          //                   alignment: Alignment
+                                          //                       .topLeft,
+                                          //                   child: Material(
+                                          //                     elevation: 4.0,
+                                          //                     child: Container(
+                                          //                       width:
+                                          //                           300, // Set the width of the options here
+                                          //                       child: ListView
+                                          //                           .builder(
+                                          //                         shrinkWrap:
+                                          //                             true,
+                                          //                         padding:
+                                          //                             EdgeInsets
+                                          //                                 .all(
+                                          //                                     8.0),
+                                          //                         itemCount:
+                                          //                             options
+                                          //                                 .length,
+                                          //                         itemBuilder:
+                                          //                             (BuildContext
+                                          //                                     context,
+                                          //                                 int index) {
+                                          //                           final String
+                                          //                               option =
+                                          //                               options.elementAt(
+                                          //                                   index);
+
+                                          //                           return GestureDetector(
+                                          //                             onTap:
+                                          //                                 () {
+                                          //                               onSelected(
+                                          //                                   option);
+                                          //                             },
+                                          //                             child:
+                                          //                                 ListTile(
+                                          //                               title: Text(
+                                          //                                   option),
+                                          //                             ),
+                                          //                           );
+                                          //                         },
+                                          //                       ),
+                                          //                     ),
+                                          //                   ),
+                                          //                 );
+                                          //               }, onSelected:
+                                          //                       (suggestion) {
+                                          //                 // desss = suggestion;
+                                          //                 // print(
+                                          //                 //     "auto-----------$desss");
+                                          //                 // // handle user selection of a country
+                                          //                 setState(() {
+                                          //                   searchController
+                                          //                       .clear();
+                                          //                   searchController
+                                          //                           .text =
+                                          //                       suggestion;
+                                          //                   searchController
+                                          //                           .selection =
+                                          //                       TextSelection
+                                          //                           .fromPosition(
+                                          //                     TextPosition(
+                                          //                         offset:
+                                          //                             suggestion
+                                          //                                 .length),
+                                          //                   );
+
+                                          //                   finalText =
+                                          //                       suggestion;
+                                          //                   print(
+                                          //                       "Complete text: $finalText");
+                                          //                   print(
+                                          //                       "Saving text: $finalText");
+                                          //                 });
+                                          //                 // print(
+                                          //                 //     "Complete text: $newText");
+                                          //                 // print(
+                                          //                 //     "saving text----$finalText");
+                                          //               }, fieldViewBuilder: (context,
+                                          //                       searchController,
+                                          //                       focusNode,
+                                          //                       onEditingComplete) {
+                                          //                 return TextField(
+                                          //                   controller:
+                                          //                       searchController,
+                                          //                   focusNode:
+                                          //                       focusNode,
+                                          //                   onChanged: (text) {
+                                          //                     setState(() {
+                                          //                       completeText =
+                                          //                           text;
+                                          //                       finalText =
+                                          //                           text;
+                                          //                     });
+                                          //                     print(
+                                          //                         "Text in the field: $completeText");
+                                          //                     print(
+                                          //                         "Text in finalText: $finalText");
+                                          //                   },
+                                          //                   decoration:
+                                          //                       InputDecoration(
+                                          //                     // prefixIcon: Icon(
+                                          //                     //   Icons.search,
+                                          //                     //   color: Colors.black,
+                                          //                     // ),
+                                          //                     suffixIcon:
+                                          //                         IconButton(
+                                          //                       icon: Icon(Icons
+                                          //                           .cancel),
+                                          //                       onPressed: () {
+                                          //                         searchController
+                                          //                             .clear();
+                                          //                         completeText =
+                                          //                             "";
+                                          //                         finalText =
+                                          //                             "";
+                                          //                       },
+                                          //                     ),
+                                          //                     hintText:
+                                          //                         "Type Here...",
+                                          //                     border:
+                                          //                         OutlineInputBorder(
+                                          //                       borderRadius:
+                                          //                           BorderRadius
+                                          //                               .circular(
+                                          //                                   20.0),
+                                          //                     ),
+                                          //                   ),
+                                          //                 );
+                                          //               }),
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //         actions: <Widget>[
+                                          //           ElevatedButton(
+                                          //               onPressed: () {
+                                          //                 Navigator.of(context,
+                                          //                         rootNavigator:
+                                          //                             true)
+                                          //                     .pop(false);
+                                          //               },
+                                          //               child: Text('Cancel')),
+                                          //           ElevatedButton(
+                                          //               onPressed: () {
+                                          //                 //          Provider.of<Controller>(context,
+                                          //                 //     listen: false)
+                                          //                 // .setDescr(value.descr[index].text.toString(),index);
+                                          //                 Navigator.of(context,
+                                          //                         rootNavigator:
+                                          //                             true)
+                                          //                     .pop(false);
+                                          //               },
+                                          //               child: Text("Ok"))
+                                          //         ],
+                                          //       );
+                                          //     });
                                         },
                                         child: Row(
                                           children: [
@@ -428,9 +879,21 @@ class OrderBottomSheet {
                                   children: [
                                     Container(
                                       width: size.width * 0.4,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color.fromARGB(255, 67, 83, 155),
+                                            Color.fromARGB(255, 50, 71, 190),
+                                          ],
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                        ),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
                                       child: ElevatedButton.icon(
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white),
+                                            backgroundColor: Colors.transparent,
+                                          ),
                                           onPressed: value.response[index] > 0
                                               ? null
                                               : () {
@@ -461,12 +924,20 @@ class OrderBottomSheet {
                                           //     : Icon(Icons.shopping_cart),
                                           label: value.isAdded[index]
                                               ? SpinKitThreeInOut(
-                                                  color: Colors.black,
+                                                  color: Colors.white,
                                                   size: 12,
                                                 )
                                               : value.response[index] > 0
-                                                  ? Text("Added")
-                                                  : Text("ADD")),
+                                                  ? Text(
+                                                      "Added",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    )
+                                                  : Text(
+                                                      "ADD",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    )),
                                     )
                                   ],
                                 ),

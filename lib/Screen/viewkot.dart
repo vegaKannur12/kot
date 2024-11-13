@@ -127,7 +127,7 @@ class _ViewKotState extends State<ViewKot> {
   @override
   void initState() {
     // TODO: implement initState
-  
+
     super.initState();
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
@@ -149,7 +149,7 @@ class _ViewKotState extends State<ViewKot> {
           builder: (BuildContext context, Controller value, Widget? child) =>
               Text(
             "KOT List",
-    
+
             ///value.cartItems.length
             style: TextStyle(
               fontSize: 19,
@@ -184,8 +184,7 @@ class _ViewKotState extends State<ViewKot> {
                         itemCount: value.kotItems.length,
                         itemBuilder: (context, int index) {
                           // return cartItems(index, size, value.cartItems[index]);
-                          return customCard(
-                              index, size, value.kotItems[index]);
+                          return customCard(index, size, value.kotItems[index]);
                         }),
       ),
     );

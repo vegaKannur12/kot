@@ -86,24 +86,37 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).primaryColor,
-      body: InkWell(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Center(
-            child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                height: 150,
-                width: 150,
-                child: Image.asset(
-                  "assets/logo_black_bg.png",
+      body: Container( decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                // Color.fromARGB(255, 253, 192, 123),
+                //                   Color.fromARGB(255, 50, 71, 190),
+                Color.fromARGB(255, 48, 54, 90),
+                Colors.indigo,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        child: InkWell(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Center(
+              child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 150,
+                  width: 150,
+                  child: Image.asset(
+                    "assets/logo_black_bg.png",
+                  ),
                 ),
               ),
-            ),
-          ],
-        )),
+            ],
+          )),
+        ),
       ),
     );
   }

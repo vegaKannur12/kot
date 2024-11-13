@@ -54,6 +54,7 @@ class Controller extends ChangeNotifier {
   DateTime? sdate;
   DateTime? ldate;
   String? os;
+  String? table_cat;
   int? cartNum;
   String? cName;
   List<Widget> calendarWidget = [];
@@ -163,6 +164,7 @@ class Controller extends ChangeNotifier {
     'Less Suger',
     'Less Salt'
   ];
+  List filteredSuggestions=[];
 
   // qtyadd() {
   //   qty = List.generate(itemlist.length, (index) => TextEditingController());
@@ -407,6 +409,7 @@ class Controller extends ChangeNotifier {
           db_list.add(item);
         }
       }
+      // db_list=[{"Data_Name":"AV172745", "Year_Name":"Year_2425"},{"Data_Name":"AV172745", "Year_Name":"Year_2425"},{"Data_Name":"AV172745", "Year_Name":"Year_2425"}];
       print("years res-$res");
       print("tyyyyyyyyyp--------$type");
       isdbLoading = false;
@@ -741,6 +744,7 @@ class Controller extends ChangeNotifier {
     try {
       tableCategoryList.clear();
       tableCategoryList.add({"cate_id": 8, "Table_Category": "ALL"});
+      notifyListeners();
       var res = await SqlConn.readData("Kot_Table_Category");
       var valueMap = json.decode(res);
       // print("login details----------$res");
@@ -752,6 +756,8 @@ class Controller extends ChangeNotifier {
           tableCategoryList.add(item);
           notifyListeners();
         }
+        selectedTableCat=tableCategoryList[0]["Table_Category"];
+         notifyListeners();
         print("Table_CategoryList----$tableCategoryList");
       }
     } on PlatformException catch (e) {
@@ -852,6 +858,90 @@ class Controller extends ChangeNotifier {
   }
 
 ///////////////////////////////////
+//   getCategoryList(BuildContext context) async {
+//     isCategoryLoading = true;
+//     notifyListeners();
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String? os = await prefs.getString("os");
+//     String? smid = await prefs.getString("Sm_id");
+//     print("cat para---------$os---------$tablID-----------$smid");
+//     try {
+//       var res = await SqlConn.readData("Kot_ItCategory_List '$os','$smid'");
+//       var map = jsonDecode(res);
+//       catlist.clear();
+//       if (map != null) {
+//         for (var item in map) {
+//           catlist.add(item);
+//         }
+//       }
+//       // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"black coffee"},{"Cat_Id":"VGMHD3", "Cat_Name":"FOOD"},{"Cat_Id":"VGMHD3", "Cat_Name":"RICE"},{"Cat_Id":"VGMHD3", "Cat_Name":"SALAD"},{"Cat_Id":"VGMHD3", "Cat_Name":"SNACKS"},];
+//       print("categoryList...................-$res");
+
+//       isCategoryLoading = false;
+//       notifyListeners();
+//     } on PlatformException catch (e) {
+//       debugPrint("PlatformException Cat List: ${e.message}");
+//       debugPrint("not connected..Cat List..");
+//       debugPrint(e.toString());
+//       // Navigator.pop(context);
+//       await showConnectionDialog(context, "CAT", e.toString());
+//     } catch (e) {
+//       print("An unexpected error occurred: $e");
+//       // SqlConn.disconnect();
+//       return [];
+//     }
+//   }
+
+// ///////////////////////////////////
+//   /////////////////////////////////////////////////
+//   getItemList(BuildContext context) async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     // String? cid = await prefs.getString("cid");
+//     // String? db = prefs.getString("db_name");
+//     // String? brId = await prefs.getString("br_id");
+//     String? os = await prefs.getString("os");
+//     int? cartNo = await prefs.getInt("cartNo");
+
+//     print("catttt iidd----$catlID---$cartNo----$os");
+//     isLoading = true;
+//     notifyListeners();
+//     try {
+//       var res =
+//           await SqlConn.readData("Kot_ItemList '$catlID','$cartNo','$os'");
+//       var valueMap = json.decode(res);
+//       print("item list----------$valueMap");
+//       itemlist.clear();
+//       if (valueMap != null) {
+//         for (var item in valueMap) {
+//           itemlist.add(item);
+//         }
+//       }
+//       isSearch = false;
+//       notifyListeners();
+//       qty = List.generate(itemlist.length, (index) => TextEditingController());
+//       descr =
+//           List.generate(itemlist.length, (index) => TextEditingController());
+//       isAdded = List.generate(itemlist.length, (index) => false);
+//       response = List.generate(itemlist.length, (index) => 0);
+//       for (int i = 0; i < itemlist.length; i++) {
+//         qty[i].text = "1.0";
+//         descr[i].text = "";
+//         response[i] = 0;
+//       }
+//       isLoading = false;
+//       notifyListeners();
+//     } on PlatformException catch (e) {
+//       debugPrint("PlatformException Item List: ${e.message}");
+//       debugPrint("not connected..Item List..");
+//       debugPrint(e.toString());
+//       // Navigator.pop(context);
+//       await showConnectionDialog(context, "ITM", e.toString());
+//     } catch (e) {
+//       print("An unexpected error occurred: $e");
+//       // SqlConn.disconnect();
+//       return [];
+//     }
+//   }
   getCategoryList(BuildContext context) async {
     isCategoryLoading = true;
     notifyListeners();
@@ -868,9 +958,11 @@ class Controller extends ChangeNotifier {
           catlist.add(item);
         }
       }
-      // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"black coffee"},{"Cat_Id":"VGMHD3", "Cat_Name":"FOOD"},{"Cat_Id":"VGMHD3", "Cat_Name":"RICE"},{"Cat_Id":"VGMHD3", "Cat_Name":"SALAD"},{"Cat_Id":"VGMHD3", "Cat_Name":"SNACKS"},];
+      // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"food1"},{"Cat_Id":"VGMHD3", "Cat_Name":"food2"},{"Cat_Id":"VGMHD4", "Cat_Name":"food3"}];
       print("categoryList...................-$res");
-
+      print("categoryList1st...................-${catlist[0]["Cat_Id"].toString()}");
+      await prefs.setString("CAT_id", catlist[0]["Cat_Id"].toString());
+      print("CATID default--${prefs.getString("CAT_id")}");
       isCategoryLoading = false;
       notifyListeners();
     } on PlatformException catch (e) {
@@ -895,13 +987,15 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
+    String? cat_id=await prefs.getString("CAT_id");
+    String? cat_name=await prefs.getString("CAT_nm");
 
-    print("catttt iidd----$catlID---$cartNo----$os");
+    print("catttt iidd----$cat_id---$cat_name---$cartNo----$os");
     isLoading = true;
     notifyListeners();
     try {
       var res =
-          await SqlConn.readData("Kot_ItemList '$catlID','$cartNo','$os'");
+          await SqlConn.readData("Kot_ItemList '$cat_id','$cartNo','$os'");
       var valueMap = json.decode(res);
       print("item list----------$valueMap");
       itemlist.clear();
@@ -924,7 +1018,7 @@ class Controller extends ChangeNotifier {
       }
       isLoading = false;
       notifyListeners();
-    } on PlatformException catch (e) {
+    }  on PlatformException catch (e) {
       debugPrint("PlatformException Item List: ${e.message}");
       debugPrint("not connected..Item List..");
       debugPrint(e.toString());
@@ -936,7 +1030,6 @@ class Controller extends ChangeNotifier {
       return [];
     }
   }
-
   clearAllData(BuildContext context) async {
     tablID = "";
     roomID = "0";
@@ -1402,15 +1495,18 @@ class Controller extends ChangeNotifier {
       qty = List.generate(cartItems.length, (index) => TextEditingController());
       notifyListeners();
       sum = 0.0;
-      for (int i = 0; i < cartItems.length; i++) {
+      for (int i = 0; i < cartItems.length; i++) 
+      {
         qty[i].text = cartItems[i]["Cart_Qty"].toString();
         sum = sum + cartItems[i]["It_Total"];
       }
       karttotal = sum;
-      if (cartItems.isEmpty) {
+      if (cartItems.isEmpty) 
+      {
         cartTotal = 0;
         notifyListeners();
       }
+      cartTotal=cartItems.length;
       isCartLoading = false;
       notifyListeners();
     } on PlatformException catch (e) {
@@ -1688,7 +1784,6 @@ class Controller extends ChangeNotifier {
   ///////////////........................../////////////////////////////
   // setCatID(String id, BuildContext context) {
   //   catlID = id;
-
   //   print("catlID----$catlID");
   //   notifyListeners();
   // }
@@ -1702,8 +1797,6 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
   /////////////////////////////////////////////////////////////////////
-
-  ///////////////////////////////////////////////////////
   getorderDetails(String ordNo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
@@ -1760,6 +1853,7 @@ class Controller extends ChangeNotifier {
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     os = await prefs.getString("os");
+    table_cat = await prefs.getString("table_cat");
     cartNum = prefs.getInt("cartNo");
     notifyListeners();
   }

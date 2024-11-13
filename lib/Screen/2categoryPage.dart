@@ -55,7 +55,9 @@ class _CatTESTState extends State<CatTEST> {
     return WillPopScope(
       onWillPop: () => _handleBackPressed(context),
       child: Scaffold(
+          backgroundColor: Colors.white,
           floatingActionButton: FloatingActionButton(
+              backgroundColor: Color.fromARGB(255, 48, 54, 90),
               onPressed: () async {
                 await Provider.of<Controller>(context, listen: false)
                     .viewCart(context);
@@ -68,6 +70,8 @@ class _CatTESTState extends State<CatTEST> {
                   setState(() {
                     Provider.of<Controller>(context, listen: false)
                         .getItemList(context);
+                    Provider.of<Controller>(context, listen: false)
+                        .viewCart(context);
                     // Update data or perform actions to refresh the page
                   });
                 });
@@ -84,7 +88,7 @@ class _CatTESTState extends State<CatTEST> {
               },
               child: Consumer<Controller>(
                   builder: (context, value, child) => Padding(
-                        padding: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.only(right: 8),
                         child: badges.Badge(
                           badgeStyle:
                               badges.BadgeStyle(badgeColor: Colors.black),
@@ -111,7 +115,8 @@ class _CatTESTState extends State<CatTEST> {
                   Icons.arrow_back,
                   color: Colors.black,
                 )),
-            backgroundColor: Color.fromARGB(255, 139, 200, 228),
+            // backgroundColor: Color.fromARGB(255, 139, 200, 228),
+            backgroundColor: Colors.white,
             // Theme.of(context).primaryColor,
             actions: [
               Consumer<Controller>(
@@ -191,6 +196,8 @@ class _CatTESTState extends State<CatTEST> {
                                         .searchItem(val.toString());
                                   },
                                   decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
                                     prefixIcon: Icon(
                                       Icons.search,
                                       color: Colors.black,
@@ -206,7 +213,11 @@ class _CatTESTState extends State<CatTEST> {
                                     ),
                                     // contentPadding: const EdgeInsets.symmetric(
                                     //     horizontal: 5, vertical: 0),
-                                    border: InputBorder.none,
+                                    border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.black38),
+                                      borderRadius: BorderRadius.circular(23),
+                                    ),
                                     // border: OutlineInputBorder(
                                     //   borderRadius: BorderRadius.circular(20.0),
                                     //   borderSide: const BorderSide(
@@ -242,73 +253,92 @@ class _CatTESTState extends State<CatTEST> {
           )),
     );
   }
-   categoryWidget(Size size, List list, String tbl, String rm) {
-  String? cc = "";
-  
-  return Consumer<Controller>(builder: (context, value, child) {
-    if (value.isCategoryLoading) {
-      return Expanded(
-        child: Align(
-          alignment: Alignment.center,
-          child: SpinKitCircle(
-            color: Colors.black,
+
+  categoryWidget(Size size, List list, String tbl, String rm) {
+    String? cc = "";
+
+    return Consumer<Controller>(builder: (context, value, child) {
+      if (value.isCategoryLoading) {
+        return Expanded(
+          child: Align(
+            alignment: Alignment.center,
+            child: SpinKitCircle(
+              color: Colors.black,
+            ),
           ),
-        ),
-      );
-    } else {
-      return Expanded(
-        child: list.isEmpty
-            ? const Center(child: Text("no data"))
-            : GridView.builder(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount:
-                    // value.isSearch
-                    // ? value.filteredCatlist.length
-                    // :
-                    value.catlist.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 3,
-                    mainAxisSpacing: 12),
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () async {
-                      // setState(() {
+        );
+      } else {
+        return Expanded(
+          child: list.isEmpty
+              ? const Center(child: Text("no data"))
+              : GridView.builder(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  itemCount:
+                      // value.isSearch
+                      // ? value.filteredCatlist.length
+                      // :
+                      value.catlist.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 1.5,
+                      mainAxisSpacing: 12),
+                  itemBuilder: (context, index) {
+                       bool isSelected = selectedIndex == index;
+                    return InkWell(
+                      onTap: () async {
+                        setState(() {
                         selectedIndex = index;
+                        
+                        });
                         print("sel, index=====$selectedIndex , $index");
-                      // });
-                      await value.setCatID(
-                          list[index]["Cat_Id"].toString().trimLeft(),
-                          list[index]["Cat_Name"].toString().trimLeft(),context);
-                      // String selcat=list[index]["Cat_Id"].toString().trimLeft();
-  
-                      // SharedPreferences prefs =
-                      //     await SharedPreferences.getInstance();
-                      // setState(() {
-                      //   cc = prefs.getString("CAT_id");
-                      //   print("ccccccc---$cc");
-                      // });
-                      await Provider.of<Controller>(context, listen: false)
-                          .getItemList(context);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: selectedIndex == index
-                              //  cc.toString().trimLeft() ==
-                              //         list[index]["Cat_Id"]
-                              //             .toString()
-                              //             .trimLeft()
-                              ? Colors.red
-                              : Colors.tealAccent,
-                          border: Border.all(color: Colors.black45),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2, bottom: 2),
-                          child: Center(
+                        await value.setCatID(
+                            list[index]["Cat_Id"].toString().trimLeft(),
+                            list[index]["Cat_Name"].toString().trimLeft(),
+                            context);
+                        // String selcat=list[index]["Cat_Id"].toString().trimLeft();
+
+                        // SharedPreferences prefs =
+                        //     await SharedPreferences.getInstance();
+                        // setState(() {
+                        //   cc = prefs.getString("CAT_id");
+                        //   print("ccccccc---$cc");
+                        // });
+                        await Provider.of<Controller>(context, listen: false)
+                            .getItemList(context);
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("assets/food.jpg"),
+                                fit: BoxFit.fill),
+                            // color:
+                            //     isSelected
+
+                            //         ? Colors.red
+                            //         :
+                            //     Color.fromARGB(255, 237, 241, 241),
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                              boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 56, 35, 33).withOpacity(0.5),
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                )
+                              ]
+                            : [],),
+                        
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding:
+                                EdgeInsets.only(top: 2, bottom: 2, left: 5),
                             child: Text(
                               maxLines: 2,
                               list[index]["Cat_Name"]
@@ -316,7 +346,7 @@ class _CatTESTState extends State<CatTEST> {
                                   .trimLeft()
                                   .toUpperCase(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                               overflow: TextOverflow.ellipsis,
@@ -324,16 +354,13 @@ class _CatTESTState extends State<CatTEST> {
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }),
-      );
-    }
-  });
+                    );
+                  }),
+        );
+      }
+    });
+  }
 }
-}
-
- 
 
 Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
     // OrderBottomSheet cocosheet, String date

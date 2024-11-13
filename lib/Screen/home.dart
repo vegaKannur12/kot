@@ -13,7 +13,6 @@ import 'package:restaurent_kot/controller/controller.dart';
 import 'package:restaurent_kot/db_helper.dart';
 import 'package:restaurent_kot/tableList.dart';
 import 'dart:io';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -54,81 +53,81 @@ class _HomePageState extends State<HomePage> {
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
         extendBody: true,
-        appBar: AppBar(
-          toolbarHeight: 80,
-          backgroundColor: const Color.fromARGB(255, 111, 128, 228),
-          title: Consumer<Controller>(
-              builder:
-                  (BuildContext context, Controller value, Widget? child) =>
-                      Text(
-                        value.os.toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      )),
-          actions: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    Icons.calendar_month,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    date.toString(),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-            IconButton.filled(
-              onPressed: () {
-                Provider.of<Controller>(context, listen: false)
-                    .viewKot(context, date!);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ViewKot()),
-                );
-              },
-              icon: Icon(
-                Icons.shopping_bag,
-                color: Colors.white,
-              ),
-            )
-            // SizedBox(
-            //   child: ElevatedButton(
-            //     child: Icon(Icons.shopping_bag_outlined,color: Colors.white,),
-            //     onPressed: () {},
-            //     style: ElevatedButton.styleFrom(
-            //         backgroundColor: Colors.black,
-            //         padding: EdgeInsets.all(5),
-            //         textStyle:
-            //             TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-            //   ),
-            // ),
-            // IconButton(
-            //   onPressed: () async {
-            //     List<Map<String, dynamic>> list =
-            //         await KOT.instance.getListOfTables();
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //           builder: (context) => TableList(list: list)),
-            //     );
-            //   },
-            //   icon: Icon(Icons.table_bar, color: Colors.green),
-            // ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   toolbarHeight: 80,
+        //   backgroundColor: Colors.indigo,
+        //   title: Consumer<Controller>(
+        //       builder:
+        //           (BuildContext context, Controller value, Widget? child) =>
+        //               Text(
+        //                 value.os.toString(),
+        //                 style: TextStyle(
+        //                   fontWeight: FontWeight.bold,
+        //                   color: Colors.black,
+        //                 ),
+        //               )),
+        //   actions: [
+        //     Align(
+        //       alignment: Alignment.centerRight,
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.end,
+        //         children: [
+        //           Icon(
+        //             Icons.calendar_month,
+        //             color: Colors.white,
+        //           ),
+        //           SizedBox(
+        //             width: 5,
+        //           ),
+        //           Text(
+        //             date.toString(),
+        //             style: TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 16,
+        //                 fontWeight: FontWeight.bold),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     IconButton.filled(
+        //       onPressed: () {
+        //         Provider.of<Controller>(context, listen: false)
+        //             .viewKot(context, date!);
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(builder: (context) => ViewKot()),
+        //         );
+        //       },
+        //       icon: Icon(
+        //         Icons.shopping_bag,
+        //         color: Colors.white,
+        //       ),
+        //     )
+        //     // SizedBox(
+        //     //   child: ElevatedButton(
+        //     //     child: Icon(Icons.shopping_bag_outlined,color: Colors.white,),
+        //     //     onPressed: () {},
+        //     //     style: ElevatedButton.styleFrom(
+        //     //         backgroundColor: Colors.black,
+        //     //         padding: EdgeInsets.all(5),
+        //     //         textStyle:
+        //     //             TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+        //     //   ),
+        //     // ),
+        //     // IconButton(
+        //     //   onPressed: () async {
+        //     //     List<Map<String, dynamic>> list =
+        //     //         await KOT.instance.getListOfTables();
+        //     //     Navigator.push(
+        //     //       context,
+        //     //       MaterialPageRoute(
+        //     //           builder: (context) => TableList(list: list)),
+        //     //     );
+        //     //   },
+        //     //   icon: Icon(Icons.table_bar, color: Colors.green),
+        //     // ),
+        //   ],
+        // ),
         bottomNavigationBar: Provider.of<Controller>(context, listen: false)
                 .tablID!
                 .isEmpty
@@ -137,9 +136,10 @@ class _HomePageState extends State<HomePage> {
                 builder:
                     (BuildContext context, Controller value, Widget? child) {
                   return Container(
-                    height: 60,
+                    height: 170,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 111, 128, 228),
+                      // color: Color.fromARGB(255, 111, 128, 228),
+                      color: Colors.white,
                       // Color.fromARGB(255, 197, 121, 71),
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
@@ -148,276 +148,477 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              showModalBottomSheet<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return StatefulBuilder(
-                                    builder: (BuildContext context,
-                                            void Function(void Function())
-                                                setState) =>
-                                        Container(
-                                      // height: 200,
-                                      height: value.roomlist.isNotEmpty
-                                          ? MediaQuery.of(context).size.height *
-                                              0.65
-                                          : size.height * 0.2,
-                                      color: Colors.white,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          value.roomlist.isNotEmpty
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    IconButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Table ${value.tablname.toString().trimLeft().toUpperCase()}",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromARGB(255, 67, 83, 155),
+                                      Color.fromARGB(255, 50, 71, 190),
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                height: 65,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    // backgroundColor: Colors.black
+                                    backgroundColor: Colors
+                                        .transparent, // Make button background transparent
+                                    shadowColor: Colors.transparent,
+                                  ),
+                                  onPressed: () {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return StatefulBuilder(
+                                          builder: (BuildContext context,
+                                                  void Function(void Function())
+                                                      setState) =>
+                                              Container(
+                                            // height: 200,
+                                            height: value.roomlist.isNotEmpty
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.65
+                                                : size.height * 0.2,
+                                            color: Colors.white,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                value.roomlist.isNotEmpty
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons.close))
+                                                        ],
+                                                      )
+                                                    : Container(),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    color: Color.fromARGB(
+                                                        241, 235, 236, 236),
+                                                  ),
+                                                  child: TextFormField(
+                                                    controller: seacrhRoom,
+                                                    //   decoration: const InputDecoration(,
+                                                    onChanged: (val) {
+                                                      setState(() {
+                                                        Provider.of<Controller>(
+                                                                context,
+                                                                listen: false)
+                                                            .searchRoom(
+                                                                val.toString());
+                                                      });
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      fillColor: Colors.white,
+                                                      filled: true,
+                                                      prefixIcon: const Icon(
+                                                        Icons.search,
+                                                        color: Colors.black,
+                                                      ),
+                                                      suffixIcon: IconButton(
                                                         icon: const Icon(
-                                                            Icons.close))
-                                                  ],
-                                                )
-                                              : Container(),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: Color.fromARGB(
-                                                  241, 235, 236, 236),
-                                            ),
-                                            child: TextFormField(
-                                              controller: seacrhRoom,
-                                              //   decoration: const InputDecoration(,
-                                              onChanged: (val) {
-                                                setState(() {
-                                                  Provider.of<Controller>(
-                                                          context,
-                                                          listen: false)
-                                                      .searchRoom(
-                                                          val.toString());
-                                                });
-                                              },
-                                              decoration: InputDecoration(
-                                                prefixIcon: const Icon(
-                                                  Icons.search,
-                                                  color: Colors.black,
-                                                ),
-                                                suffixIcon: IconButton(
-                                                  icon:
-                                                      const Icon(Icons.cancel),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      print("pressed");
-                                                      seacrhRoom.clear();
+                                                            Icons.cancel),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            print("pressed");
+                                                            seacrhRoom.clear();
 
-                                                      Provider.of<Controller>(
-                                                              context,
-                                                              listen: false)
-                                                          .searchRoom("");
-                                                    });
-                                                  },
+                                                            Provider.of<Controller>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .searchRoom("");
+                                                          });
+                                                        },
+                                                      ),
+                                                      border: InputBorder.none,
+                                                      // focusedBorder:
+                                                      //     UnderlineInputBorder(
+                                                      //   borderRadius:
+                                                      //       BorderRadius.circular(20.0),
+                                                      //   borderSide: const BorderSide(
+                                                      //       color: Colors.blue,
+                                                      //       width: 1.0),
+                                                      // ),
+                                                      enabledBorder:
+                                                          InputBorder.none,
+                                                      // OutlineInputBorder(
+                                                      //   borderRadius:
+                                                      //       BorderRadius.circular(20.0),
+                                                      //   borderSide: const BorderSide(
+                                                      //       color: Colors.black,
+                                                      //       width: 1.0),
+                                                      // ),
+                                                      hintText:
+                                                          "Search room...",
+                                                    ),
+                                                  ),
                                                 ),
-                                                border: InputBorder.none,
-                                                // focusedBorder:
-                                                //     UnderlineInputBorder(
-                                                //   borderRadius:
-                                                //       BorderRadius.circular(20.0),
-                                                //   borderSide: const BorderSide(
-                                                //       color: Colors.blue,
-                                                //       width: 1.0),
-                                                // ),
-                                                enabledBorder: InputBorder.none,
-                                                // OutlineInputBorder(
-                                                //   borderRadius:
-                                                //       BorderRadius.circular(20.0),
-                                                //   borderSide: const BorderSide(
-                                                //       color: Colors.black,
-                                                //       width: 1.0),
-                                                // ),
-                                                hintText: "Search room...",
-                                              ),
+                                                value.isRoomSearch
+                                                    ? roomWidget(
+                                                        size,
+                                                        value.filteredroomlist,
+                                                        context)
+                                                    : roomWidget(size,
+                                                        value.roomlist, context)
+                                              ],
                                             ),
                                           ),
-                                          value.isRoomSearch
-                                              ? roomWidget(
-                                                  size,
-                                                  value.filteredroomlist,
-                                                  context)
-                                              : roomWidget(
-                                                  size, value.roomlist, context)
-                                        ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.cabin, color: Colors.white),
+                                      SizedBox(
+                                        width: 10,
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.cabin, color: Colors.black),
-                                SizedBox(
-                                  width: 10,
+                                      Text(
+                                        'Room Credit',
+                                        // textScaleFactor:
+                                        //     ScaleSize.textScaleFactor(context),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  'Room Credit',
-                                  // textScaleFactor:
-                                  //     ScaleSize.textScaleFactor(context),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.black),
-                                )
-                              ],
-                            ),
-                          ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                print("------------${value.tablID}");
-                                if (value.tablID!.isNotEmpty) {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  int? c = prefs.getInt("cartNo");
-                                  if (c != 0) {
-                                    await Provider.of<Controller>(context,
-                                            listen: false)
-                                        .getCategoryList(context);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CatTEST(
-                                          // builder: (context) => CategoryScreen(
-                                                tablId:
-                                                    value.tablname.toString(),
-                                                roomId:
-                                                    value.roomnm.toString() ??
-                                                        "",
-                                              )),
-                                    ).then((value) {
-                                      // This code runs when returning from the NextScreen
-                                      // You can put your refresh logic here
-                                      setState(() {
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      // Color.fromARGB(255, 253, 192, 123),
+                                      // Color.fromARGB(255, 50, 71, 190),
+                                      // Color.fromARGB(255, 48, 54, 90),
+                                      // Colors.indigo,
+                                      Color.fromARGB(255, 67, 83, 155),
+                                      Color.fromARGB(255, 50, 71, 190),
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                height: 65,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors
+                                        .transparent, // Make button background transparent
+                                    shadowColor: Colors.transparent,
+                                  ),
+                                  onPressed: () async {
+                                    print("------------${value.tablID}");
+                                    if (value.tablID!.isNotEmpty) {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      int? c = prefs.getInt("cartNo");
+                                      if (c != 0) {
+                                        await Provider.of<Controller>(context,
+                                                listen: false)
+                                            .getCategoryList(context);
                                         Provider.of<Controller>(context,
                                                 listen: false)
-                                            .clearAllData(context);
-                                        seacrhRoom.clear();
-                                        // Update data or perform actions to refresh the page
-                                      });
-                                    });
-                                  } else {
-                                    CustomSnackbar snackbar = CustomSnackbar();
-                                    snackbar.showSnackbar(context,
-                                        "Error getting Cart Number", "");
-                                  }
-                                } else {
-                                  CustomSnackbar snackbar = CustomSnackbar();
-                                  snackbar.showSnackbar(
-                                      context, "Select Table", "");
-                                }
-                              },
-                              child: Text("Proceed", style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.black
-                                      ),))
+                                            .getItemList(context);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => CatTEST(
+                                                    // builder: (context) => CategoryScreen(
+                                                    tablId: value.tablname
+                                                        .toString(),
+                                                    roomId: value.roomnm
+                                                            .toString() ??
+                                                        "",
+                                                  )),
+                                        ).then((value) {
+                                          // This code runs when returning from the NextScreen
+                                          // You can put your refresh logic here
+                                          setState(() {
+                                            Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .clearAllData(context);
+                                            seacrhRoom.clear();
+                                            // Update data or perform actions to refresh the page
+                                          });
+                                        });
+                                      } else {
+                                        CustomSnackbar snackbar =
+                                            CustomSnackbar();
+                                        snackbar.showSnackbar(context,
+                                            "Error getting Cart Number", "");
+                                      }
+                                    } else {
+                                      CustomSnackbar snackbar =
+                                          CustomSnackbar();
+                                      snackbar.showSnackbar(
+                                          context, "Select Table", "");
+                                    }
+                                  },
+                                  child: Text(
+                                    "Proceed",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   );
                 },
               ),
-        body: RefreshIndicator(
-          onRefresh: _handleRefresh,
-          child: CustomScrollView(slivers: [
-            SliverToBoxAdapter(
-              child: Consumer<Controller>(
-                builder: (context, value, child) => Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Container(
-                    // height: 50,
-                    // width: 250,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromARGB(241, 235, 236, 236),
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(border: InputBorder.none),
-                      isExpanded: true,
-                      hint: Text(" Select Table Category"),
-                      value: value.selectedTableCat,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          value.selectedTableCat = newValue;
-                          print(("object"));
-                          print(
-                              ("selected TableCAT==${value.selectedTableCat}"));
-                          value.selectedItemTablecat = value.tableCategoryList
-                              .firstWhere((element) =>
-                                  element['Table_Category'] == newValue);
-                          print(
-                              "${value.selectedItemTablecat!['Table_Category']}");
-                          Provider.of<Controller>(context, listen: false)
-                              .updateTableCAT(context);
-                        });
-                      },
-                      items: value.tableCategoryList
-                          .map<DropdownMenuItem<String>>(
-                              (Map<String, dynamic> item) {
-                        return DropdownMenuItem<String>(
-                          value: item['Table_Category'],
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            child: Text(item['Table_Category']),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
+        body: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                // gradient: RadialGradient(
+                //   colors: [Colors.orange, Colors.red],
+                //   center: Alignment(0.7, -0.6), // Adjusts the gradient position
+                //   radius: 0.6,
+                // ),
+                gradient: LinearGradient(
+                  colors: [
+                    // Color.fromARGB(255, 253, 192, 123),
+                    //                   Color.fromARGB(255, 50, 71, 190),
+                    Color.fromARGB(255, 48, 54, 90),
+                    Colors.indigo,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                // image: DecorationImage(
+                //     image: AssetImage("assets/appbar1.jfif"),
+                //     fit: BoxFit.fill),
+              ),
+              child: Consumer<Controller>(
+                  builder: (context, value, child) => Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 40,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    value.os.toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_month,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          date.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        IconButton.filled(
+                                          onPressed: () {
+                                            Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .viewKot(context, date!);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ViewKot()),
+                                            );
+                                          },
+                                          icon: Icon(
+                                            Icons.shopping_bag,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            value.table_cat == "ALL"
+                                ? Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Container(
+                                      // height: 50,
+                                      // width: 250,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(23),
+                                        color:
+                                            Color.fromARGB(241, 235, 236, 236),
+                                      ),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(23)),
+                                            fillColor: Colors.white,
+                                            filled: true),
+                                        isExpanded: true,
+                                        hint: Text(" Select Table Category"),
+                                        value: value.selectedTableCat,
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            value.selectedTableCat = newValue;
+                                            print(("object"));
+                                            print(
+                                                ("selected TableCAT==${value.selectedTableCat}"));
+                                            value.selectedItemTablecat = value
+                                                .tableCategoryList
+                                                .firstWhere((element) =>
+                                                    element['Table_Category'] ==
+                                                    newValue);
+                                            print(
+                                                "${value.selectedItemTablecat!['Table_Category']}");
+                                            Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .updateTableCAT(context);
+                                          });
+                                        },
+                                        items: value.tableCategoryList
+                                            .map<DropdownMenuItem<String>>(
+                                                (Map<String, dynamic> item) {
+                                          return DropdownMenuItem<String>(
+                                            value: item['Table_Category'],
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10, right: 10),
+                                              child:
+                                                  Text(item['Table_Category']),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: EdgeInsets.all(15),
+                                    child: Container(
+                                      child: Center(
+                                        child: Text(
+                                          "${value.table_cat}",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      )),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _handleRefresh,
+                child: CustomScrollView(slivers: [
+                  Consumer<Controller>(builder: (context, value, child) {
+                    if (value.isTableLoading) {
+                      return SliverFillRemaining(
+                        child: Center(
+                          child: SpinKitCircle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    } else if (value.tabllistCAT.isEmpty) {
+                      return SliverFillRemaining(
+                        child: Center(
+                          child: Lottie.asset(
+                            "assets/noitem.json",
+                            height: size.height * 0.3,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: size.width >= 420 ? 4 : 3,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            return tableWidget(
+                                size, value.tabllistCAT[index], context);
+                          },
+                          childCount: value.tabllistCAT.length,
+                        ),
+                      );
+                    }
+                  })
+                ]),
               ),
             ),
-            Consumer<Controller>(builder: (context, value, child) {
-              if (value.isTableLoading) {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: SpinKitCircle(
-                      color: Colors.black,
-                    ),
-                  ),
-                );
-              } else if (value.tabllistCAT.isEmpty) {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: Lottie.asset(
-                      "assets/noitem.json",
-                      height: size.height * 0.3,
-                    ),
-                  ),
-                );
-              } else {
-                return SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: size.width >= 420 ? 4 : 3,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      return tableWidget(
-                          size, value.tabllistCAT[index], context);
-                    },
-                    childCount: value.tabllistCAT.length,
-                  ),
-                );
-              }
-            })
-          ]),
+          ],
         ),
       ),
     );
@@ -430,6 +631,9 @@ class _HomePageState extends State<HomePage> {
     return Consumer<Controller>(
       builder: (context, value, child) => Container(
         decoration: BoxDecoration(
+            // image: DecorationImage(
+            //                       image: AssetImage("assets/food.jpg"),
+            //                       fit: BoxFit.fill),
             color: list["STATUS"] == 1
                 ? Color.fromARGB(255, 230, 167, 167)
                 : Colors.white,
@@ -518,28 +722,39 @@ class _HomePageState extends State<HomePage> {
                 list["Table_Name"].toString().trimLeft(), context);
             await Provider.of<Controller>(context, listen: false)
                 .getCartNo(context);
-            CustomSnackbar snackbar = CustomSnackbar();
-            snackbar.showSnackbar(
-                context,
-                "Table ${value.tablname.toString().trimLeft().toUpperCase()} Selected.",
-                "");
+            // CustomSnackbar snackbar = CustomSnackbar();
+            // snackbar.showSnackbar(
+            //     context,
+            //     "Table ${value.tablname.toString().trimLeft().toUpperCase()} Selected.",
+            //     "");
 
             setState(() {});
           },
           child: Container(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-              child: Text(
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                // "SDFGGGTHHJJJJJJJJSSS",
-                list["Table_Name"].toString().trimLeft().toUpperCase(),
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize:size.width >= 420 ? 25 : 20),
+              padding: EdgeInsets.only(top: 8.0, bottom: 8),
+              child: Column(
+                children: [
+                  Text(
+                    // textAlign: TextAlign.center,
+                    maxLines: 2,
+                    // "SDFGGGTHHJJJJJJJJSSS",
+                    list["Table_Name"].toString().trimLeft().toUpperCase(),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: size.width > 360 ? 25 : 20),
                     overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    width: size.width > 360 ? 68 : 40,
+                    height: 56,
+                    child: Image.asset("assets/table3.png"),
+                  )
+                  // ConstrainedBox(
+                  //    constraints: BoxConstraints(minWidth: 40,maxHeight: 65,maxWidth:65,minHeight: 40),child: SizedBox(child: Image.asset("assets/table3.png"),)),
+                ],
               ),
             ),
           ),
@@ -633,7 +848,6 @@ class _HomePageState extends State<HomePage> {
                                           width: size.width * 1 / 4.4,
                                           child: Text(
                                             maxLines: 2,
-
                                             list[index]["Room_Name"]
                                                 .toString()
                                                 .trimLeft(),
@@ -679,6 +893,7 @@ class _HomePageState extends State<HomePage> {
     await Future.delayed(Duration(seconds: 2));
     // Update the list of items and refresh the UI
     setState(() {
+      Provider.of<Controller>(context, listen: false).clearAllData(context);
       Provider.of<Controller>(context, listen: false).getTableList(context);
       print("Table Refreshed----");
       // items = List.generate(20, (index) => "Refreshed Item ${index + 1}");
