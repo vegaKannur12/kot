@@ -113,22 +113,22 @@ class _CatTESTState extends State<CatTEST> {
                 },
                 icon: const Icon(
                   Icons.arrow_back,
-                  color: Colors.black,
+                  color: Colors.white,
                 )),
             // backgroundColor: Color.fromARGB(255, 139, 200, 228),
-            backgroundColor: Colors.white,
+            backgroundColor: Color.fromARGB(255, 69, 79, 134),
             // Theme.of(context).primaryColor,
             actions: [
               Consumer<Controller>(
                 builder: (context, value, child) => Card(
                   shape: const StadiumBorder(),
-                  color: Colors.black,
+                  color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Text(
                       "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"} / ${value.cart_id.toString()}",
                       style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 10,
                           fontWeight: FontWeight.bold),
                     ),
@@ -141,7 +141,7 @@ class _CatTESTState extends State<CatTEST> {
             children: [
               Container(
                 width: size.width * 1 / 3,
-                // color: Colors.amber,
+                color: Color.fromARGB(255, 204, 208, 231),
                 child: Consumer<Controller>(builder: (context, value, child) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -282,15 +282,14 @@ class _CatTESTState extends State<CatTEST> {
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
                       crossAxisSpacing: 12,
-                      childAspectRatio: 1.5,
+                      childAspectRatio: 1.4,
                       mainAxisSpacing: 12),
                   itemBuilder: (context, index) {
-                       bool isSelected = selectedIndex == index;
+                    bool isSelected = selectedIndex == index;
                     return InkWell(
                       onTap: () async {
                         setState(() {
-                        selectedIndex = index;
-                        
+                          selectedIndex = index;
                         });
                         print("sel, index=====$selectedIndex , $index");
                         await value.setCatID(
@@ -309,49 +308,69 @@ class _CatTESTState extends State<CatTEST> {
                             .getItemList(context);
                       },
                       child: AnimatedContainer(
+                        // height: size.width >= 420 ? 150:120,
                         duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    
+                        curve: Curves.easeInOut,
                         decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("assets/food.jpg"),
-                                fit: BoxFit.fill),
-                            // color:
-                            //     isSelected
-
-                            //         ? Colors.red
-                            //         :
-                            //     Color.fromARGB(255, 237, 241, 241),
-                            border: Border.all(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10),
-                              boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 56, 35, 33).withOpacity(0.5),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                )
-                              ]
-                            : [],),
-                        
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding:
-                                EdgeInsets.only(top: 2, bottom: 2, left: 5),
-                            child: Text(
-                              maxLines: 2,
-                              list[index]["Cat_Name"]
-                                  .toString()
-                                  .trimLeft()
-                                  .toUpperCase(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                              overflow: TextOverflow.ellipsis,
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.amber,
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Color.fromARGB(255, 56, 35, 33)
+                                        .withOpacity(0.5),
+                                    blurRadius: 10,
+                                    spreadRadius: 2,
+                                  )
+                                ]
+                              : [],
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: size.width >= 420 ? 70:40,
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 69, 79, 134),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10))),
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 2, bottom: 2, left: 5),
+                                  child: Text(
+                                    maxLines: 2,
+                                    list[index]["Cat_Name"]
+                                        .toString()
+                                        .trimLeft()
+                                        .toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            Positioned.fill(
+                              top:size.width >= 420 ? 70: 40,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage("assets/food.jpg"),
+                                      fit: BoxFit.fill),
+                                  // color:
+                                  //     isSelected
+
+                                  //         ? Colors.red
+                                  //         :
+                                  //     Color.fromARGB(255, 237, 241, 241),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -372,8 +391,10 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
             ? Container(
                 height: size.height * 0.7,
                 child: Center(
-                    child: Lottie.asset("assets/noitem.json",
-                        height: size.height * 0.3)))
+                  child: Lottie.asset("assets/noitem.json",
+                      height: size.height * 0.3),
+                ),
+              )
             : ResponsiveGridList(
                 verticalGridSpacing: 0,
                 horizontalGridSpacing: 5,

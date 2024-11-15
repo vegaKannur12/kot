@@ -189,6 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                     value.selectedItemStaff = value.logList.firstWhere(
                         (element) => element['Sm_Name'] == newValue);
                     print("${value.selectedItemStaff!['Sm_id']}");
+                     print("${value.selectedItemStaff!['Tbl_catid'].runtimeType}");
                     Provider.of<Controller>(context, listen: false)
                         .updateSm_id();
                   });

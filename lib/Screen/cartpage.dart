@@ -32,7 +32,7 @@ class _CartBagState extends State<CartBag> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
+    return Scaffold(backgroundColor:Colors.white,
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -46,12 +46,11 @@ class _CartBagState extends State<CartBag> {
             builder: (BuildContext context, Controller value, Widget? child) =>
                 Text(
               "Your Order ( ${value.cart_id.toString()} )",
-
               ///value.cartItems.length
               style: TextStyle(
                 fontSize: 19,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -59,13 +58,13 @@ class _CartBagState extends State<CartBag> {
             Consumer<Controller>(
               builder: (context, value, child) => Card(
                 shape: const StadiumBorder(),
-                color: Colors.black,
+                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
                     "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"}",
                     style: const TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 10,
                         fontWeight: FontWeight.bold),
                   ),
@@ -73,7 +72,7 @@ class _CartBagState extends State<CartBag> {
               ),
             )
           ],
-          backgroundColor: Colors.white,
+           backgroundColor: Color.fromARGB(255, 69, 79, 134),
         ),
         bottomNavigationBar: Provider.of<Controller>(context, listen: false)
                 .cartItems
@@ -488,33 +487,28 @@ class _CartBagState extends State<CartBag> {
                   ),
                 ),
               ),
-        body: Column(children: [
-          Consumer<Controller>(
-              builder: (context, value, child) => value.isCartLoading
-                  ? Expanded(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: SpinKitCircle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    )
-                  : Expanded(
-                      child: value.cartItems.length == 0
-                          ? Container(
-                              height: size.height * 0.7,
-                              child: Center(
-                                  child: Lottie.asset("assets/noitem.json",
-                                      height: size.height * 0.3)))
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: value.cartItems.length,
-                              itemBuilder: (context, int index) {
-                                // return cartItems(index, size, value.cartItems[index]);
-                                return customCard(
-                                    index, size, value.cartItems[index]);
-                              }))),
-        ]));
+        body: Consumer<Controller>(
+            builder: (context, value, child) => value.isCartLoading
+                ? Align(
+                  alignment: Alignment.center,
+                  child: SpinKitCircle(
+                    color: Colors.black,
+                  ),
+                )
+                : value.cartItems.isEmpty
+                        ? Container(
+                            height: size.height * 0.7,
+                            child: Center(
+                                child: Lottie.asset("assets/noitem.json",
+                                    height: size.height * 0.3)))
+                        : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: value.cartItems.length,
+                                itemBuilder: (context, int index) {
+                                  // return cartItems(index, size, value.cartItems[index]);
+                                  return customCard(
+                                      index, size, value.cartItems[index]);
+                                },),),);
   }
 
 //////////////////////////////////////////////////////////////////

@@ -28,17 +28,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     // TODO: implement initState
-
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<Controller>(context, listen: false).getTableList(context);
       Provider.of<Controller>(context, listen: false).getRoomList(context);
       // Provider.of<Controller>(context, listen: false)
       //     .qtyadd();           //tempry adding qty
-
       Provider.of<Controller>(context, listen: false).getOs();
     });
+    // showAlert() ;
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
+  }
+
+  showAlert() async {
+    await Provider.of<Controller>(context, listen: false)
+        .startConditionChecker();
+    // if (await Provider.of<Controller>(context, listen: false)
+    //     .checkCondition()) {
+    //   Provider.of<Controller>(context, listen: false)
+    //       .showReminderNotification();
+    // }
   }
 
   TextEditingController seacrh = TextEditingController();
@@ -52,6 +61,7 @@ class _HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 204, 208, 231),
         extendBody: true,
         // appBar: AppBar(
         //   toolbarHeight: 80,
@@ -136,193 +146,243 @@ class _HomePageState extends State<HomePage> {
                 builder:
                     (BuildContext context, Controller value, Widget? child) {
                   return Container(
-                    height: 170,
+                    height:
+                        value.settingsList[0]["SVALUE"] == "YES" ? 170 : 110,
                     decoration: BoxDecoration(
                       // color: Color.fromARGB(255, 111, 128, 228),
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 204, 208, 231),
                       // Color.fromARGB(255, 197, 121, 71),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
+                      // borderRadius: const BorderRadius.only(
+                      //   topLeft: Radius.circular(20),
+                      //   topRight: Radius.circular(20),
+                      // ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Table ${value.tablname.toString().trimLeft().toUpperCase()}",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        value.settingsList[0]["SVALUE"] == "YES"
+                            ? Container(
+                                height: 65,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 69, 79, 134),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Table ${value.tablname.toString().trimLeft().toUpperCase()}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(255, 67, 83, 155),
-                                      Color.fromARGB(255, 50, 71, 190),
-                                    ],
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                height: 65,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    // backgroundColor: Colors.black
-                                    backgroundColor: Colors
-                                        .transparent, // Make button background transparent
-                                    shadowColor: Colors.transparent,
-                                  ),
-                                  onPressed: () {
-                                    showModalBottomSheet<void>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return StatefulBuilder(
-                                          builder: (BuildContext context,
-                                                  void Function(void Function())
-                                                      setState) =>
-                                              Container(
-                                            // height: 200,
-                                            height: value.roomlist.isNotEmpty
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.65
-                                                : size.height * 0.2,
-                                            color: Colors.white,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                value.roomlist.isNotEmpty
-                                                    ? Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          IconButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              icon: const Icon(
-                                                                  Icons.close))
-                                                        ],
-                                                      )
-                                                    : Container(),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    color: Color.fromARGB(
-                                                        241, 235, 236, 236),
-                                                  ),
-                                                  child: TextFormField(
-                                                    controller: seacrhRoom,
-                                                    //   decoration: const InputDecoration(,
-                                                    onChanged: (val) {
-                                                      setState(() {
-                                                        Provider.of<Controller>(
-                                                                context,
-                                                                listen: false)
-                                                            .searchRoom(
-                                                                val.toString());
-                                                      });
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      fillColor: Colors.white,
-                                                      filled: true,
-                                                      prefixIcon: const Icon(
-                                                        Icons.search,
-                                                        color: Colors.black,
+                            : Container(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            value.settingsList[0]["SVALUE"] == "YES"
+                                ? Container(
+                                    margin: EdgeInsets.only(bottom: 10),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color.fromARGB(255, 67, 83, 155),
+                                          Color.fromARGB(255, 50, 71, 190),
+                                        ],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    height: 65,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        // backgroundColor: Colors.black
+                                        backgroundColor: Colors
+                                            .transparent, // Make button background transparent
+                                        shadowColor: Colors.transparent,
+                                      ),
+                                      onPressed: () {
+                                        showModalBottomSheet<void>(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return StatefulBuilder(
+                                              builder: (BuildContext context,
+                                                      void Function(
+                                                              void Function())
+                                                          setState) =>
+                                                  Container(
+                                                // height: 200,
+                                                height:
+                                                    value.roomlist.isNotEmpty
+                                                        ? MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.65
+                                                        : size.height * 0.2,
+                                                color: Colors.white,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    value.roomlist.isNotEmpty
+                                                        ? Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .close))
+                                                            ],
+                                                          )
+                                                        : Container(),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        color: Color.fromARGB(
+                                                            241, 235, 236, 236),
                                                       ),
-                                                      suffixIcon: IconButton(
-                                                        icon: const Icon(
-                                                            Icons.cancel),
-                                                        onPressed: () {
+                                                      child: TextFormField(
+                                                        controller: seacrhRoom,
+                                                        //   decoration: const InputDecoration(,
+                                                        onChanged: (val) {
                                                           setState(() {
-                                                            print("pressed");
-                                                            seacrhRoom.clear();
-
                                                             Provider.of<Controller>(
                                                                     context,
                                                                     listen:
                                                                         false)
-                                                                .searchRoom("");
+                                                                .searchRoom(val
+                                                                    .toString());
                                                           });
                                                         },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          fillColor:
+                                                              Colors.white,
+                                                          filled: true,
+                                                          prefixIcon:
+                                                              const Icon(
+                                                            Icons.search,
+                                                            color: Colors.black,
+                                                          ),
+                                                          suffixIcon:
+                                                              IconButton(
+                                                            icon: const Icon(
+                                                                Icons.cancel),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                print(
+                                                                    "pressed");
+                                                                seacrhRoom
+                                                                    .clear();
+
+                                                                Provider.of<Controller>(
+                                                                        context,
+                                                                        listen:
+                                                                            false)
+                                                                    .searchRoom(
+                                                                        "");
+                                                              });
+                                                            },
+                                                          ),
+                                                          border:
+                                                              InputBorder.none,
+                                                          // focusedBorder:
+                                                          //     UnderlineInputBorder(
+                                                          //   borderRadius:
+                                                          //       BorderRadius.circular(20.0),
+                                                          //   borderSide: const BorderSide(
+                                                          //       color: Colors.blue,
+                                                          //       width: 1.0),
+                                                          // ),
+                                                          enabledBorder:
+                                                              InputBorder.none,
+                                                          // OutlineInputBorder(
+                                                          //   borderRadius:
+                                                          //       BorderRadius.circular(20.0),
+                                                          //   borderSide: const BorderSide(
+                                                          //       color: Colors.black,
+                                                          //       width: 1.0),
+                                                          // ),
+                                                          hintText:
+                                                              "Search room...",
+                                                        ),
                                                       ),
-                                                      border: InputBorder.none,
-                                                      // focusedBorder:
-                                                      //     UnderlineInputBorder(
-                                                      //   borderRadius:
-                                                      //       BorderRadius.circular(20.0),
-                                                      //   borderSide: const BorderSide(
-                                                      //       color: Colors.blue,
-                                                      //       width: 1.0),
-                                                      // ),
-                                                      enabledBorder:
-                                                          InputBorder.none,
-                                                      // OutlineInputBorder(
-                                                      //   borderRadius:
-                                                      //       BorderRadius.circular(20.0),
-                                                      //   borderSide: const BorderSide(
-                                                      //       color: Colors.black,
-                                                      //       width: 1.0),
-                                                      // ),
-                                                      hintText:
-                                                          "Search room...",
                                                     ),
-                                                  ),
+                                                    value.isRoomSearch
+                                                        ? roomWidget(
+                                                            size,
+                                                            value
+                                                                .filteredroomlist,
+                                                            context)
+                                                        : roomWidget(
+                                                            size,
+                                                            value.roomlist,
+                                                            context)
+                                                  ],
                                                 ),
-                                                value.isRoomSearch
-                                                    ? roomWidget(
-                                                        size,
-                                                        value.filteredroomlist,
-                                                        context)
-                                                    : roomWidget(size,
-                                                        value.roomlist, context)
-                                              ],
-                                            ),
-                                          ),
+                                              ),
+                                            );
+                                          },
                                         );
                                       },
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.cabin, color: Colors.white),
-                                      SizedBox(
-                                        width: 10,
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.cabin,
+                                              color: Colors.white),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Room Credit',
+                                            // textScaleFactor:
+                                            //     ScaleSize.textScaleFactor(context),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                                color: Colors.white),
+                                          )
+                                        ],
                                       ),
-                                      Text(
-                                        'Room Credit',
-                                        // textScaleFactor:
-                                        //     ScaleSize.textScaleFactor(context),
-                                        style: TextStyle(
+                                    ),
+                                  )
+                                : Container(
+                                    margin: EdgeInsets.only(bottom: 10),
+                                    padding: EdgeInsets.all(7),
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 69, 79, 134),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Table ${value.tablname.toString().trimLeft().toUpperCase()}",
+                                          style: TextStyle(
+                                            color: Colors.white,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                            color: Colors.white),
-                                      )
-                                    ],
+                                            fontSize: 25,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Container(
+                            Padding(
+                              padding: EdgeInsets.only(right: 20, bottom: 10),
+                              child: Container(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -338,7 +398,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                 ),
-                                height: 65,
+                                height: 70,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors
@@ -401,11 +461,11 @@ class _HomePageState extends State<HomePage> {
                                         color: Colors.white),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -500,7 +560,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            value.table_cat == "ALL"
+                            value.table_catID == 0
                                 ? Padding(
                                     padding: const EdgeInsets.all(10),
                                     child: Container(
@@ -560,7 +620,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Container(
                                       child: Center(
                                         child: Text(
-                                          "${value.table_cat}",
+                                          "${value.table_catNM}",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,

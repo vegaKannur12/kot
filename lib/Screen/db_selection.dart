@@ -419,6 +419,11 @@ class _DBSelectionState extends State<DBSelection>
                                                     .getLogin(context);
                                                 Provider.of<Controller>(context,
                                                         listen: false)
+                                                    .getSettings(
+                                                        context, "ENB_ROOM_CR");
+                                                // .getSettings(context,"");
+                                                Provider.of<Controller>(context,
+                                                        listen: false)
                                                     .getTableCtegory(context);
                                                 Navigator.push(
                                                   context,

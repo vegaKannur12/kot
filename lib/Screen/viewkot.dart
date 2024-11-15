@@ -136,6 +136,7 @@ class _ViewKotState extends State<ViewKot> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -149,7 +150,6 @@ class _ViewKotState extends State<ViewKot> {
           builder: (BuildContext context, Controller value, Widget? child) =>
               Text(
             "KOT List",
-
             ///value.cartItems.length
             style: TextStyle(
               fontSize: 19,
@@ -158,7 +158,7 @@ class _ViewKotState extends State<ViewKot> {
             ),
           ),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color.fromARGB(255, 69, 79, 134),
       ),
       body: Consumer<Controller>(
         builder: (context, value, child) => value.isKOTLoading
