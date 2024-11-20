@@ -173,14 +173,25 @@ class _KitchenDispState extends State<KitchenDisp> {
                                               ),
                                               onPressed: item['isCallDisabled']
                                                   ? null // Disable the button if true
-                                                  : () {
+                                                  : () async {
                                                       setState(() {
                                                         item['isCallDisabled'] =
                                                             true; // Disable button
                                                       });
+                                                      print(
+                                                          "alert ${item['Kot_No']}");
+                                                      await Provider.of<
+                                                                  Controller>(
+                                                              context,
+                                                              listen: false)
+                                                          .showReminderNotification(
+                                                              'KOT : ${item['Kot_No']} ',
+                                                              '${item['ITEM']} is prepared..');
                                                     },
                                               child: Text("CALL"),
-                                            ),
+                                            ).animate()
+                                                .fade(duration: 300.ms)
+                                                .scale(),
                                           ),
                                         ),
                                         SizedBox(
@@ -206,7 +217,10 @@ class _KitchenDispState extends State<KitchenDisp> {
                                               ),
                                               onPressed: () {},
                                               child: Text("COOKED"),
-                                            ).animate().fade(duration: 300.ms).scale(),
+                                            )
+                                                .animate()
+                                                .fade(duration: 300.ms)
+                                                .scale(),
                                           ),
                                         ),
                                       ]),
@@ -252,8 +266,8 @@ class _KitchenDispState extends State<KitchenDisp> {
       }),
     );
   }
-
 }
+
 Future<bool> _onBackPressed(BuildContext context) async {
   return await showDialog(
     context: context,

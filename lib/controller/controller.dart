@@ -1089,7 +1089,9 @@ class Controller extends ChangeNotifier {
       print(
           "categoryList1st...................-${catlist[0]["Cat_Id"].toString()}");
       await prefs.setString("CAT_id", catlist[0]["Cat_Id"].toString());
+      await prefs.setString("CAT_nm", catlist[0]["Cat_Name"].toString());
       print("CATID default--${prefs.getString("CAT_id")}");
+      print("CATNMM default--${prefs.getString("Cat_Name")}");
       isCategoryLoading = false;
       notifyListeners();
     } on PlatformException catch (e) {
@@ -1152,6 +1154,10 @@ class Controller extends ChangeNotifier {
       // Navigator.pop(context);
       await showConnectionDialog(context, "ITM", e.toString());
     } catch (e) {
+      // if (e.toString().contains('connection closed')) {
+      //   // Reconnect and retry
+      //   await initYearsDb(context, "ITM");
+      // }
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
       return [];
@@ -1740,7 +1746,7 @@ class Controller extends ChangeNotifier {
       // for (var item in valueMap) {
       //   kitchenKotItems.add(item);
       // }
-       isCallDisabled = List.generate(kitchenKotItems.length, (index) => false);
+      isCallDisabled = List.generate(kitchenKotItems.length, (index) => false);
       await groupByTable(kitchenKotItems);
       //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0},
       //   {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
@@ -1765,30 +1771,29 @@ class Controller extends ChangeNotifier {
   Map<String, List<Map<String, dynamic>>> groupByTable(
       List<Map<String, dynamic>> items) {
     groupedData.clear();
-      
-   
+
     notifyListeners();
     for (var item in items) {
-      Map<String, dynamic> temp={};
+      Map<String, dynamic> temp = {};
       final tableNo =
           item["Table_No"]?.toString().trim().toUpperCase() ?? "NO TABLE";
       if (!groupedData.containsKey(tableNo)) {
         groupedData[tableNo] = [];
       }
-      temp['Kot_No']=item['Kot_No'];
-      temp['kot_Date']=item['kot_Date'];
-      temp['kot_time']=item['kot_time'];
-      temp['Table_No']=item['Table_No'];
-      temp['Room_No']=item['Room_No'];
-      temp['ITEM']=item['ITEM'];
-      temp['msg']=item['msg'];
-      temp['qty']=item['qty'];
-      temp['status']=item['status'];
-      temp['isCallDisabled']=false;
+      temp['Kot_No'] = item['Kot_No'];
+      temp['kot_Date'] = item['kot_Date'];
+      temp['kot_time'] = item['kot_time'];
+      temp['Table_No'] = item['Table_No'];
+      temp['Room_No'] = item['Room_No'];
+      temp['ITEM'] = item['ITEM'];
+      temp['msg'] = item['msg'];
+      temp['qty'] = item['qty'];
+      temp['status'] = item['status'];
+      temp['isCallDisabled'] = false;
       groupedData[tableNo]!.add(temp);
       // groupedData[tableNo]!.add({"isCallDisabled":true});
     }
-    
+
     print("grouped data==$groupedData");
     return groupedData;
   }
@@ -2008,6 +2013,7 @@ class Controller extends ChangeNotifier {
     print("tableCategoryList===$tableCategoryList");
     for (int i = 0; i < tableCategoryList.length; i++) {
       if (tableCategoryList[i]["cate_id"] == catid) {
+        selectedTableCat = tableCategoryList[i]["Table_Category"];
         print("-----${tableCategoryList[i]["cate_id"]}");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("Sm_Tbl_catName",
