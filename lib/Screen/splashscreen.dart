@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/authentication/registration.dart';
@@ -106,13 +107,15 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Column(
             children: [
               Expanded(
-                child: Container(
-                  height: 150,
-                  width: 150,
-                  child: Image.asset(
-                    "assets/logo_black_bg.png",
+                child: Animate(
+                  child: Container(
+                    height: 150,
+                    width: 150,
+                    child: Image.asset(
+                      "assets/logo_black_bg.png",
+                    ),
                   ),
-                ),
+                ).fadeIn(duration: Duration(seconds: 2)),
               ),
             ],
           )),

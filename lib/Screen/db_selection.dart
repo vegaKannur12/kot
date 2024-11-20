@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
@@ -319,16 +320,22 @@ class _DBSelectionState extends State<DBSelection>
                                         );
                                       });
                                 },
-                                child: Text(
-                                  "Year Selection".toUpperCase(),
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
+                                child: Animate(
+                                  child: Text(
+                                    "Year Selection".toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.indigo,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ).fadeIn(duration: Duration(seconds: 1)),
                               ),
                             ],
                           ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 25,right: 25),
+                              child: Divider(color: Colors.indigo,),
+                            ),
                           SizedBox(
                             height: 10,
                           ),
@@ -437,7 +444,7 @@ class _DBSelectionState extends State<DBSelection>
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white),
-                                              )),
+                                              )).animate().fade(duration: 300.ms).scale(),
                                         ),
                                         title: Text(
                                           value.db_list[index]["Year_Name"]

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/categorypage.dart';
 import 'package:restaurent_kot/Screen/2categoryPage.dart';
+import 'package:restaurent_kot/Screen/kitchendisp.dart';
 import 'package:restaurent_kot/Screen/viewkot.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/sizeScaling.dart';
@@ -539,14 +540,26 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         IconButton.filled(
                                           onPressed: () {
-                                            Provider.of<Controller>(context,
+                                            // Provider.of<Controller>(context,
+                                            //         listen: false)
+                                            //     .viewKot(context, date!);
+
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           ViewKot()),
+                                            // );
+                                            
+                                             Provider.of<Controller>(context,
                                                     listen: false)
-                                                .viewKot(context, date!);
+                                                .kitchenDisplayData(context, date!);
+
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      ViewKot()),
+                                                      KitchenDisp()),
                                             );
                                           },
                                           icon: Icon(

@@ -11,8 +11,11 @@ import 'package:restaurent_kot/Screen/tesssssss.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import 'Screen/authentication/registration.dart';
+
+
+// Key - TBHI34TFLTUY
+// UserName - manu, pwd - 2
 
 bool isLoggedIn = false;
 bool isRegistered = false;

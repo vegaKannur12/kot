@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -234,11 +235,24 @@ class _RegistrationState extends State<Registration> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Consumer<Controller>(
             builder: (BuildContext context, Controller value, Widget? child) {
-              return Container(
+              return Container( decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 67, 83, 155),
+                        Color.fromARGB(255, 50, 71, 190),
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 width: size.width * 0.44,
                 child: ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors
+                          .transparent, // Make button background transparent
+                      shadowColor: Colors.transparent,
+                    ),
                     onPressed: () async {
                       String deviceInfo = "$manufacturer" + '' + "$model";
                       if (_formKey.currentState!.validate()) {
@@ -263,7 +277,7 @@ class _RegistrationState extends State<Registration> {
                                   fontSize: 17,
                                   color: Colors.white),
                             ),
-                    )),
+                    )).animate().fade(duration: 300.ms).scale(),
               );
             },
           )

@@ -45,6 +45,7 @@ class Controller extends ChangeNotifier {
   bool isfreez = false;
   List<Map<String, dynamic>> cartItems = [];
   List<Map<String, dynamic>> kotItems = [];
+  List<Map<String, dynamic>> kitchenKotItems = [];
   List<Map<String, dynamic>> tableItemList = [];
   List<Map<String, dynamic>> kotItemList = [];
   bool isCartLoading = false;
@@ -169,7 +170,8 @@ class Controller extends ChangeNotifier {
     'Less Salt'
   ];
   List filteredSuggestions = [];
-
+  final Map<String, List<Map<String, dynamic>>> groupedData = {};
+  List<bool> isCallDisabled = [];
   // qtyadd() {
   //   qty = List.generate(itemlist.length, (index) => TextEditingController());
   //   isAdded = List.generate(itemlist.length, (index) => false);
@@ -215,7 +217,7 @@ class Controller extends ChangeNotifier {
     Timer.periodic(Duration(seconds: 60), (timer) async {
       bool condition = await checkCondition();
       if (condition) {
-        showReminderNotification();
+        showReminderNotification('Order Alert', 'You have a prepared order!');
       }
     });
   }
@@ -225,7 +227,7 @@ class Controller extends ChangeNotifier {
     return true; // Example result, replace with actual condition
   }
 
-  void showReminderNotification() async {
+  showReminderNotification(String dlgTitle, String dlgBodyy) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'reminder_channel_id',
@@ -241,8 +243,8 @@ class Controller extends ChangeNotifier {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'Order Alert',
-      'You have a prepared order!',
+      dlgTitle,
+      dlgBodyy,
       platformChannelSpecifics,
     );
   }
@@ -421,6 +423,29 @@ class Controller extends ChangeNotifier {
       if (valueMap != null) {
         // LoginModel logModel = LoginModel.fromJson(valueMap);
         for (var item in valueMap) {
+          // logList = [
+          //   {
+          //     "Sm_id": "VGMHD3",
+          //     "Sm_Name": "MADHAV",
+          //     "Us_Name": "MADHAV",
+          //     "PWD": 3,
+          //     "Tbl_catid": 0
+          //   },
+          //   {
+          //     "Sm_id": "VGMHD2",
+          //     "Sm_Name": "MANU",
+          //     "Us_Name": "MANU",
+          //     "PWD": 2,
+          //     "Tbl_catid": 8
+          //   },
+          //   {
+          //     "Sm_id": "VGMHD1",
+          //     "Sm_Name": "SURAJ",
+          //     "Us_Name": "SURAJ",
+          //     "PWD": 1,
+          //     "Tbl_catid": 0
+          //   }
+          // ];
           logList.add(item);
           notifyListeners();
         }
@@ -700,7 +725,7 @@ class Controller extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? os = await prefs.getString("os");
     String? smid = await prefs.getString("Sm_id");
-    String? tablecat = await prefs.getString("table_cat");
+    String? tablecat = await prefs.getString("Sm_Tbl_catName"); //table_cat
     print("tabl para---------$os---$smid--$tablecat");
     isTableLoading = true;
     notifyListeners();
@@ -710,18 +735,37 @@ class Controller extends ChangeNotifier {
       tabllist.clear();
       tabllistCAT.clear();
       notifyListeners();
+      print("tablelist--$res");
       if (map != null) {
+        //            tabllist = [
+        //   {
+        //     "Table_ID": "VGMHD2",
+        //     "Table_Name": "101T",
+        //     "Table_Category": "TABLE",
+        //     "STATUS": 1
+        //   },
+        //   {
+        //     "Table_ID": "VGMHD5",
+        //     "Table_Name": "1A",
+        //     "Table_Category": "ALL",
+        //     "STATUS": 1
+        //   },
+        //   {
+        //     "Table_ID": "VGMHD6",
+        //     "Table_Name": "1B",
+        //     "Table_Category": "TABLE",
+        //     "STATUS": 1
+        //   },
+        //   {
+        //     "Table_ID": "VGMHD7",
+        //     "Table_Name": "1C",
+        //     "Table_Category": "ALL",
+        //     "STATUS": 1
+        //   }
+        // ];
         for (var item in map) {
           tabllist.add(item);
         }
-
-        // for (var item in map) {
-        //   if (item['Table_Category'].toString().trimLeft() ==
-        //       tablecat.toString()) {
-        //     print("eql");
-        //     tabllistCAT.add(item);
-        //   }
-        // }
       }
       tabllistCAT = tabllist
           .where((e) => e["Table_Category"]
@@ -730,10 +774,10 @@ class Controller extends ChangeNotifier {
               .toLowerCase()
               .contains(tablecat.toString().toLowerCase()))
           .toList();
-      print("tablelist-$res");
       if (tablecat == "ALL") {
         tabllistCAT = tabllist;
       }
+
       print("tablelistCAT-$tabllistCAT");
       isTableLoading = false;
       notifyListeners();
@@ -799,7 +843,7 @@ class Controller extends ChangeNotifier {
   getTableCtegory(BuildContext context) async {
     try {
       tableCategoryList.clear();
-      tableCategoryList.add({"cate_id": 8, "Table_Category": "ALL"});
+      tableCategoryList.add({"cate_id": 0, "Table_Category": "ALL"});
       notifyListeners();
       var res = await SqlConn.readData("Kot_Table_Category");
       var valueMap = json.decode(res);
@@ -1625,7 +1669,6 @@ class Controller extends ChangeNotifier {
       isKOTLoading = false;
       notifyListeners();
       print("view Kot---$res");
-
       kotItems.clear();
       for (var item in valueMap) {
         kotItems.add(item);
@@ -1652,6 +1695,105 @@ class Controller extends ChangeNotifier {
   }
 
 ///////////////////////////////////////////////////////////////////////////////////
+
+  kitchenDisplayData(
+    BuildContext context,
+    String date,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? os = await prefs.getString("os");
+    isKOTLoading = true;
+    notifyListeners();
+
+    print("Kot List -------------{Kot_status_list '$date'}");
+    try {
+      var res = await SqlConn.readData("Kot_status_list '$date'");
+      var valueMap = json.decode(res);
+      isKOTLoading = false;
+      notifyListeners();
+      print("view Kot_status_list---$res");
+      kitchenKotItems.clear();
+      kitchenKotItems = [
+        {
+          "Kot_No": "QL57",
+          "kot_Date": "2024-11-19 00:00:00.0",
+          "kot_time": "2024-11-19 10:02:43.79",
+          "Table_No": "5C",
+          "Room_No": "",
+          "ITEM": "TENDER COCONUT",
+          "msg": "",
+          "qty": 1.00,
+          "status": 0
+        },
+        {
+          "Kot_No": "QL58",
+          "kot_Date": "2024-11-19 00:00:00.0",
+          "kot_time": "2024-11-19 10:02:43.79",
+          "Table_No": "5C",
+          "Room_No": "",
+          "ITEM": "TEA",
+          "msg": "",
+          "qty": 2.00,
+          "status": 0
+        }
+      ];
+      // for (var item in valueMap) {
+      //   kitchenKotItems.add(item);
+      // }
+       isCallDisabled = List.generate(kitchenKotItems.length, (index) => false);
+      await groupByTable(kitchenKotItems);
+      //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0},
+      //   {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1},  {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1},  {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1},  {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0},
+      //    {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
+      notifyListeners();
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException Kot_status_list: ${e.message}");
+      debugPrint("not connected..Kot_status_list..");
+      debugPrint(e.toString());
+      // Navigator.pop(context);
+      // await showConnectionDialog(context, "VWKOT", e.toString());
+    } catch (e) {
+      print("An unexpected error occurred: $e");
+      // SqlConn.disconnect();
+      return [];
+    }
+  }
+
+  Map<String, List<Map<String, dynamic>>> groupByTable(
+      List<Map<String, dynamic>> items) {
+    groupedData.clear();
+      
+   
+    notifyListeners();
+    for (var item in items) {
+      Map<String, dynamic> temp={};
+      final tableNo =
+          item["Table_No"]?.toString().trim().toUpperCase() ?? "NO TABLE";
+      if (!groupedData.containsKey(tableNo)) {
+        groupedData[tableNo] = [];
+      }
+      temp['Kot_No']=item['Kot_No'];
+      temp['kot_Date']=item['kot_Date'];
+      temp['kot_time']=item['kot_time'];
+      temp['Table_No']=item['Table_No'];
+      temp['Room_No']=item['Room_No'];
+      temp['ITEM']=item['ITEM'];
+      temp['msg']=item['msg'];
+      temp['qty']=item['qty'];
+      temp['status']=item['status'];
+      temp['isCallDisabled']=false;
+      groupedData[tableNo]!.add(temp);
+      // groupedData[tableNo]!.add({"isCallDisabled":true});
+    }
+    
+    print("grouped data==$groupedData");
+    return groupedData;
+  }
+
+  ///
   viewTableItems(BuildContext context, String tbl, int status) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
@@ -1862,19 +2004,22 @@ class Controller extends ChangeNotifier {
   }
 
   selectcatname(int catid) async {
-    for (int i = 0; i <= tableCategoryList.length; i++) {
+    print("catID===$catid");
+    print("tableCategoryList===$tableCategoryList");
+    for (int i = 0; i < tableCategoryList.length; i++) {
       if (tableCategoryList[i]["cate_id"] == catid) {
+        print("-----${tableCategoryList[i]["cate_id"]}");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("Sm_Tbl_catName",
             tableCategoryList[i]["Table_Category"].toString());
       }
     }
-     notifyListeners();
+    notifyListeners();
   }
 
   updateTableCAT(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("table_cat", selectedItemTablecat!['Table_Category']);
+    prefs.setString("Sm_Tbl_catName", selectedItemTablecat!['Table_Category']);
     print("tableCAT Updated----${selectedItemTablecat!['Table_Category']}");
     notifyListeners();
     getTableList(context);
@@ -1952,7 +2097,7 @@ class Controller extends ChangeNotifier {
     // String? brId = await prefs.getString("br_id");
     os = await prefs.getString("os");
     table_catID = await prefs.getInt("Sm_Tbl_catid");
-     table_catNM = await prefs.getString("Sm_Tbl_catName");
+    table_catNM = await prefs.getString("Sm_Tbl_catName");
     cartNum = prefs.getInt("cartNo");
     notifyListeners();
   }

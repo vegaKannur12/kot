@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/home.dart';
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
+        extendBody: true,
         extendBodyBehindAppBar: true,
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
@@ -55,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         // ),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           actions: [
             PopupMenuButton(itemBuilder: (context) {
               return [
@@ -169,14 +171,12 @@ class _LoginPageState extends State<LoginPage> {
                 isExpanded: true,
                 hint: Text("Select Staff"),
                 value: value.selectedSmName,
-                // underline: Container(
-                //   decoration: ShapeDecoration(
-                //     shape: RoundedRectangleBorder(
-                //       side: BorderSide(width: 1.0, style: BorderStyle.solid),
-                //       borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                //     ),
-                //   ),
-                // ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please select a staff member";
+                  }
+                  return null;
+                },
                 onChanged: (String? newValue) {
                   setState(() {
                     value.selectedSmName = newValue;
@@ -189,7 +189,8 @@ class _LoginPageState extends State<LoginPage> {
                     value.selectedItemStaff = value.logList.firstWhere(
                         (element) => element['Sm_Name'] == newValue);
                     print("${value.selectedItemStaff!['Sm_id']}");
-                     print("${value.selectedItemStaff!['Tbl_catid'].runtimeType}");
+                    print(
+                        "${value.selectedItemStaff!['Tbl_catid'].runtimeType}");
                     Provider.of<Controller>(context, listen: false)
                         .updateSm_id();
                   });
@@ -241,29 +242,42 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: ElevatedButton(
                     onPressed: () async {
-                      loginLoad = true;
-                      int i =
-                          await Provider.of<Controller>(context, listen: false)
-                              .verifyStaff(password.text, context);
-                      print("$i");
-                      if (i == 1) {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setString("table_cat", "ALL");
-                        Navigator.pushReplacement(
+                      print(("selected NAme==${value.selectedSmName}"));
+                      if (
+                          // password.text.isNotEmpty ||
+                          //   password.text.toString() != "" ||
+                          _formKey.currentState!.validate()) {
+                        loginLoad = true;
+                        int i = await Provider.of<Controller>(context,
+                                listen: false)
+                            .verifyStaff(password.text, context);
+                        print("$i");
+                        if (i == 1) {
+                          // SharedPreferences prefs =
+                          //     await SharedPreferences.getInstance();
+                          // prefs.setString("table_cat", "ALL");
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomePage()));
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        } else {
+                          CustomSnackbar snackbar = CustomSnackbar();
+                          // ignore: use_build_context_synchronously
+                          snackbar.showSnackbar(
+                              context, "Incorrect Password", "");
+                        }
+                        loginLoad = false;
+                        //  Provider.of<Controller>(context, listen: false)
+                        //     .getLogin(
+                        //         'DHANUSH', '3804', context);
                       } else {
                         CustomSnackbar snackbar = CustomSnackbar();
                         // ignore: use_build_context_synchronously
                         snackbar.showSnackbar(
-                            context, "Incorrect Password", "");
+                            context, "Enter username and password", "");
                       }
-                      loginLoad = false;
-                      //  Provider.of<Controller>(context, listen: false)
-                      //     .getLogin(
-                      //         'DHANUSH', '3804', context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors
@@ -286,7 +300,7 @@ class _LoginPageState extends State<LoginPage> {
                                       Theme.of(context).secondaryHeaderColor),
                             ),
                     ),
-                  ),
+                  ).animate().fade(duration: 300.ms).scale(),
                 )
               ],
             )
