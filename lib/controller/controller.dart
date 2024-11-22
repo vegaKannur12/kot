@@ -8,10 +8,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/authentication/registration.dart';
 import 'package:restaurent_kot/Screen/db_selection.dart';
 import 'package:restaurent_kot/Screen/home.dart';
+import 'package:restaurent_kot/Screen/kitchendisp.dart';
 import 'package:restaurent_kot/components/c_errorDialog.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/external_dir.dart';
@@ -52,7 +54,6 @@ class Controller extends ChangeNotifier {
   bool isKOTLoading = false;
   List<Map<String, dynamic>> categoryList = [];
   List<Map<String, dynamic>> itemlist = [];
-
   bool isCusLoading = false;
   DateTime? sdate;
   DateTime? ldate;
@@ -92,6 +93,7 @@ class Controller extends ChangeNotifier {
   List<bool> isAdded = [];
   List<Map<String, dynamic>> list = [];
   List<Map<String, dynamic>> tabllist = [];
+  List<Map<String, dynamic>> alertList = [];
   // {"tab": "Table 1", "tid": 1},
   // {"tab": "Table 2", "tid": 2},
   // {"tab": "Table 3", "tid": 3},
@@ -172,6 +174,7 @@ class Controller extends ChangeNotifier {
   List filteredSuggestions = [];
   final Map<String, List<Map<String, dynamic>>> groupedData = {};
   List<bool> isCallDisabled = [];
+  int currentIndex = 0;
   // qtyadd() {
   //   qty = List.generate(itemlist.length, (index) => TextEditingController());
   //   isAdded = List.generate(itemlist.length, (index) => false);
@@ -210,44 +213,132 @@ class Controller extends ChangeNotifier {
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        if (response.payload != null) {
+          // Handle the click action
+          print('Notification payload: ${response.payload}');
+          // Navigate to a specific screen
+          handleNotificationClick(response.payload!);
+        }
+      },
+    );
   }
 
-  startConditionChecker() {
-    Timer.periodic(Duration(seconds: 60), (timer) async {
-      bool condition = await checkCondition();
-      if (condition) {
-        showReminderNotification('Order Alert', 'You have a prepared order!');
-      }
-    });
+  handleNotificationClick(String s) async {
+    int f = 0;
+    print("TID of viewd nitif---$s");
+    int tidViewed = int.parse(s.toString());
+    var res1 = await SqlConn.writeData(
+        "UPDATE [KOT_Notify] SET CALL_STATUS=1 WHERE TID=$tidViewed");
+    print("KOT_Notify updated---$tidViewed----$res1");
+    f = 1;
+    var res111 = await SqlConn.readData("SELECT * from [KOT_Notify]");
+    print("KOT_Notify details res---$res111");
+    if (f == 1) {
+      showNextNotification();
+    } else {
+      print("Notif update failed");
+    }
   }
+
+  showNextNotification() async {
+    if (currentIndex < alertList.length) {
+      var notification = alertList[currentIndex];
+      flutterLocalNotificationsPlugin.show(
+        notification["TID"],
+        "Table: ${notification["TABLE_NO"]}",
+        notification["DESCRIPTION"],
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            subText: "Order Alert",
+            'reminder_channel_id',
+            'Reminder Notifications',
+            importance: Importance.high,
+            priority: Priority.high,
+            enableVibration: true,
+            vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+            sound: const RawResourceAndroidNotificationSound('notif2'),
+            // styleInformation: InboxStyleInformation(
+            //   ["${notification["DESCRIPTION"]}", " "], // List of lines to display
+            //   contentTitle:
+            //       "Table: ${notification["TABLE_NO"]}", // Title of the notification
+            //   summaryText: 'Check your messages', // Summary text below content
+            // ),
+          ),
+        ),
+        payload: notification["TID"].toString(),
+      );
+      currentIndex++; // Move to the next notification
+    } else {
+      print("No more notifications to display..check condition again..");
+      await checkCondition();
+    }
+  }
+
+  // startConditionChecker() {
+  //   Timer.periodic(Duration(seconds: 60), (timer) async {
+  //     bool condition = await checkCondition();
+  //     if (condition) {
+  //       showReminderNotification(
+  //           "Table : ${alertList[0]["TABLE_NO"].toString()}",
+  //           "${alertList[0]["DESCRIPTION"].toString()}");
+  //     } else {
+  //       // startConditionChecker();
+  //     }
+  //   });
+  // }
 
   Future<bool> checkCondition() async {
+    var res1 = await SqlConn.readData(
+        "SELECT * from [KOT_Notify] WHERE CALL_STATUS=0");
+    print("KOT_Notify res---$res1");
+    if (res1.isNotEmpty) {
+      alertList.clear();
+      currentIndex = 0;
+      notifyListeners();
+      var map = jsonDecode(res1);
+      if (map != null) {
+        for (var item in map) {
+          alertList.add(item);
+        }
+      }
+      print("alertlist len--${alertList.length}");
+      print("${alertList[0]["TID"].runtimeType}");
+      await showNextNotification();
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
     // Implement your logic to check the condition here
-    return true; // Example result, replace with actual condition
+    // Example result, replace with actual condition
   }
 
-  showReminderNotification(String dlgTitle, String dlgBodyy) async {
-    AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'reminder_channel_id',
-      'Reminder Notifications',
-      importance: Importance.high,
-      priority: Priority.high,
-      enableVibration: true,
-      vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
-      sound: const RawResourceAndroidNotificationSound('notif2'),
-    );
-    NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+  // showReminderNotification(String dlgTitle, String dlgBodyy) async {
+  //   AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //     subText: "Order Alert",
+  //     'reminder_channel_id',
+  //     'Reminder Notifications',
+  //     importance: Importance.high,
+  //     priority: Priority.high,
+  //     enableVibration: true,
+  //     vibrationPattern: Int64List.fromList([0, 1000, 500, 1000]),
+  //     sound: const RawResourceAndroidNotificationSound('notif2'),
+  //   );
+  //   NotificationDetails platformChannelSpecifics =
+  //       NotificationDetails(android: androidPlatformChannelSpecifics);
 
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      dlgTitle,
-      dlgBodyy,
-      platformChannelSpecifics,
-    );
-  }
+  //   await flutterLocalNotificationsPlugin.show(
+  //     0,
+  //     dlgTitle,
+  //     dlgBodyy,
+  //     platformChannelSpecifics,
+  //     payload: alertList[currentIndex]["TID"].toString(),
+  //   );
+  // }
 
   /////////////////////////////////////////////
   Future<RegistrationData?> postRegistration(
@@ -459,6 +550,10 @@ class Controller extends ChangeNotifier {
       // Navigator.pop(context);
       showConnectionDialog(context, "LOG", e.toString());
     } catch (e) {
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "LOG");
+      }
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
     }
@@ -551,6 +646,7 @@ class Controller extends ChangeNotifier {
     String? pw = prefs.getString("pass_w");
     String? db = prefs.getString("db_name");
     String? multi_db = prefs.getString("multi_db");
+    String date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
 
     debugPrint("Connecting selected DB...$db----");
     debugPrint("Connecting ...$ip---$port----$un----$pw-");
@@ -634,11 +730,11 @@ class Controller extends ChangeNotifier {
         await finalPrint(context);
       } else if (type == "SET") {
         await getSettings(context, "");
-      }
-      // else if (type == "VWKOT") {
-      //   await viewKot(context);
-      // }
-      else {}
+      } else if (type == "VWKOTSTAT") {
+        await kitchenDisplayData(context, date);
+      } else if (type == "VWKOT") {
+        await viewKot(context, date);
+      } else {}
     } on PlatformException catch (e) {
       debugPrint(e.toString());
       debugPrint("not connected..init-YRDB..");
@@ -646,6 +742,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "INYR", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "INYR");
+      }
       // SqlConn.disconnect();
       // return [];
     }
@@ -697,7 +797,6 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..initDB..");
       Navigator.pop(context);
       await showINITConnectionDialog(context, "INDB", e.toString());
-
       //   showDialog(
       //   context: context,
       //   builder: (context) {
@@ -784,9 +883,18 @@ class Controller extends ChangeNotifier {
     } on PlatformException catch (e) {
       debugPrint("PlatformException Table: ${e.message}");
       debugPrint("not connected..Table..");
+      if (e.toString().contains('Connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "TBL");
+      }
       // Navigator.pop(context);
       await showConnectionDialog(context, "TBL", e.toString());
+      return [];
     } catch (e) {
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "TBL");
+      }
       print("An unexpected error occurred: $e");
       // SqlConn.disconnect();
       return [];
@@ -866,6 +974,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "TCAT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "TCAT");
+      }
       // SqlConn.disconnect();
       // return [];
     }
@@ -906,6 +1018,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "SET", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "SET");
+      }
     }
   }
 
@@ -937,6 +1053,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "ROM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "ROM");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1102,6 +1222,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "CAT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "CAT");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1154,11 +1278,12 @@ class Controller extends ChangeNotifier {
       // Navigator.pop(context);
       await showConnectionDialog(context, "ITM", e.toString());
     } catch (e) {
-      // if (e.toString().contains('connection closed')) {
-      //   // Reconnect and retry
-      //   await initYearsDb(context, "ITM");
-      // }
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "ITM");
+      }
       print("An unexpected error occurred: $e");
+
       // SqlConn.disconnect();
       return [];
     }
@@ -1213,6 +1338,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "CAR", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "CAR");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1418,6 +1547,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "ADDITEM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "ADDITEM");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1484,6 +1617,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "UPDITEM", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "UPDITEM");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1522,6 +1659,10 @@ class Controller extends ChangeNotifier {
       // return false;
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "FINP");
+      }
       // return false;
     }
   }
@@ -1591,6 +1732,10 @@ class Controller extends ChangeNotifier {
       return false;
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "FIN");
+      }
       return false;
     }
   }
@@ -1649,6 +1794,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "VCART", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "VCART");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1695,6 +1844,10 @@ class Controller extends ChangeNotifier {
       await showConnectionDialog(context, "VWKOT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "VWKOT");
+      }
       // SqlConn.disconnect();
       return [];
     }
@@ -1760,9 +1913,13 @@ class Controller extends ChangeNotifier {
       debugPrint("not connected..Kot_status_list..");
       debugPrint(e.toString());
       // Navigator.pop(context);
-      // await showConnectionDialog(context, "VWKOT", e.toString());
+      await showConnectionDialog(context, "VWKOTSTAT", e.toString());
     } catch (e) {
       print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // Reconnect and retry
+        await initYearsDb(context, "VWKOTSTAT");
+      }
       // SqlConn.disconnect();
       return [];
     }

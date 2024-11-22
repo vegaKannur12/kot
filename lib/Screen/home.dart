@@ -38,13 +38,14 @@ class _HomePageState extends State<HomePage> {
       //     .qtyadd();           //tempry adding qty
       Provider.of<Controller>(context, listen: false).getOs();
     });
-    // showAlert() ;
+    showAlert();
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
 
-  showAlert() async {
-    await Provider.of<Controller>(context, listen: false)
-        .startConditionChecker();
+  showAlert() async 
+  {
+    //  await Provider.of<Controller>(context, listen: false).checkCondition();
+    await Provider.of<Controller>(context, listen: false).checkCondition();
     // if (await Provider.of<Controller>(context, listen: false)
     //     .checkCondition()) {
     //   Provider.of<Controller>(context, listen: false)
@@ -577,79 +578,72 @@ class _HomePageState extends State<HomePage> {
                             ),
                             // value.table_catID == 0
                             //     ?
-                                 Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Container(
-                                        // height: 50,
-                                        // width: 250,
-                                        decoration: BoxDecoration(
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Container(
+                                  // height: 50,
+                                  // width: 250,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(23),
+                                    color: Color.fromARGB(241, 235, 236, 236),
+                                  ),
+                                  child: DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(23),
-                                          color: Color.fromARGB(
-                                              241, 235, 236, 236),
                                         ),
-                                        child: DropdownButtonFormField<String>(
-                                          decoration: InputDecoration(
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(23),
-                                              ),
-                                              fillColor: Colors.white,
-                                              filled: true),
-                                          isExpanded: true,
-                                          hint: Text(" Select Table Category"),
-                                          value: value.selectedTableCat,
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              value.selectedTableCat = newValue;
-                                              print(("object"));
-                                              print(
-                                                  ("selected TableCAT==${value.selectedTableCat}"));
-                                              value.selectedItemTablecat = value
-                                                  .tableCategoryList
-                                                  .firstWhere((element) =>
-                                                      element[
-                                                          'Table_Category'] ==
-                                                      newValue);
-                                              print(
-                                                  "${value.selectedItemTablecat!['Table_Category']}");
-                                              Provider.of<Controller>(context,
-                                                      listen: false)
-                                                  .updateTableCAT(context);
-                                            });
-                                          },
-                                          items: value.tableCategoryList
-                                              .map<DropdownMenuItem<String>>(
-                                                  (Map<String, dynamic> item) {
-                                            return DropdownMenuItem<String>(
-                                              value: item['Table_Category'],
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 10, right: 10),
-                                                child: Text(
-                                                    item['Table_Category']),
-                                              ),
-                                            );
-                                          }).toList(),
-                                        )
-                                            .animate()
-                                            .fade(duration: 300.ms)
-                                            .scaleX()),
-                                  )
-                                // : Padding(
-                                //     padding: EdgeInsets.all(15),
-                                //     child: Container(
-                                //       child: Center(
-                                //         child: Text(
-                                //           "${value.table_catNM}",
-                                //           style: TextStyle(
-                                //               color: Colors.white,
-                                //               fontWeight: FontWeight.bold,
-                                //               fontSize: 20),
-                                //         ),
-                                //       ),
-                                //     ),
-                                //   ),
+                                        fillColor: Colors.white,
+                                        filled: true),
+                                    isExpanded: true,
+                                    hint: Text(" Select Table Category"),
+                                    value: value.selectedTableCat,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        value.selectedTableCat = newValue;
+                                        print(("object"));
+                                        print(
+                                            ("selected TableCAT==${value.selectedTableCat}"));
+                                        value.selectedItemTablecat = value
+                                            .tableCategoryList
+                                            .firstWhere((element) =>
+                                                element['Table_Category'] ==
+                                                newValue);
+                                        print(
+                                            "${value.selectedItemTablecat!['Table_Category']}");
+                                        Provider.of<Controller>(context,
+                                                listen: false)
+                                            .updateTableCAT(context);
+                                      });
+                                    },
+                                    items: value.tableCategoryList
+                                        .map<DropdownMenuItem<String>>(
+                                            (Map<String, dynamic> item) {
+                                      return DropdownMenuItem<String>(
+                                        value: item['Table_Category'],
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 10, right: 10),
+                                          child: Text(item['Table_Category']),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ).animate().fade(duration: 300.ms).scaleX()),
+                            )
+                            // : Padding(
+                            //     padding: EdgeInsets.all(15),
+                            //     child: Container(
+                            //       child: Center(
+                            //         child: Text(
+                            //           "${value.table_catNM}",
+                            //           style: TextStyle(
+                            //               color: Colors.white,
+                            //               fontWeight: FontWeight.bold,
+                            //               fontSize: 20),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
                           ],
                         ),
                       )),
@@ -716,8 +710,8 @@ class _HomePageState extends State<HomePage> {
             //                       image: AssetImage("assets/food.jpg"),
             //                       fit: BoxFit.fill),
             color: list["STATUS"] == 1
-                ? Color.fromARGB(255, 230, 167, 167)
-                : Colors.white,
+                ? Color.fromARGB(255, 230, 167, 167) // pending
+                : Colors.white, // free
             border: Border.all(color: Colors.black45),
             borderRadius: BorderRadius.circular(10)),
         child: InkWell(

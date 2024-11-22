@@ -180,13 +180,13 @@ class _KitchenDispState extends State<KitchenDisp> {
                                                       });
                                                       print(
                                                           "alert ${item['Kot_No']}");
-                                                      await Provider.of<
-                                                                  Controller>(
-                                                              context,
-                                                              listen: false)
-                                                          .showReminderNotification(
-                                                              'KOT : ${item['Kot_No']} ',
-                                                              '${item['ITEM']} is prepared..');
+                                                      // await Provider.of<
+                                                      //             Controller>(
+                                                      //         context,
+                                                      //         listen: false)
+                                                      //     .showReminderNotification(
+                                                      //         'KOT : ${item['Kot_No']} ',
+                                                      //         '${item['ITEM']} is prepared..');
                                                     },
                                               child: Text("CALL"),
                                             ).animate()

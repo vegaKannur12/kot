@@ -13,18 +13,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'Screen/authentication/registration.dart';
 
-
 // Key - TBHI34TFLTUY
 // UserName - manu, pwd - 2
+//database -  AV172745
 
 bool isLoggedIn = false;
 bool isRegistered = false;
+
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   isLoggedIn = await checkLogin();
   isRegistered = await checkRegistration();
   requestPermission();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -98,8 +100,7 @@ class MyApp extends StatelessWidget {
         secondaryHeaderColor: Color.fromARGB(255, 237, 231, 232),
       ),
       debugShowCheckedModeBanner: false,
-      home: 
-      SplashScreen(),
+      home: SplashScreen(),
       // LoginPage(),
       // Registration(),
       // const HomePage(),
