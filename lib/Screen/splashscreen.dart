@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // prefs.setString("st_uname", "anu");
     // prefs.setString("st_pwd", "anu");
     final cid = prefs.getString("cid");
-    if (cid != null) {
+    if (cid != null && cid != "" && cid.isNotEmpty) {
       isAuthenticated = true;
     } else {
       isAuthenticated = false;
@@ -67,7 +67,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   {
                     return const DBSelection();
                   }
-                } else {
+                } 
+                else 
+                {
                   return Registration();
                 }
               }));

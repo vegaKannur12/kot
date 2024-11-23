@@ -204,7 +204,8 @@ class _CatTESTState extends State<CatTEST> {
                                     ),
                                     suffixIcon: IconButton(
                                       icon: new Icon(Icons.cancel),
-                                      onPressed: () {
+                                      onPressed: () 
+                                      {
                                         seacrh.clear();
                                         Provider.of<Controller>(context,
                                                 listen: false)
@@ -328,7 +329,7 @@ class _CatTESTState extends State<CatTEST> {
                         child: Stack(
                           children: [
                             Container(
-                              height: size.width >= 420 ? 70:40,
+                              height: size.width >= 420 ? 70 : 40,
                               decoration: BoxDecoration(
                                   color: Color.fromARGB(255, 69, 79, 134),
                                   borderRadius: BorderRadius.only(
@@ -355,7 +356,7 @@ class _CatTESTState extends State<CatTEST> {
                               ),
                             ),
                             Positioned.fill(
-                              top:size.width >= 420 ? 70: 40,
+                              top: size.width >= 420 ? 70 : 40,
                               child: Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -9,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/authentication/registration.dart';
 import 'package:restaurent_kot/Screen/db_selection.dart';
@@ -207,8 +209,32 @@ class Controller extends ChangeNotifier {
     // startConditionChecker();
   }
 
-  void initializeNotifications() {
+  Future<void> initializeNotifications() async {
     print("init notif");
+    bool permissionGranted = false;
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      print("reqst notif permissn");
+      // Handle Android-specific permissions
+      permissionGranted = await requestAndroidNotificationPermission();
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      // iOS permission handling
+      permissionGranted = await flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  IOSFlutterLocalNotificationsPlugin>()
+              ?.requestPermissions(
+                alert: true,
+                badge: true,
+                sound: true,
+              ) ??
+          false;
+    }
+
+    if (!permissionGranted) {
+      print("Notification permissions not granted.");
+      return;
+    }
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
@@ -224,6 +250,18 @@ class Controller extends ChangeNotifier {
         }
       },
     );
+  }
+
+  Future<bool> requestAndroidNotificationPermission() async {
+    print("reqst notif permissn in");
+    if (await Permission.notification.isGranted) {
+      print("reqst notif permissn granted");
+      return true; // Permission already granted
+    } else {
+      final status = await Permission.notification.request();
+      print("reqst notif permissn granting");
+      return status == PermissionStatus.granted;
+    }
   }
 
   handleNotificationClick(String s) async {
@@ -243,8 +281,10 @@ class Controller extends ChangeNotifier {
     }
   }
 
-  showNextNotification() async {
-    if (currentIndex < alertList.length) {
+  showNextNotification() async 
+  {
+    if (currentIndex < alertList.length) 
+    {
       var notification = alertList[currentIndex];
       flutterLocalNotificationsPlugin.show(
         notification["TID"],
@@ -271,12 +311,94 @@ class Controller extends ChangeNotifier {
         payload: notification["TID"].toString(),
       );
       currentIndex++; // Move to the next notification
-    } else {
+    } 
+    else 
+    {
       print("No more notifications to display..check condition again..");
-      await checkCondition();
+      // await checkCondition();
     }
   }
 
+  // Future<bool>
+  checkCondition() async {
+    var res1 = await SqlConn.readData(
+        "SELECT * from [KOT_Notify] WHERE CALL_STATUS=0");
+    print("KOT_Notify res---$res1");
+    if (res1.isNotEmpty) {
+      alertList.clear();
+      currentIndex = 0;
+      notifyListeners();
+      var map = jsonDecode(res1);
+      // alertList = [
+      //   {
+      //     "TID": 28,
+      //     "TDATE": "2024-11-21 00:00:00.0",
+      //     "TTIME": "2024-11-21 11:37:00.0",
+      //     "KOT_ID": null,
+      //     "BILL_TYPE": 1,
+      //     "TABLE_NO": "VGMHD1",
+      //     "SERIES": "",
+      //     "STAFF_ID": "",
+      //     "DESCRIPTION": "Item : SANDWICH PREPARED",
+      //     "CALL_STATUS": 0,
+      //     "USER_ID": 1
+      //   },
+      //    {
+      //     "TID": 24,
+      //     "TDATE": "2024-11-21 00:00:00.0",
+      //     "TTIME": "2024-11-21 11:37:00.0",
+      //     "KOT_ID": null,
+      //     "BILL_TYPE": 1,
+      //     "TABLE_NO": "VGMHD1",
+      //     "SERIES": "",
+      //     "STAFF_ID": "",
+      //     "DESCRIPTION": "Item : ORANGE JUICE PREPARED",
+      //     "CALL_STATUS": 0,
+      //     "USER_ID": 1
+      //   },
+      //    {
+      //     "TID": 25,
+      //     "TDATE": "2024-11-21 00:00:00.0",
+      //     "TTIME": "2024-11-21 11:37:00.0",
+      //     "KOT_ID": null,
+      //     "BILL_TYPE": 1,
+      //     "TABLE_NO": "VGMHD1",
+      //     "SERIES": "",
+      //     "STAFF_ID": "",
+      //     "DESCRIPTION": "Item : ALFAHAM QTR PREPARED",
+      //     "CALL_STATUS": 0,
+      //     "USER_ID": 1
+      //   }, {
+      //     "TID": 26,
+      //     "TDATE": "2024-11-21 00:00:00.0",
+      //     "TTIME": "2024-11-21 11:37:00.0",
+      //     "KOT_ID": null,
+      //     "BILL_TYPE": 1,
+      //     "TABLE_NO": "VGMHD1",
+      //     "SERIES": "",
+      //     "STAFF_ID": "",
+      //     "DESCRIPTION": "Item : BURGER PREPARED",
+      //     "CALL_STATUS": 0,
+      //     "USER_ID": 1
+      //   }
+      // ];
+      if (map != null) {
+        for (var item in map) {
+          alertList.add(item);
+        }
+      }
+      print("alertlist len--${alertList.length}");
+      print("${alertList[0]["TID"].runtimeType}");
+      await showNextNotification();
+      notifyListeners();
+      // return true;
+    } else {
+      // await checkCondition();
+      // return false;
+    }
+    // Implement your logic to check the condition here
+    // Example result, replace with actual condition
+  }
   // startConditionChecker() {
   //   Timer.periodic(Duration(seconds: 60), (timer) async {
   //     bool condition = await checkCondition();
@@ -289,32 +411,6 @@ class Controller extends ChangeNotifier {
   //     }
   //   });
   // }
-
-  Future<bool> checkCondition() async {
-    var res1 = await SqlConn.readData(
-        "SELECT * from [KOT_Notify] WHERE CALL_STATUS=0");
-    print("KOT_Notify res---$res1");
-    if (res1.isNotEmpty) {
-      alertList.clear();
-      currentIndex = 0;
-      notifyListeners();
-      var map = jsonDecode(res1);
-      if (map != null) {
-        for (var item in map) {
-          alertList.add(item);
-        }
-      }
-      print("alertlist len--${alertList.length}");
-      print("${alertList[0]["TID"].runtimeType}");
-      await showNextNotification();
-      notifyListeners();
-      return true;
-    } else {
-      return false;
-    }
-    // Implement your logic to check the condition here
-    // Example result, replace with actual condition
-  }
 
   // showReminderNotification(String dlgTitle, String dlgBodyy) async {
   //   AndroidNotificationDetails androidPlatformChannelSpecifics =

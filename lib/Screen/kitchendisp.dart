@@ -30,137 +30,161 @@ class _KitchenDispState extends State<KitchenDisp> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        centerTitle: true,
-        title: Consumer<Controller>(
-          builder: (BuildContext context, Controller value, Widget? child) =>
-              Text(
-            "KitchenDisplay",
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: Icon(Icons.arrow_back),
+      //     color: Colors.white,
+      //     onPressed: () {
+      //       Navigator.pop(context);
+      //     },
+      //   ),
+      //   centerTitle: true,
+      //   title: Consumer<Controller>(
+      //     builder: (BuildContext context, Controller value, Widget? child) =>
+      //         Text(
+      //       "KitchenDisplay",
 
-            ///value.cartItems.length
-            style: TextStyle(
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        backgroundColor: Color.fromARGB(255, 69, 79, 134),
-      ),
+      //       ///value.cartItems.length
+      //       style: TextStyle(
+      //         fontSize: 19,
+      //         fontWeight: FontWeight.bold,
+      //         color: Colors.white,
+      //       ),
+      //     ),
+      //   ),
+      //   backgroundColor: Color.fromARGB(255, 69, 79, 134),
+      // ),
       body: Consumer<Controller>(builder: (context, value, child) {
-        if (value.isKOTLoading) {
-          return SpinKitCircle(
-            color: Colors.black,
-          );
-        } else if (value.kitchenKotItems.length == 0) {
-          return Container(
-              height: size.height * 0.7,
-              child: Center(
-                  child: Lottie.asset("assets/noitem.json",
-                      height: size.height * 0.3)));
-        } else if (value.isKOTLoading)
-          return Expanded(
-            child: Align(
-              alignment: Alignment.center,
-              child: SpinKitCircle(
-                color: Colors.black,
+        return Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 48, 54, 90),
+                    Colors.indigo,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-            ),
-          );
-        else {
-          // final groupedData = groupByTable(value.kitchenKotItems);
-          return ListView.builder(
-            itemCount: value.groupedData.keys.length,
-            itemBuilder: (context, tableIndex) {
-              final tableNo = value.groupedData.keys.elementAt(tableIndex);
-              final items = value.groupedData[tableNo]!;
-              print("itemssssss= $items");
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Table No Heading
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Table: $tableNo",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Colors.greenAccent,
-                        ),
-                        constraints: BoxConstraints(
-                            minWidth: size.width * 0.2, maxHeight: 50),
-                        child: FittedBox(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors
-                                  .transparent, // Make button background transparent
-                              shadowColor: Colors.transparent,
+              child: Consumer<Controller>(
+                  builder: (context, value, child) => Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 40,
                             ),
-                            onPressed: () {},
-                            child: Text("CALL"),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Items for this table
-                  ...items.map((item) {
-                    return Container(
-                        decoration: BoxDecoration(
-                            border: Border.symmetric(
-                                horizontal: BorderSide(color: Colors.black38))),
-                        child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Column(children: [
-                              SizedBox(
-                                height: size.height * 0.01,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Flexible(
-                                      flex: 3,
-                                      child: Text(
-                                        // "product name",
-                                        "${item['Kot_No']}",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                      )),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                  // Text(
+                                  //   value.os.toString(),
+                                  //   style: TextStyle(
+                                  //     fontWeight: FontWeight.bold,
+                                  //     color: Colors.white,
+                                  //   ),
+                                  // ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
+                                        // Icon(
+                                        //   Icons.calendar_month,
+                                        //   color: Colors.white,
+                                        // ),
+                                        // SizedBox(
+                                        //   width: 5,
+                                        // ),
+                                        Text(
+                                          date.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // value.table_catID == 0
+                            //     ?
+                            Padding(
+                              padding: EdgeInsets.only(top: 20, bottom: 10),
+                              child: Text(
+                                "KITCHEN DISPLAY",
+
+                                ///value.cartItems.length
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
+            ),
+            value.isKOTLoading
+                ? SpinKitCircle(
+                    color: Colors.black,
+                  )
+                : value.kitchenKotItems.length == 0
+                    ? Container(
+                        height: size.height * 0.7,
+                        child: Center(
+                            child: Lottie.asset("assets/noitem.json",
+                                height: size.height * 0.3)))
+                    : value.isKOTLoading
+                        ? Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: SpinKitCircle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: ListView.builder(
+                              itemCount: value.groupedData.keys.length,
+                              itemBuilder: (context, tableIndex) {
+                                final tableNo = value.groupedData.keys
+                                    .elementAt(tableIndex);
+                                final items = value.groupedData[tableNo]!;
+                                print("itemssssss= $items");
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Table No Heading
+
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Table: $tableNo",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blue),
+                                          ),
+                                        ),
                                         Container(
                                           decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(25),
-                                              color: item['isCallDisabled']
-                                                  ? Color.fromARGB(
-                                                      255, 91, 94, 90)
-                                                  : Colors.green),
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            color: Colors.greenAccent,
+                                          ),
                                           constraints: BoxConstraints(
                                               minWidth: size.width * 0.2,
                                               maxHeight: 50),
@@ -171,98 +195,211 @@ class _KitchenDispState extends State<KitchenDisp> {
                                                     .transparent, // Make button background transparent
                                                 shadowColor: Colors.transparent,
                                               ),
-                                              onPressed: item['isCallDisabled']
-                                                  ? null // Disable the button if true
-                                                  : () async {
-                                                      setState(() {
-                                                        item['isCallDisabled'] =
-                                                            true; // Disable button
-                                                      });
-                                                      print(
-                                                          "alert ${item['Kot_No']}");
-                                                      // await Provider.of<
-                                                      //             Controller>(
-                                                      //         context,
-                                                      //         listen: false)
-                                                      //     .showReminderNotification(
-                                                      //         'KOT : ${item['Kot_No']} ',
-                                                      //         '${item['ITEM']} is prepared..');
-                                                    },
-                                              child: Text("CALL"),
-                                            ).animate()
-                                                .fade(duration: 300.ms)
-                                                .scale(),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            color: Color.fromARGB(
-                                                255, 243, 225, 170),
-                                          ),
-                                          constraints: BoxConstraints(
-                                            minWidth: size.width * 0.2,
-                                            maxHeight: 50,
-                                          ),
-                                          child: FittedBox(
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors
-                                                    .transparent, // Make button background transparent
-                                                shadowColor: Colors.transparent,
-                                              ),
                                               onPressed: () {},
-                                              child: Text("COOKED"),
-                                            )
-                                                .animate()
-                                                .fade(duration: 300.ms)
-                                                .scale(),
+                                              child: Text("CALL"),
+                                            ),
                                           ),
-                                        ),
-                                      ]),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          // "product name",
-                                          "${item['ITEM']}   ( ${item['qty']} )",
-                                          style: TextStyle(
-                                              fontSize: 17,
-                                              // fontWeight: FontWeight.bold,
-                                              color: const Color.fromARGB(
-                                                  255, 2, 131, 236)),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  // Flexible(
-                                  //     child: Text(
-                                  //   // "product name",
-                                  //   "( ${item['qty']} )",
-                                  //   style: TextStyle(
-                                  //       fontSize: 17,
-                                  //       // fontWeight: FontWeight.bold,
-                                  //       color: const Color.fromARGB(
-                                  //           255, 2, 131, 236)),
-                                  // )),
-                                ],
-                              ),
-                            ])));
-                  }),
-                ],
-              );
-            },
-          );
-        }
+                                    // Items for this table
+                                    ...items.map((item) {
+                                      return Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.symmetric(
+                                                  horizontal: BorderSide(
+                                                      color: Colors.black38))),
+                                          child: Padding(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Column(children: [
+                                                SizedBox(
+                                                  height: size.height * 0.01,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Flexible(
+                                                        flex: 3,
+                                                        child: Text(
+                                                          // "product name",
+                                                          "${item['Kot_No']}",
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.black),
+                                                        )),
+                                                    Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            25),
+                                                                color: item[
+                                                                        'isCallDisabled']
+                                                                    ? Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            91,
+                                                                            94,
+                                                                            90)
+                                                                    : Colors
+                                                                        .green),
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                    minWidth:
+                                                                        size.width *
+                                                                            0.2,
+                                                                    maxHeight:
+                                                                        50),
+                                                            child: FittedBox(
+                                                              child:
+                                                                  ElevatedButton(
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent, // Make button background transparent
+                                                                  shadowColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                ),
+                                                                onPressed: item[
+                                                                        'isCallDisabled']
+                                                                    ? null // Disable the button if true
+                                                                    : () async {
+                                                                        setState(
+                                                                            () {
+                                                                          item['isCallDisabled'] =
+                                                                              true; // Disable button
+                                                                        });
+                                                                        print(
+                                                                            "alert ${item['Kot_No']}");
+                                                                        // await Provider.of<
+                                                                        //             Controller>(
+                                                                        //         context,
+                                                                        //         listen: false)
+                                                                        //     .showReminderNotification(
+                                                                        //         'KOT : ${item['Kot_No']} ',
+                                                                        //         '${item['ITEM']} is prepared..');
+                                                                      },
+                                                                child: Text(
+                                                                    "CALL"),
+                                                              )
+                                                                      .animate()
+                                                                      .fade(
+                                                                          duration:
+                                                                              300.ms)
+                                                                      .scale(),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25),
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      243,
+                                                                      225,
+                                                                      170),
+                                                            ),
+                                                            constraints:
+                                                                BoxConstraints(
+                                                              minWidth:
+                                                                  size.width *
+                                                                      0.2,
+                                                              maxHeight: 50,
+                                                            ),
+                                                            child: FittedBox(
+                                                              child:
+                                                                  ElevatedButton(
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent, // Make button background transparent
+                                                                  shadowColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                ),
+                                                                onPressed:
+                                                                    () {},
+                                                                child: Text(
+                                                                    "COOKED"),
+                                                              )
+                                                                      .animate()
+                                                                      .fade(
+                                                                          duration:
+                                                                              300.ms)
+                                                                      .scale(),
+                                                            ),
+                                                          ),
+                                                        ]),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            // "product name",
+                                                            "${item['ITEM']}   ( ${item['qty']} )",
+                                                            style: TextStyle(
+                                                                fontSize: 17,
+                                                                // fontWeight: FontWeight.bold,
+                                                                color: const Color
+                                                                    .fromARGB(
+                                                                    255,
+                                                                    2,
+                                                                    131,
+                                                                    236)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    // Flexible(
+                                                    //     child: Text(
+                                                    //   // "product name",
+                                                    //   "( ${item['qty']} )",
+                                                    //   style: TextStyle(
+                                                    //       fontSize: 17,
+                                                    //       // fontWeight: FontWeight.bold,
+                                                    //       color: const Color.fromARGB(
+                                                    //           255, 2, 131, 236)),
+                                                    // )),
+                                                  ],
+                                                ),
+                                              ])));
+                                    }),
+                                    SizedBox(
+                                      height: 12,
+                                    ),
+                                  ],
+                                );
+                              },                           
+                            ),
+                          )
+          ],
+        );
       }),
     );
   }

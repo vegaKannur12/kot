@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -26,24 +28,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? date;
-
+  Timer? timer;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<Controller>(context, listen: false).getTableList(context);
-      Provider.of<Controller>(context, listen: false).getRoomList(context);
-      // Provider.of<Controller>(context, listen: false)
-      //     .qtyadd();           //tempry adding qty
+      if (Provider.of<Controller>(context, listen: false).settingsList[1]
+              ["SVALUE"] ==
+          "YES") {
+        Provider.of<Controller>(context, listen: false).getRoomList(context);
+      }
+
       Provider.of<Controller>(context, listen: false).getOs();
     });
-    showAlert();
+    // showAlert();
+    int timerval = Provider.of<Controller>(context, listen: false)
+        .settingsList[2]["SVALUE"];
+
+    print("Timer val == $timerval");
+    timer = Timer.periodic(Duration(seconds: timerval), (Timer t) {
+      showAlert();
+    });
     date = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   }
 
-  showAlert() async 
-  {
+  showAlert() async {
     //  await Provider.of<Controller>(context, listen: false).checkCondition();
     await Provider.of<Controller>(context, listen: false).checkCondition();
     // if (await Provider.of<Controller>(context, listen: false)
@@ -150,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                     (BuildContext context, Controller value, Widget? child) {
                   return Container(
                     height:
-                        value.settingsList[0]["SVALUE"] == "YES" ? 170 : 110,
+                        value.settingsList[1]["SVALUE"] == "YES" ? 170 : 110,
                     decoration: BoxDecoration(
                       // color: Color.fromARGB(255, 111, 128, 228),
                       color: Color.fromARGB(255, 204, 208, 231),
@@ -163,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        value.settingsList[0]["SVALUE"] == "YES"
+                        value.settingsList[1]["SVALUE"] == "YES"
                             ? Container(
                                 height: 65,
                                 decoration: BoxDecoration(
@@ -187,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            value.settingsList[0]["SVALUE"] == "YES"
+                            value.settingsList[1]["SVALUE"] == "YES"
                                 ? Container(
                                     margin: EdgeInsets.only(bottom: 10),
                                     decoration: BoxDecoration(
@@ -542,28 +553,28 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         IconButton.filled(
                                           onPressed: () {
-                                            Provider.of<Controller>(context,
-                                                    listen: false)
-                                                .viewKot(context, date!);
-
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ViewKot()),
-                                            );
-
                                             // Provider.of<Controller>(context,
                                             //         listen: false)
-                                            //     .kitchenDisplayData(
-                                            //         context, date!);
+                                            //     .viewKot(context, date!);
 
                                             // Navigator.push(
                                             //   context,
                                             //   MaterialPageRoute(
                                             //       builder: (context) =>
-                                            //           KitchenDisp()),
+                                            //           ViewKot()),
                                             // );
+
+                                            Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .kitchenDisplayData(
+                                                    context, date!);
+
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      KitchenDisp()),
+                                            );
                                           },
                                           icon: Icon(
                                             Icons.shopping_bag,
