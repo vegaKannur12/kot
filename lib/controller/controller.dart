@@ -281,10 +281,8 @@ class Controller extends ChangeNotifier {
     }
   }
 
-  showNextNotification() async 
-  {
-    if (currentIndex < alertList.length) 
-    {
+  showNextNotification() async {
+    if (currentIndex < alertList.length) {
       var notification = alertList[currentIndex];
       flutterLocalNotificationsPlugin.show(
         notification["TID"],
@@ -311,9 +309,7 @@ class Controller extends ChangeNotifier {
         payload: notification["TID"].toString(),
       );
       currentIndex++; // Move to the next notification
-    } 
-    else 
-    {
+    } else {
       print("No more notifications to display..check condition again..");
       // await checkCondition();
     }
@@ -324,7 +320,8 @@ class Controller extends ChangeNotifier {
     var res1 = await SqlConn.readData(
         "SELECT * from [KOT_Notify] WHERE CALL_STATUS=0");
     print("KOT_Notify res---$res1");
-    if (res1.isNotEmpty) {
+    if (res1.isNotEmpty) 
+    {
       alertList.clear();
       currentIndex = 0;
       notifyListeners();
@@ -382,20 +379,24 @@ class Controller extends ChangeNotifier {
       //     "USER_ID": 1
       //   }
       // ];
-      if (map != null) {
-        for (var item in map) {
+      if (map != null) 
+      {
+        for (var item in map) 
+        {
           alertList.add(item);
         }
+        print("alertlist len--${alertList.length}");
+        // print("${alertList[0]["TID"].runtimeType}");
+        await showNextNotification();
       }
-      print("alertlist len--${alertList.length}");
-      print("${alertList[0]["TID"].runtimeType}");
-      await showNextNotification();
       notifyListeners();
       // return true;
-    } else {
-      // await checkCondition();
-      // return false;
     }
+    // else
+    // {
+    // await checkCondition();
+    // return false;
+    // }
     // Implement your logic to check the condition here
     // Example result, replace with actual condition
   }

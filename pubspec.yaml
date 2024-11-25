@@ -3,7 +3,6 @@ description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -46,7 +45,7 @@ dependencies:
   dropdown_search: ^5.0.6
   intl: ^0.18.1
   fluttertoast: ^8.2.2
-  sql_conn: 
+  sql_conn:
     path: C:/Users/PHP SERVER/Downloads/sql_conn-master/sql_conn-master
   device_info_plus: ^4.1.2
   sqflite: ^2.0.3+1
@@ -57,10 +56,9 @@ dependencies:
   animated_splash_screen: ^1.3.0
   flutter_esc_pos_network: ^1.0.2
   azlistview: ^2.0.0
-  flutter_local_notifications: ^17.0.0 
+  flutter_local_notifications: ^17.0.0
   assets_audio_player: ^3.0.5
   flutter_animate: ^4.5.0
-  
 
 dev_dependencies:
   flutter_test:

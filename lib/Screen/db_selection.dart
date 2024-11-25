@@ -332,10 +332,12 @@ class _DBSelectionState extends State<DBSelection>
                               ),
                             ],
                           ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 25,right: 25),
-                              child: Divider(color: Colors.indigo,),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25, right: 25),
+                            child: Divider(
+                              color: Colors.indigo,
                             ),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
@@ -397,54 +399,58 @@ class _DBSelectionState extends State<DBSelection>
                                                 BorderRadius.circular(30),
                                           ),
                                           child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors
-                                                    .transparent, // Make button background transparent
-                                                shadowColor: Colors.transparent,
-                                              ),
-                                              onPressed: () async {
-                                                SharedPreferences prefs =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                prefs.setString(
-                                                    "db_name",
-                                                    value.db_list[index]
-                                                            ["Data_Name"]
-                                                        .toString());
-                                                prefs.setString(
-                                                    "yr_name",
-                                                    value.db_list[index]
-                                                            ["Year_Name"]
-                                                        .toString());
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors
+                                                  .transparent, // Make button background transparent
+                                              shadowColor: Colors.transparent,
+                                            ),
+                                            onPressed: () async {
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              prefs.setString(
+                                                  "db_name",
+                                                  value.db_list[index]
+                                                          ["Data_Name"]
+                                                      .toString());
+                                              prefs.setString(
+                                                  "yr_name",
+                                                  value.db_list[index]
+                                                          ["Year_Name"]
+                                                      .toString());
 
-                                                await Provider.of<Controller>(
-                                                        context,
-                                                        listen: false)
-                                                    .initYearsDb(context, "");
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getLogin(context);
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    // .getSettings(
-                                                    //     context, "ENB_ROOM_CR");
-                                                .getSettings(context,"");
-                                                Provider.of<Controller>(context,
-                                                        listen: false)
-                                                    .getTableCtegory(context);
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          LoginPage()),
-                                                );
-                                              },
-                                              child: Text(
-                                                "Connect",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              )).animate().fade(duration: 300.ms).scale(),
+                                              await Provider.of<Controller>(
+                                                      context,
+                                                      listen: false)
+                                                  .initYearsDb(context, "");
+                                              Provider.of<Controller>(context,
+                                                      listen: false)
+                                                  .getLogin(context);
+                                              Provider.of<Controller>(context,
+                                                      listen: false)
+                                                  // .getSettings(
+                                                  //     context, "ENB_ROOM_CR");
+                                                  .getSettings(context, "");
+                                              Provider.of<Controller>(context,
+                                                      listen: false)
+                                                  .getTableCtegory(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LoginPage()),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Connect",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          )
+                                              .animate()
+                                              .fade(duration: 300.ms)
+                                              .scale(),
                                         ),
                                         title: Text(
                                           value.db_list[index]["Year_Name"]

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -40,13 +39,11 @@ class _HomePageState extends State<HomePage> {
           "YES") {
         Provider.of<Controller>(context, listen: false).getRoomList(context);
       }
-
       Provider.of<Controller>(context, listen: false).getOs();
     });
     // showAlert();
     int timerval = Provider.of<Controller>(context, listen: false)
         .settingsList[2]["SVALUE"];
-
     print("Timer val == $timerval");
     timer = Timer.periodic(Duration(seconds: timerval), (Timer t) {
       showAlert();
@@ -71,7 +68,6 @@ class _HomePageState extends State<HomePage> {
     Size size = MediaQuery.of(context).size;
     print("width===${size.width}");
     print("height===${size.height}");
-
     return WillPopScope(
       onWillPop: () => _onBackPressed(context),
       child: Scaffold(
@@ -553,28 +549,28 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         IconButton.filled(
                                           onPressed: () {
-                                            // Provider.of<Controller>(context,
-                                            //         listen: false)
-                                            //     .viewKot(context, date!);
-
-                                            // Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) =>
-                                            //           ViewKot()),
-                                            // );
-
                                             Provider.of<Controller>(context,
                                                     listen: false)
-                                                .kitchenDisplayData(
-                                                    context, date!);
+                                                .viewKot(context, date!);
 
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      KitchenDisp()),
+                                                      ViewKot()),
                                             );
+
+                                            // Provider.of<Controller>(context,
+                                            //         listen: false)
+                                            //     .kitchenDisplayData(
+                                            //         context, date!);
+
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           KitchenDisp()),
+                                            // );
                                           },
                                           icon: Icon(
                                             Icons.shopping_bag,

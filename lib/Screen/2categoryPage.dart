@@ -203,7 +203,7 @@ class _CatTESTState extends State<CatTEST> {
                                       color: Colors.black,
                                     ),
                                     suffixIcon: IconButton(
-                                      icon: new Icon(Icons.cancel),
+                                      icon:  const Icon(Icons.cancel),
                                       onPressed: () 
                                       {
                                         seacrh.clear();
