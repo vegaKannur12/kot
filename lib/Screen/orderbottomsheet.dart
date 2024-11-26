@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -16,6 +15,7 @@ class OrderBottomSheet {
     BuildContext context,
     Size size,
     int index,
+    String shorrate,
     // TextEditingController dec_ctrl,
     String? date,
   ) async {
@@ -23,7 +23,7 @@ class OrderBottomSheet {
         isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          print("param---$index--");
+          print("param---$index--$shorrate");
 
           return Consumer<Controller>(
             builder: (context, value, child) {
@@ -86,7 +86,8 @@ class OrderBottomSheet {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "\u{20B9} ${list[index]["SRATE"].toStringAsFixed(2)}",
+                                      "\u{20B9} $shorrate",
+                                      // "\u{20B9} ${list[index]["SRATE"].toStringAsFixed(2)}",
                                       style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold),
@@ -911,7 +912,7 @@ class OrderBottomSheet {
                                                     // desss,
                                                     // dec_ctrl.text,
                                                     // value.descr[index].text,
-                                                    index,
+                                                    index, shorrate,
                                                     "from itempage",
                                                     0,
                                                   );

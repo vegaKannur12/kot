@@ -6,12 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/home.dart';
-import 'package:restaurent_kot/Screen/itemlistpage.dart';
-import 'package:restaurent_kot/Screen/itemwidget.dart';
 import 'package:restaurent_kot/Screen/orderbottomsheet.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CatTEST extends StatefulWidget {
   String? tablId;
@@ -57,64 +54,65 @@ class _CatTESTState extends State<CatTEST> {
       child: Scaffold(
           backgroundColor: Colors.white,
           floatingActionButton: FloatingActionButton(
-              backgroundColor: Color.fromARGB(255, 48, 54, 90),
-              onPressed: () async {
-                await Provider.of<Controller>(context, listen: false)
-                    .viewCart(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CartBag()),
-                ).then((value) {
-                  // This code runs when returning from the NextScreen
-                  // You can put your refresh logic here
-                  setState(() {
-                    Provider.of<Controller>(context, listen: false)
-                        .getItemList(context);
-                    Provider.of<Controller>(context, listen: false)
-                        .viewCart(context);
-                    // Update data or perform actions to refresh the page
-                  });
+            backgroundColor: Color.fromARGB(255, 48, 54, 90),
+            onPressed: () async {
+              await Provider.of<Controller>(context, listen: false)
+                  .viewCart(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartBag()),
+              ).then((value) {
+                // This code runs when returning from the NextScreen
+                // You can put your refresh logic here
+                setState(() {
+                  Provider.of<Controller>(context, listen: false)
+                      .getItemList(context);
+                  Provider.of<Controller>(context, listen: false)
+                      .viewCart(context);
+                  // Update data or perform actions to refresh the page
                 });
-                // Navigator.of(context).push(
-                //   PageRouteBuilder(
-                //       opaque: false, // set to false
-                //       pageBuilder: (_, __, ___) => CartBag()),
-                // );
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => CartBag()),
-                // );
-              },
-              child: Consumer<Controller>(
-                  builder: (context, value, child) => Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: badges.Badge(
-                          badgeStyle:
-                              badges.BadgeStyle(badgeColor: Colors.black),
-                          position:
-                              badges.BadgePosition.topEnd(top: -14, end: -15),
-                          showBadge: true,
-                          badgeContent: Text(
-                            value.cartTotal.toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          child: Icon(Icons.shopping_cart, color: Colors.white),
-                        ),
-                      ))),
+              });
+              // Navigator.of(context).push(
+              //   PageRouteBuilder(
+              //       opaque: false, // set to false
+              //       pageBuilder: (_, __, ___) => CartBag()),
+              // );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => CartBag()),
+              // );
+            },
+            child: Consumer<Controller>(
+              builder: (context, value, child) => Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: badges.Badge(
+                  badgeStyle: badges.BadgeStyle(badgeColor: Colors.black),
+                  position: badges.BadgePosition.topEnd(top: -14, end: -15),
+                  showBadge: true,
+                  badgeContent: Text(
+                    value.cartTotal.toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  child: Icon(Icons.shopping_cart, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
           appBar: AppBar(
             leading: IconButton(
-                onPressed: () {
-                  // Provider.of<Controller>(context, listen: false).viewCart(
-                  //   context,
-                  //   value.customerId.toString(),
-                  // );
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                )),
+              onPressed: () {
+                // Provider.of<Controller>(context, listen: false).viewCart(
+                //   context,
+                //   value.customerId.toString(),
+                // );
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
             // backgroundColor: Color.fromARGB(255, 139, 200, 228),
             backgroundColor: Color.fromARGB(255, 69, 79, 134),
             // Theme.of(context).primaryColor,
@@ -165,7 +163,7 @@ class _CatTESTState extends State<CatTEST> {
                           )
                         : Column(
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               // Container(
@@ -185,7 +183,8 @@ class _CatTESTState extends State<CatTEST> {
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  color: Color.fromARGB(241, 235, 236, 236),
+                                  color:
+                                      const Color.fromARGB(241, 235, 236, 236),
                                 ),
                                 child: TextFormField(
                                   controller: seacrh,
@@ -198,14 +197,13 @@ class _CatTESTState extends State<CatTEST> {
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
-                                    prefixIcon: Icon(
+                                    prefixIcon: const Icon(
                                       Icons.search,
                                       color: Colors.black,
                                     ),
                                     suffixIcon: IconButton(
-                                      icon:  const Icon(Icons.cancel),
-                                      onPressed: () 
-                                      {
+                                      icon: const Icon(Icons.cancel),
+                                      onPressed: () {
                                         seacrh.clear();
                                         Provider.of<Controller>(context,
                                                 listen: false)
@@ -215,8 +213,8 @@ class _CatTESTState extends State<CatTEST> {
                                     // contentPadding: const EdgeInsets.symmetric(
                                     //     horizontal: 5, vertical: 0),
                                     border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.black38),
+                                      borderSide: const BorderSide(
+                                          color: Colors.black38),
                                       borderRadius: BorderRadius.circular(23),
                                     ),
                                     // border: OutlineInputBorder(
@@ -284,10 +282,10 @@ class _CatTESTState extends State<CatTEST> {
                       crossAxisCount: 1,
                       crossAxisSpacing: 12,
                       childAspectRatio: 1.4,
-                      mainAxisSpacing: 12),
+                      mainAxisSpacing: 8),
                   itemBuilder: (context, index) {
                     bool isSelected = selectedIndex == index;
-                    return InkWell(
+                    return GestureDetector(
                       onTap: () async {
                         setState(() {
                           selectedIndex = index;
@@ -309,22 +307,39 @@ class _CatTESTState extends State<CatTEST> {
                             .getItemList(context);
                       },
                       child: AnimatedContainer(
+                        //AnimatedSwitcher
+                        width: isSelected ? 200 : 100,
+                        height: isSelected ? 200 : 100,
                         // height: size.width >= 420 ? 150:120,
                         duration: Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.amber,
+                          // borderRadius: BorderRadius.circular(10),
+
+                          borderRadius:
+                              BorderRadius.circular(isSelected ? 50 : 10),
+                          //           color: isSelected
+                          // ? Color.fromARGB(255, 255, 230, 128) // Highlighted color
+                          // : Colors.white, // Default background color
+                          color: isSelected
+                              ? Color.fromARGB(
+                                  255, 255, 230, 128) // Highlighted color
+                              : Colors.white, // Default background color
                           boxShadow: isSelected
                               ? [
                                   BoxShadow(
-                                    color: Color.fromARGB(255, 56, 35, 33)
-                                        .withOpacity(0.5),
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
+                                    color: Color.fromARGB(255, 232, 250, 72),
+                                    blurRadius: 15,
+                                    spreadRadius: 5,
                                   )
                                 ]
-                              : [],
+                              : [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  )
+                                ],
                         ),
                         child: Stack(
                           children: [
@@ -341,7 +356,7 @@ class _CatTESTState extends State<CatTEST> {
                                   padding: EdgeInsets.only(
                                       top: 2, bottom: 2, left: 5),
                                   child: Text(
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     list[index]["Cat_Name"]
                                         .toString()
                                         .trimLeft()
@@ -386,8 +401,8 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
     // OrderBottomSheet cocosheet, String date
     ) {
   OrderBottomSheet cocosheet = OrderBottomSheet();
-  return Consumer<Controller>(
-    builder: (context, value, child) => Expanded(
+  return Consumer<Controller>(builder: (context, value, child) {
+    return Expanded(
         child: list.length == 0
             ? Container(
                 height: size.height * 0.7,
@@ -403,6 +418,14 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
                 minItemsPerRow: 1,
                 // maxItemsPerRow: 2,
                 children: List.generate(list.length, (index) {
+                  String showrate;
+                  value.table_rateID == 5
+                      ? showrate = list[index]["SRATE"].toStringAsFixed(2)
+                      : value.table_rateID == 6
+                          ?
+                          //  showrate ="50.0"
+                          showrate = list[index]["SRATE1"].toStringAsFixed(2)
+                          : showrate = list[index]["SRATE2"].toStringAsFixed(2);
                   return Container(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -413,7 +436,7 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
                           selectedTileColor: Colors.redAccent,
                           onTap: () {
                             cocosheet.showorderMoadlBottomsheet(
-                                list, context, size, index, date);
+                                list, context, size, index, showrate, date);
                           },
                           contentPadding: EdgeInsets.only(left: 8.0, right: 0),
                           title: Text(
@@ -427,7 +450,8 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
                                 color: const Color.fromARGB(255, 3, 100, 180)),
                           ),
                           subtitle: Text(
-                            "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
+                            "\u{20B9}$showrate",
+                            // "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
@@ -436,8 +460,8 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
                       ],
                     ),
                   );
-                }))),
-  );
+                })));
+  });
 }
 
 Future<bool> _handleBackPressed(BuildContext context) async {

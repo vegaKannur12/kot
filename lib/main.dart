@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
@@ -17,19 +15,19 @@ import 'Screen/authentication/registration.dart';
 // Key - TBHI34TFLTUY
 // UserName - manu, pwd - 2
 //database -  AV172745
-
 bool isLoggedIn = false;
 bool isRegistered = false;
 
-Future<void> main() async 
-{
+Future<void> main() async {
+
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   isLoggedIn = await checkLogin();
   isRegistered = await checkRegistration();
   requestPermission();
 
-  SystemChrome.setPreferredOrientations([
+  SystemChrome.setPreferredOrientations(
+    [
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
     DeviceOrientation.landscapeLeft,
@@ -60,8 +58,7 @@ checkRegistration() async {
   return isAuthenticated;
 }
 
-checkLogin() async 
-{
+checkLogin() async {
   bool isAuthenticated = false;
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final stUname = prefs.getString("st_uname");
@@ -89,7 +86,6 @@ void requestPermission() async {
     await Permission.manageExternalStorage.request();
   }
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

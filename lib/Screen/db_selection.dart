@@ -1,15 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
-import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/components/popup_unreg.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sql_conn/sql_conn.dart';
 
 class DBSelection extends StatefulWidget {
   const DBSelection({super.key});

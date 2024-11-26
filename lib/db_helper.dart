@@ -1,7 +1,6 @@
 
 import 'package:path/path.dart';
 import 'package:restaurent_kot/model/registration_model.dart';
-
 import 'package:sqflite/sqflite.dart';
 
 class KOT {
@@ -264,7 +263,8 @@ class KOT {
   }
 
   /////////////////////////////////////////////////////////////
-  getListOfTables() async {
+  getListOfTables() async 
+  {
     Database db = await instance.database;
     var list = await db.query('sqlite_master', columns: ['type', 'name']);
     print(list);
@@ -275,7 +275,8 @@ class KOT {
     // });
   }
 
-  getTableData(String tablename) async {
+  getTableData(String tablename) async 
+  {
     Database db = await instance.database;
     print(tablename);
     var list = await db.rawQuery('SELECT * FROM $tablename');

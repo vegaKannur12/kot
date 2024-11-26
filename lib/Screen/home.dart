@@ -5,16 +5,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent_kot/Screen/cartpage.dart';
-import 'package:restaurent_kot/Screen/categorypage.dart';
 import 'package:restaurent_kot/Screen/2categoryPage.dart';
-import 'package:restaurent_kot/Screen/kitchendisp.dart';
 import 'package:restaurent_kot/Screen/viewkot.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
-import 'package:restaurent_kot/components/sizeScaling.dart';
 import 'package:restaurent_kot/controller/controller.dart';
-import 'package:restaurent_kot/db_helper.dart';
-import 'package:restaurent_kot/tableList.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -180,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Table ${value.tablname.toString().trimLeft().toUpperCase()}",
+                                      value.tablname.toString().trimLeft().toUpperCase(),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -371,7 +365,7 @@ class _HomePageState extends State<HomePage> {
                                   )
                                 : Container(
                                     margin: EdgeInsets.only(bottom: 10),
-                                    padding: EdgeInsets.all(7),
+                                    padding: EdgeInsets.only(left: 10,top: 10,bottom: 10,right: 15),
                                     decoration: BoxDecoration(
                                       color: Color.fromARGB(255, 69, 79, 134),
                                     ),
@@ -380,7 +374,7 @@ class _HomePageState extends State<HomePage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "Table ${value.tablname.toString().trimLeft().toUpperCase()}",
+                                          "${value.tablname.toString().trimLeft().toUpperCase()}",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -610,7 +604,7 @@ class _HomePageState extends State<HomePage> {
                                         value.selectedTableCat = newValue;
                                         print(("object"));
                                         print(
-                                            ("selected TableCAT==${value.selectedTableCat}"));
+                                            ("selected TableCAT== ${value.selectedTableCat}"));
                                         value.selectedItemTablecat = value
                                             .tableCategoryList
                                             .firstWhere((element) =>

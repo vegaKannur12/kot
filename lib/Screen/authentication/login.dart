@@ -7,8 +7,6 @@ import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/popup_unreg.dart';
 import 'package:restaurent_kot/components/textfldCommon.dart';
 import 'package:restaurent_kot/controller/controller.dart';
-import 'package:restaurent_kot/model/login_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
 class LoginPage extends StatefulWidget {

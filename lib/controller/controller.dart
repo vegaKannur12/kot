@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,14 +12,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/authentication/registration.dart';
 import 'package:restaurent_kot/Screen/db_selection.dart';
-import 'package:restaurent_kot/Screen/home.dart';
-import 'package:restaurent_kot/Screen/kitchendisp.dart';
 import 'package:restaurent_kot/components/c_errorDialog.dart';
 import 'package:restaurent_kot/components/custom_snackbar.dart';
 import 'package:restaurent_kot/components/external_dir.dart';
 import 'package:restaurent_kot/db_helper.dart';
-import 'package:restaurent_kot/model/customer_model.dart';
-import 'package:restaurent_kot/model/login_model.dart';
 import 'package:restaurent_kot/model/registration_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sql_conn/sql_conn.dart';
@@ -62,6 +56,8 @@ class Controller extends ChangeNotifier {
   String? os;
   int? table_catID;
   String? table_catNM;
+  int? table_rateID;
+  int? table_adrscollect;
   int? cartNum;
   String? cName;
   List<Widget> calendarWidget = [];
@@ -320,8 +316,7 @@ class Controller extends ChangeNotifier {
     var res1 = await SqlConn.readData(
         "SELECT * from [KOT_Notify] WHERE CALL_STATUS=0");
     print("KOT_Notify res---$res1");
-    if (res1.isNotEmpty) 
-    {
+    if (res1.isNotEmpty) {
       alertList.clear();
       currentIndex = 0;
       notifyListeners();
@@ -379,10 +374,8 @@ class Controller extends ChangeNotifier {
       //     "USER_ID": 1
       //   }
       // ];
-      if (map != null) 
-      {
-        for (var item in map) 
-        {
+      if (map != null) {
+        for (var item in map) {
           alertList.add(item);
         }
         print("alertlist len--${alertList.length}");
@@ -884,36 +877,15 @@ class Controller extends ChangeNotifier {
           // databaseName: "epulze",
           // username: "sa",
           // password: "1"
-
           );
       debugPrint("Connected!");
       Navigator.pop(context);
-      // getDatabasename(context, type);
     } catch (e) {
       debugPrint(e.toString());
       debugPrint("not connected..initDB..");
       Navigator.pop(context);
       await showINITConnectionDialog(context, "INDB", e.toString());
-      //   showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return AlertDialog(
-      //       title: Text("Connection Failed"),
-      //       content: Text("Failed to connect to the database. Please check your settings and try again."),
-      //       actions: [
-      //         TextButton(
-      //           onPressed: () {
-      //             Navigator.of(context).pop();
-      //           },
-      //           child: Text("OK"),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
-    } finally {
-      // Navigator.pop(context);
-    }
+    } finally {}
   }
 
 ///////////////////////////////////////////////
@@ -1048,7 +1020,12 @@ class Controller extends ChangeNotifier {
   getTableCtegory(BuildContext context) async {
     try {
       tableCategoryList.clear();
-      tableCategoryList.add({"cate_id": 0, "Table_Category": "ALL"});
+      tableCategoryList.add({
+        "cate_id": 0,
+        "Table_Category": "ALL",
+        "Rateid": 5,
+        "CollectAddress": 0
+      });
       notifyListeners();
       var res = await SqlConn.readData("Kot_Table_Category");
       var valueMap = json.decode(res);
@@ -1056,10 +1033,11 @@ class Controller extends ChangeNotifier {
       if (valueMap != null) {
         // LoginModel logModel = LoginModel.fromJson(valueMap);
 
-        for (var item in valueMap) {
-          tableCategoryList.add(item);
-          notifyListeners();
-        }
+        // for (var item in valueMap) {
+        //   tableCategoryListc(item);
+        //   notifyListeners();
+        // }
+        tableCategoryList.add( {"cate_id": 8, "Table_Category": "TABLE", "Rateid": 6, "CollectAddress": 0});
         selectedTableCat = tableCategoryList[0]["Table_Category"];
         notifyListeners();
         print("Table_CategoryList----$tableCategoryList");
@@ -1301,7 +1279,18 @@ class Controller extends ChangeNotifier {
           catlist.add(item);
         }
       }
-      // catlist=[{"Cat_Id":"VGMHD1", "Cat_Name":"food"},{"Cat_Id":"VGMHD2", "Cat_Name":"food1"},{"Cat_Id":"VGMHD3", "Cat_Name":"food2"},{"Cat_Id":"VGMHD4", "Cat_Name":"food3"}];
+      // catlist = [
+      //   {"Cat_Id": "VGMHD1", "Cat_Name": "food"},
+      //   {"Cat_Id": "VGMHD2", "Cat_Name": "food1"},
+      //   {"Cat_Id": "VGMHD3", "Cat_Name": "food2"},
+      //   {"Cat_Id": "VGMHD4", "Cat_Name": "food3"},
+      //   {"Cat_Id": "VGMHD11", "Cat_Name": "hjgtjfgj"},
+      //   {"Cat_Id": "VGMHD99", "Cat_Name": "hfghfghfdgdfg"},
+      //   {"Cat_Id": "VGMHD8", "Cat_Name": "hjgtjfgj"},
+      //   {"Cat_Id": "VGMHD19", "Cat_Name": "hfghfghfdgdfg"},
+      //   {"Cat_Id": "VGMHD45", "Cat_Name": "hjgtjfgj"},
+      //   {"Cat_Id": "VGMHD59", "Cat_Name": "hfghfghfdgdfghugygyytftftcftc"}
+      // ];
       print("categoryList...................-$res");
       print(
           "categoryList1st...................-${catlist[0]["Cat_Id"].toString()}");
@@ -1452,6 +1441,9 @@ class Controller extends ChangeNotifier {
     tabl_name = prefs.getString("table_nm")!;
     room_nm = prefs.getString("room_nm");
     guest_nm = prefs.getString("gst_nm");
+    table_catNM = prefs.getString("Sm_Tbl_catName"); //Sm_Tbl_catName
+    table_rateID=prefs.getInt("Sm_Tbl_rateID");
+    table_adrscollect=prefs.getInt("Sm_Tbl_CollectAddrs");
     notifyListeners();
   }
 
@@ -1586,6 +1578,7 @@ class Controller extends ChangeNotifier {
     double qty,
     String des,
     int index,
+    String showrate,
     String type,
     int status,
   ) async {
@@ -1619,10 +1612,10 @@ class Controller extends ChangeNotifier {
         // }
         print("------tablRmGUS==$tab,$rum,$gus");
         print(
-            "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},"
+            "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,$showrate,${map["ProdId"]},"    //${map["SRATE"]}
             ",'$des',1,'',$status");
         res = await SqlConn.readData(
-          "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,${map["SRATE"]},${map["ProdId"]},'','$des',1,'',$status",
+          "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,$showrate,${map["ProdId"]},'','$des',1,'',$status",          //${map["SRATE"]}
         );
         print(
             "data added..............--------------------------------------------------------------");
@@ -2258,6 +2251,8 @@ class Controller extends ChangeNotifier {
       await selectcatname(selectedItemStaff!['Tbl_catid']);
     } else {
       await prefs.setString("Sm_Tbl_catName", "ALL");
+      await prefs.setInt("Sm_Tbl_rateID", 5);
+      await prefs.setInt("Sm_Tbl_CollectAddrs", 0);
     }
     notifyListeners();
   }
@@ -2272,6 +2267,9 @@ class Controller extends ChangeNotifier {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("Sm_Tbl_catName",
             tableCategoryList[i]["Table_Category"].toString());
+        await prefs.setInt("Sm_Tbl_rateID", tableCategoryList[i]["Rateid"]);
+        await prefs.setInt(
+            "Sm_Tbl_CollectAddrs", tableCategoryList[i]["CollectAddress"]);
       }
     }
     notifyListeners();
@@ -2280,7 +2278,12 @@ class Controller extends ChangeNotifier {
   updateTableCAT(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("Sm_Tbl_catName", selectedItemTablecat!['Table_Category']);
-    print("tableCAT Updated----${selectedItemTablecat!['Table_Category']}");
+
+    await prefs.setInt("Sm_Tbl_rateID", selectedItemTablecat!["Rateid"]);
+    await prefs.setInt(
+        "Sm_Tbl_CollectAddrs", selectedItemTablecat!["CollectAddress"]);
+    print(
+        "tableCAT Updated----${selectedItemTablecat!['Table_Category']} reteID ----${selectedItemTablecat!['Rateid']}   collectAdrs? -----${selectedItemTablecat!['CollectAddress']}");
     notifyListeners();
     getTableList(context);
   }
@@ -2291,6 +2294,7 @@ class Controller extends ChangeNotifier {
   //   print("catlID----$catlID");
   //   notifyListeners();
   // }
+
   setCatID(String id, String nm, BuildContext context) async {
     // catlID = id;
     // catNM=nm;

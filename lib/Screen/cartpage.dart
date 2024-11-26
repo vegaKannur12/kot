@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent_kot/PRINT/printcontrol.dart';
+import 'package:restaurent_kot/Screen/addressAddBottomshet.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/orderEditBottom.dart';
 import 'package:restaurent_kot/controller/controller.dart';
@@ -19,6 +19,7 @@ class CartBag extends StatefulWidget {
 class _CartBagState extends State<CartBag> {
   String? date;
   OrderEditBottomSheet cocosheet = OrderEditBottomSheet();
+  AddressAddBottomSheet addressaddsheet = AddressAddBottomSheet();
   @override
   void initState() {
     // TODO: implement initState
@@ -32,483 +33,513 @@ class _CartBagState extends State<CartBag> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(backgroundColor:Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          centerTitle: true,
-          title: Consumer<Controller>(
-            builder: (BuildContext context, Controller value, Widget? child) =>
-                Text(
-              "Your Order ( ${value.cart_id.toString()} )",
-              ///value.cartItems.length
-              style: TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        title: Consumer<Controller>(
+          builder: (BuildContext context, Controller value, Widget? child) =>
+              Text(
+            "Your Order ( ${value.cart_id.toString()} )",
+
+            ///value.cartItems.length
+            style: TextStyle(
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
-          actions: [
-            Consumer<Controller>(
-              builder: (context, value, child) => Card(
-                shape: const StadiumBorder(),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"}",
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold),
-                  ),
+        ),
+        actions: [
+          Consumer<Controller>(
+            builder: (context, value, child) => Card(
+              shape: const StadiumBorder(),
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  "${value.tabl_name.toString().toUpperCase()} ${value.room_nm.toString().toUpperCase() == "" || value.room_nm.toString().toUpperCase().isEmpty || value.room_nm.toString().toUpperCase() == "NULL" ? "" : "/ ${value.room_nm.toString().toUpperCase()}"}",
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-            )
-          ],
-           backgroundColor: Color.fromARGB(255, 69, 79, 134),
-        ),
-        bottomNavigationBar: Provider.of<Controller>(context, listen: false)
-                .cartItems
-                .isEmpty
-            ? Container()
-            : Container(
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 67, 83, 155),
-                      Color.fromARGB(255, 50, 71, 190),
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
+            ),
+          )
+        ],
+        backgroundColor: Color.fromARGB(255, 69, 79, 134),
+      ),
+      bottomNavigationBar: Provider.of<Controller>(context, listen: false)
+              .cartItems
+              .isEmpty
+          ? Container()
+          : Container(
+              height: 60,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 67, 83, 155),
+                    Color.fromARGB(255, 50, 71, 190),
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
                 ),
-                child: InkWell(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Consumer<Controller>(
+                builder:
+                    (BuildContext context, Controller value, Widget? child) =>
+                        InkWell(
                   onTap: () {
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) {
-                          Size size = MediaQuery.of(context).size;
+                    if (value.table_adrscollect == 0) {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            Size size = MediaQuery.of(context).size;
 
-                          // Future.delayed(Duration(seconds: 2), () {
-                          //   Navigator.of(context).pop(true);
+                            // Future.delayed(Duration(seconds: 2), () {
+                            //   Navigator.of(context).pop(true);
 
-                          //   Navigator.of(context).push(
-                          //     PageRouteBuilder(
-                          //         opaque: false, // set to false
-                          //         pageBuilder: (_, __, ___) => Dashboard(
-                          //             type: "return from cartList",
-                          //             areaName: areaname)
-                          //         // OrderForm(widget.areaname,"return"),
-                          //         ),
-                          //   );
-                          // });
-                          return AlertDialog(
-                              content: Container(
-                            height: 100,
-                            child: Column(
-                              children: [
-                                Text("Do you want to save ?"),
-                                SizedBox(
-                                  height: size.height * 0.03,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color.fromARGB(255, 67, 83, 155),
-                                            Color.fromARGB(255, 50, 71, 190),
-                                          ],
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
+                            //   Navigator.of(context).push(
+                            //     PageRouteBuilder(
+                            //         opaque: false, // set to false
+                            //         pageBuilder: (_, __, ___) => Dashboard(
+                            //             type: "return from cartList",
+                            //             areaName: areaname)
+                            //         // OrderForm(widget.areaname,"return"),
+                            //         ),
+                            //   );
+                            // });
+                            return AlertDialog(
+                                content: Container(
+                              height: 100,
+                              child: Column(
+                                children: [
+                                  Text("Do you want to save ?"),
+                                  SizedBox(
+                                    height: size.height * 0.03,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color.fromARGB(255, 67, 83, 155),
+                                              Color.fromARGB(255, 50, 71, 190),
+                                            ],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
                                         ),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          //add want print dialog
-                                          bool isSuccess =
-                                              await Provider.of<Controller>(
-                                                      context,
-                                                      listen: false)
-                                                  .finalSave(context);
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            //add want print dialog
+                                            bool isSuccess =
+                                                await Provider.of<Controller>(
+                                                        context,
+                                                        listen: false)
+                                                    .finalSave(context);
+                                            if (isSuccess) {
+                                              showDialog(
+                                                barrierDismissible: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  Size size =
+                                                      MediaQuery.of(context)
+                                                          .size;
 
-                                          if (isSuccess) {
-                                            showDialog(
-                                              barrierDismissible: false,
-                                              context: context,
-                                              builder: (context) {
-                                                Size size =
-                                                    MediaQuery.of(context).size;
+                                                  // Future.delayed(
+                                                  //     Duration(seconds: 3), () {
+                                                  //   Navigator.of(context).pop(true);
+                                                  //   Provider.of<Controller>(context,
+                                                  //           listen: false)
+                                                  //       .clearAllData(context);
 
-                                                // Future.delayed(
-                                                //     Duration(seconds: 3), () {
-                                                //   Navigator.of(context).pop(true);
-                                                //   Provider.of<Controller>(context,
-                                                //           listen: false)
-                                                //       .clearAllData(context);
-
-                                                //   Navigator.of(context).push(
-                                                //     PageRouteBuilder(
-                                                //       opaque: false,
-                                                //       pageBuilder: (_, __, ___) =>
-                                                //           HomePage(),
-                                                //     ),
-                                                //   );
-                                                // });
-                                                return AlertDialog(
-                                                  content: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      // InkWell(
-                                                      //   onLongPress: () {
-                                                      // print(
-                                                      //     "direct pirnt call");
-                                                      // List ll = [
-                                                      //   {
-                                                      //     "Cart_ID": 12,
-                                                      //     "Cart_date":
-                                                      //         "2024-08-01 00:00:00.0",
-                                                      //     "Cart_Salesman_ID":
-                                                      //         "VGMHD3",
-                                                      //     "Cart_Table_ID":
-                                                      //         "VGMHD8",
-                                                      //     "Cart_Room_ID": 15,
-                                                      //     "Cart_Guest_Info":
-                                                      //         "SIRISHA",
-                                                      //     "Cart_Qty": 1.0000,
-                                                      //     "Cart_Rate":
-                                                      //         100.0000,
-                                                      //     "It_Total":
-                                                      //         100.0000,
-                                                      //     "Prod_Name":
-                                                      //         "CHEESE SANDWICH",
-                                                      //   },
-                                                      //   {
-                                                      //     "Cart_ID": 12,
-                                                      //     "Cart_date":
-                                                      //         "2024-08-01 00:00:00.0",
-                                                      //     "Cart_Salesman_ID":
-                                                      //         "VGMHD3",
-                                                      //     "Cart_Table_ID":
-                                                      //         "VGMHD8",
-                                                      //     "Cart_Room_ID": 15,
-                                                      //     "Cart_Guest_Info":
-                                                      //         "SIRISHA",
-                                                      //     "Cart_Qty": 2.0000,
-                                                      //     "Cart_Rate":
-                                                      //         20.0000,
-                                                      //     "It_Total": 40.0000,
-                                                      //     "Prod_Name": "TEA",
-                                                      //   }
-                                                      // ];
-                                                      // NetworkPrinter netwrkP =
-                                                      //     NetworkPrinter();
-                                                      // netwrkP.testTicket(ll);
-                                                      // },
-                                                      // child:
-                                                      Text(
-                                                        'KOT Saved..Want Print ?',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.green),
-                                                      ),
-                                                      // ),
-                                                      // Icon(
-                                                      //   Icons.done,
-                                                      //   color: Colors.green,
-                                                      // )
-                                                    ],
-                                                  ),
-                                                  actions: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                          colors: [
-                                                            Color.fromARGB(255,
-                                                                67, 83, 155),
-                                                            Color.fromARGB(255,
-                                                                50, 71, 190),
-                                                          ],
-                                                          begin: Alignment
-                                                              .centerLeft,
-                                                          end: Alignment
-                                                              .centerRight,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30),
-                                                      ),
-                                                      child: ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                // backgroundColor:
-                                                                // ,
-                                                                textStyle: TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold)),
-                                                        child: const Text(
-                                                          'Yes',
+                                                  //   Navigator.of(context).push(
+                                                  //     PageRouteBuilder(
+                                                  //       opaque: false,
+                                                  //       pageBuilder: (_, __, ___) =>
+                                                  //           HomePage(),
+                                                  //     ),
+                                                  //   );
+                                                  // });
+                                                  return AlertDialog(
+                                                    content: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        // InkWell(
+                                                        //   onLongPress: () {
+                                                        // print(
+                                                        //     "direct pirnt call");
+                                                        // List ll = [
+                                                        //   {
+                                                        //     "Cart_ID": 12,
+                                                        //     "Cart_date":
+                                                        //         "2024-08-01 00:00:00.0",
+                                                        //     "Cart_Salesman_ID":
+                                                        //         "VGMHD3",
+                                                        //     "Cart_Table_ID":
+                                                        //         "VGMHD8",
+                                                        //     "Cart_Room_ID": 15,
+                                                        //     "Cart_Guest_Info":
+                                                        //         "SIRISHA",
+                                                        //     "Cart_Qty": 1.0000,
+                                                        //     "Cart_Rate":
+                                                        //         100.0000,
+                                                        //     "It_Total":
+                                                        //         100.0000,
+                                                        //     "Prod_Name":
+                                                        //         "CHEESE SANDWICH",
+                                                        //   },
+                                                        //   {
+                                                        //     "Cart_ID": 12,
+                                                        //     "Cart_date":
+                                                        //         "2024-08-01 00:00:00.0",
+                                                        //     "Cart_Salesman_ID":
+                                                        //         "VGMHD3",
+                                                        //     "Cart_Table_ID":
+                                                        //         "VGMHD8",
+                                                        //     "Cart_Room_ID": 15,
+                                                        //     "Cart_Guest_Info":
+                                                        //         "SIRISHA",
+                                                        //     "Cart_Qty": 2.0000,
+                                                        //     "Cart_Rate":
+                                                        //         20.0000,
+                                                        //     "It_Total": 40.0000,
+                                                        //     "Prod_Name": "TEA",
+                                                        //   }
+                                                        // ];
+                                                        // NetworkPrinter netwrkP =
+                                                        //     NetworkPrinter();
+                                                        // netwrkP.testTicket(ll);
+                                                        // },
+                                                        // child:
+                                                        Text(
+                                                          'KOT Saved..Want Print ?',
                                                           style: TextStyle(
                                                               color:
-                                                                  Colors.white),
+                                                                  Colors.green),
                                                         ),
-                                                        onPressed: () async {
-                                                          print("pirnt call");
-                                                          await Provider.of<
-                                                                      Controller>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .finalPrint(
-                                                                  context);
-                                                          await Provider.of<
-                                                                      Controller>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .clearAllData(
-                                                                  context);
-
-                                                          Navigator.of(context)
-                                                              .push(
-                                                            PageRouteBuilder(
-                                                              opaque: false,
-                                                              pageBuilder: (_,
-                                                                      __,
-                                                                      ___) =>
-                                                                  HomePage(),
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
+                                                        // ),
+                                                        // Icon(
+                                                        //   Icons.done,
+                                                        //   color: Colors.green,
+                                                        // )
+                                                      ],
                                                     ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                          colors: [
-                                                            Color.fromARGB(255,
-                                                                67, 83, 155),
-                                                            Color.fromARGB(255,
-                                                                50, 71, 190),
-                                                          ],
-                                                          begin: Alignment
-                                                              .centerLeft,
-                                                          end: Alignment
-                                                              .centerRight,
+                                                    actions: [
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                            colors: [
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  67,
+                                                                  83,
+                                                                  155),
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  50,
+                                                                  71,
+                                                                  190),
+                                                            ],
+                                                            begin: Alignment
+                                                                .centerLeft,
+                                                            end: Alignment
+                                                                .centerRight,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(30),
                                                         ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30),
+                                                        child: ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  // backgroundColor:
+                                                                  // ,
+                                                                  textStyle: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                          child: const Text(
+                                                            'Yes',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          onPressed: () async {
+                                                            print("pirnt call");
+                                                            await Provider.of<
+                                                                        Controller>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .finalPrint(
+                                                                    context);
+                                                            await Provider.of<
+                                                                        Controller>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .clearAllData(
+                                                                    context);
+
+                                                            Navigator.of(
+                                                                    context)
+                                                                .push(
+                                                              PageRouteBuilder(
+                                                                opaque: false,
+                                                                pageBuilder: (_,
+                                                                        __,
+                                                                        ___) =>
+                                                                    HomePage(),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
                                                       ),
-                                                      child: ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                // backgroundColor:
-                                                                // ,
-                                                                textStyle: TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold)),
-                                                        child: const Text(
-                                                          'No',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                            colors: [
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  67,
+                                                                  83,
+                                                                  155),
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  50,
+                                                                  71,
+                                                                  190),
+                                                            ],
+                                                            begin: Alignment
+                                                                .centerLeft,
+                                                            end: Alignment
+                                                                .centerRight,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(30),
                                                         ),
+                                                        child: ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  // backgroundColor:
+                                                                  // ,
+                                                                  textStyle: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                          child: const Text(
+                                                            'No',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(true);
+                                                            Provider.of<Controller>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .clearAllData(
+                                                                    context);
+
+                                                            Navigator.of(
+                                                                    context)
+                                                                .push(
+                                                              PageRouteBuilder(
+                                                                opaque: false,
+                                                                pageBuilder: (_,
+                                                                        __,
+                                                                        ___) =>
+                                                                    HomePage(),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: Text('Save Failed'),
+                                                    content: Text(
+                                                        'An error occurred while saving the KOT. Please try again.'),
+                                                    actions: [
+                                                      TextButton(
                                                         onPressed: () {
                                                           Navigator.of(context)
-                                                              .pop(true);
-                                                          Provider.of<Controller>(
-                                                                  context,
-                                                                  listen: false)
-                                                              .clearAllData(
-                                                                  context);
-
-                                                          Navigator.of(context)
-                                                              .push(
-                                                            PageRouteBuilder(
-                                                              opaque: false,
-                                                              pageBuilder: (_,
-                                                                      __,
-                                                                      ___) =>
-                                                                  HomePage(),
-                                                            ),
-                                                          );
+                                                              .pop();
                                                         },
+                                                        child: Text('OK'),
                                                       ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          } else {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: Text('Save Failed'),
-                                                  content: Text(
-                                                      'An error occurred while saving the KOT. Please try again.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: Text('OK'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                        child: Text(
-                                          "Yes",
-                                          style: TextStyle(color: Colors.white),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          },
+                                          child: Text(
+                                            "Yes",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              // backgroundColor:
+                                              // ,
+                                              textStyle: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.transparent,
-                                            // backgroundColor:
-                                            // ,
-                                            textStyle: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: size.width * 0.03,
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color.fromARGB(255, 67, 83, 155),
-                                            Color.fromARGB(255, 50, 71, 190),
-                                          ],
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
+                                      SizedBox(
+                                        width: size.width * 0.03,
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color.fromARGB(255, 67, 83, 155),
+                                              Color.fromARGB(255, 50, 71, 190),
+                                            ],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
                                         ),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          "No",
-                                          style: TextStyle(color: Colors.white),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            "No",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              // backgroundColor:
+                                              //     P_Settings.salewaveColor,
+                                              textStyle: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.transparent,
-                                            // backgroundColor:
-                                            //     P_Settings.salewaveColor,
-                                            textStyle: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
 
-                                // Text(
-                                //   '$type  Placed!!!!',
-                                //   style:
-                                //       TextStyle(color: P_Settings.extracolor),
-                                // ),
-                                // Icon(
-                                //   Icons.done,
-                                //   color: Colors.green,
-                                // )
-                              ],
-                            ),
-                          ));
-                        });
-                    // Provider.of<Controller>(context, listen: false).viewCart(context);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => CartBag()),
-                    // );
+                                  // Text(
+                                  //   '$type  Placed!!!!',
+                                  //   style:
+                                  //       TextStyle(color: P_Settings.extracolor),
+                                  // ),
+                                  // Icon(
+                                  //   Icons.done,
+                                  //   color: Colors.green,
+                                  // )
+                                ],
+                              ),
+                            ));
+                          });
+                    } else {
+                      addressaddsheet.showaddressAddMoadlBottomsheet(
+                          context, size);
+                    }
                   },
-                  child: Consumer<Controller>(
-                    builder: (BuildContext context, Controller value,
-                            Widget? child) =>
-                        Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'SAVE KOT',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.white),
-                          ),
-                          Text(
-                            "${value.karttotal.toStringAsFixed(2)} \u{20B9} ",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.white),
-                          )
-                        ],
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'SAVE KOT',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          "${value.karttotal.toStringAsFixed(2)} \u{20B9} ",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.white),
+                        )
+                      ],
                     ),
                   ),
                 ),
               ),
-        body: Consumer<Controller>(
-            builder: (context, value, child) => value.isCartLoading
-                ? Align(
-                  alignment: Alignment.center,
-                  child: SpinKitCircle(
-                    color: Colors.black,
+            ),
+      body: Consumer<Controller>(
+        builder: (context, value, child) => value.isCartLoading
+            ? Align(
+                alignment: Alignment.center,
+                child: SpinKitCircle(
+                  color: Colors.black,
+                ),
+              )
+            : value.cartItems.isEmpty
+                ? Container(
+                    height: size.height * 0.7,
+                    child: Center(
+                        child: Lottie.asset("assets/noitem.json",
+                            height: size.height * 0.3)))
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: value.cartItems.length,
+                    itemBuilder: (context, int index) {
+                      // return cartItems(index, size, value.cartItems[index]);
+                      return customCard(index, size, value.cartItems[index]);
+                    },
                   ),
-                )
-                : value.cartItems.isEmpty
-                        ? Container(
-                            height: size.height * 0.7,
-                            child: Center(
-                                child: Lottie.asset("assets/noitem.json",
-                                    height: size.height * 0.3)))
-                        : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: value.cartItems.length,
-                                itemBuilder: (context, int index) {
-                                  // return cartItems(index, size, value.cartItems[index]);
-                                  return customCard(
-                                      index, size, value.cartItems[index]);
-                                },),),);
+      ),
+    );
   }
 
 //////////////////////////////////////////////////////////////////

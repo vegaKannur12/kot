@@ -4,7 +4,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'dart:io';
 

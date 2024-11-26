@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:restaurent_kot/Screen/authentication/login.dart';
 import 'package:restaurent_kot/Screen/authentication/registration.dart';
 import 'package:restaurent_kot/Screen/db_selection.dart';
-import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

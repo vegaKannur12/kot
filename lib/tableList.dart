@@ -19,7 +19,7 @@ class _TableListState extends State<TableList> {
         itemBuilder: ((context, index) {
           return ListTile(
             title: Text(widget.list[index]["name"]),
-            onTap: () async {
+            onTap: () async { 
               List<Map<String, dynamic>> list = await KOT.instance
                   .getTableData(widget.list[index]["name"]);
               Navigator.push(
@@ -44,7 +44,6 @@ class TableContent extends StatefulWidget {
   String tableName;
   List<Map<String, dynamic>> list;
   TableContent({required this.tableName, required this.list});
-
   @override
   State<TableContent> createState() => _TableContentState();
 }
@@ -97,7 +96,8 @@ class _TableContentState extends State<TableContent> {
   }
 
   @override
-  void initState() {
+  void initState() 
+  {
     // TODO: implement initState
     super.initState();
     if (widget.tableName == "registrationTable") {
@@ -112,12 +112,14 @@ class _TableContentState extends State<TableContent> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return Scaffold(
       appBar: AppBar(
         title: Text("Table Content---${widget.tableName}"),
       ),
-      body: Column(
+      body: 
+      Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -152,9 +154,9 @@ class _TableContentState extends State<TableContent> {
           ),
         ],
       ),
+      
       // body:
       // SingleChildScrollView(
-
       // scrollDirection: Axis.horizontal,
       // child: DataTable(
       //   columns: [
