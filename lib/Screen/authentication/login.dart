@@ -241,16 +241,17 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     onPressed: () async {
                       print(("selected NAme==${value.selectedSmName}"));
-                      if (
-                          // password.text.isNotEmpty ||
-                          //   password.text.toString() != "" ||
-                          _formKey.currentState!.validate()) {
+                      // if (
+                      // password.text.isNotEmpty ||
+                      //   password.text.toString() != "" )
+                      if (_formKey.currentState!.validate()) {
                         loginLoad = true;
                         int i = await Provider.of<Controller>(context,
                                 listen: false)
                             .verifyStaff(password.text, context);
                         print("$i");
-                        if (i == 1) {
+                        if (i == 1) 
+                        {
                           // SharedPreferences prefs =
                           //     await SharedPreferences.getInstance();
                           // prefs.setString("table_cat", "ALL");
@@ -260,7 +261,9 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => HomePage(),
                             ),
                           );
-                        } else {
+                        } 
+                        else 
+                        {
                           CustomSnackbar snackbar = CustomSnackbar();
                           // ignore: use_build_context_synchronously
                           snackbar.showSnackbar(
@@ -285,7 +288,8 @@ class _LoginPageState extends State<LoginPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 12.0, bottom: 12),
                       child: loginLoad
-                          ? const SpinKitThreeBounce(
+                          ? const 
+                            SpinKitThreeBounce(
                               color: Colors.white,
                               size: 16,
                             )

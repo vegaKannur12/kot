@@ -222,7 +222,13 @@ class AddressAddBottomSheet {
                                                                         listen:
                                                                             false)
                                                                     .finalSave(
-                                                                        context);
+                                                                        context,
+                                                                        phoneController
+                                                                            .text,
+                                                                        nameController
+                                                                            .text,
+                                                                        addressController
+                                                                            .text);
 
                                                                 if (isSuccess) {
                                                                   nameController

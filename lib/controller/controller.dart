@@ -815,7 +815,7 @@ class Controller extends ChangeNotifier {
       } else if (type == "VCART") {
         await viewCart(context);
       } else if (type == "FIN") {
-        await finalSave(context);
+        await finalSave(context, "", "", "");
       } else if (type == "FINP") {
         await finalPrint(context);
       } else if (type == "SET") {
@@ -1029,15 +1029,15 @@ class Controller extends ChangeNotifier {
       notifyListeners();
       var res = await SqlConn.readData("Kot_Table_Category");
       var valueMap = json.decode(res);
-      // print("login details----------$res");
+      print("Table_Category details----------$res");
       if (valueMap != null) {
         // LoginModel logModel = LoginModel.fromJson(valueMap);
 
-        // for (var item in valueMap) {
-        //   tableCategoryListc(item);
-        //   notifyListeners();
-        // }
-        tableCategoryList.add( {"cate_id": 8, "Table_Category": "TABLE", "Rateid": 6, "CollectAddress": 0});
+        for (var item in valueMap) {
+          tableCategoryList.add(item);
+          notifyListeners();
+        }
+        // tableCategoryList.add( {"cate_id": 8, "Table_Category": "TABLE", "Rateid": 6, "CollectAddress": 0});
         selectedTableCat = tableCategoryList[0]["Table_Category"];
         notifyListeners();
         print("Table_CategoryList----$tableCategoryList");
@@ -1442,8 +1442,8 @@ class Controller extends ChangeNotifier {
     room_nm = prefs.getString("room_nm");
     guest_nm = prefs.getString("gst_nm");
     table_catNM = prefs.getString("Sm_Tbl_catName"); //Sm_Tbl_catName
-    table_rateID=prefs.getInt("Sm_Tbl_rateID");
-    table_adrscollect=prefs.getInt("Sm_Tbl_CollectAddrs");
+    table_rateID = prefs.getInt("Sm_Tbl_rateID");
+    table_adrscollect = prefs.getInt("Sm_Tbl_CollectAddrs");
     notifyListeners();
   }
 
@@ -1612,10 +1612,10 @@ class Controller extends ChangeNotifier {
         // }
         print("------tablRmGUS==$tab,$rum,$gus");
         print(
-            "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,$showrate,${map["ProdId"]},"    //${map["SRATE"]}
+            "Kot_Save_Cart--------------- $cartid,'$dateTime','$smid',$tab,$rum,$gus,0,'$os','${map["code"]}',$qty,$showrate,${map["ProdId"]}," //${map["SRATE"]}
             ",'$des',1,'',$status");
         res = await SqlConn.readData(
-          "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,$showrate,${map["ProdId"]},'','$des',1,'',$status",          //${map["SRATE"]}
+          "Kot_Save_Cart $cartid,'$dateTime','$smid','$tab','$rum','$gus',0,'$os','${map["code"]}',$qty,$showrate,${map["ProdId"]},'','$des',1,'',$status", //${map["SRATE"]}
         );
         print(
             "data added..............--------------------------------------------------------------");
@@ -1757,24 +1757,24 @@ class Controller extends ChangeNotifier {
     }
   }
 
-  finalSave(
-    BuildContext context,
-  ) async {
+  finalSave(BuildContext context, String ph, String name, String adrs) async {
+    print("Ph: $ph \nNAme: $name \n Adrs: $adrs ");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // String? cid = await prefs.getString("cid");
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-
     // for(var item in cartItems){
     // if(item['Cart_Row']!=0){
     try {
       List r = [];
       var res;
       int cartlen = cartItems.length;
-      print("---------Kot_Save_Kot '$os',$cartNo,$cartlen");
-      res = await SqlConn.readData("Kot_Save_Kot '$os',$cartNo,$cartlen");
+      print(
+          "---------Kot_Save_Kot '$os',$cartNo,$cartlen,'$ph','$name','$adrs'");
+      res = await SqlConn.readData(
+          "Kot_Save_Kot '$os',$cartNo,$cartlen,'$ph','$name','$adrs'");
       print("ress==${res.runtimeType}");
       //  res=  [{"FB_no":"ZV13", "Save_Status":"Success"}];
       if (res is String) {
@@ -1796,11 +1796,13 @@ class Controller extends ChangeNotifier {
           print("Savee failed ! $res");
           return false;
         }
-      } else {
+      } 
+      else 
+      {
         return false;
       }
-      // if (res.isNotEmpty) {
 
+      // if (res.isNotEmpty) {
       //   if (res[0]["Save_Status"] == "Success") {
       //     print("Saveedddddddd ! $res");
       //     // print("Saved successfully! FB_no: ${response['FB_no']}");
