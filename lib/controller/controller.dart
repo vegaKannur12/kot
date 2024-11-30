@@ -170,6 +170,8 @@ class Controller extends ChangeNotifier {
     'Less Salt'
   ];
   List filteredSuggestions = [];
+  List<Map<String, dynamic>> filteredListShopper = [];
+  List<Map<String, dynamic>> listShopper = [];
   final Map<String, List<Map<String, dynamic>>> groupedData = {};
   List<bool> isCallDisabled = [];
   int currentIndex = 0;
@@ -1433,6 +1435,49 @@ class Controller extends ChangeNotifier {
     }
   }
 
+///////////////////////////////////
+  getShopperList(BuildContext context, String ph) async {
+    print(" getShopperList $ph");
+    listShopper.clear();
+    notifyListeners();
+    try {
+      var res = await SqlConn.readData("Kot_Shoper_List '$ph'");
+      print("Shoper_List map------$res");
+      var valueMap = json.decode(res);
+      if (valueMap.isNotEmpty) {
+        for (var i in valueMap) {
+          listShopper.add(i);
+        }
+      }
+
+      notifyListeners();
+    } on PlatformException catch (e) {
+      debugPrint("PlatformException CARTNO: ${e.message}");
+      debugPrint("not connected..CARTNO..");
+      debugPrint(e.toString());
+      // await showConnectionDialog(context, "CAR", e.toString());
+    } catch (e) {
+      print("An unexpected error occurred: $e");
+      if (e.toString().contains('connection object is closed')) {
+        // await initYearsDb(context, "CAR");
+      }
+
+      return [];
+    }
+  }
+
+  filterListShopper(String query) {
+    if (query.isNotEmpty) {
+      filteredListShopper = listShopper
+          .where((item) => item['MOBILE']
+              .toString()
+              .startsWith(query)) // Check if MOBILE starts with query
+          .toList();
+    } else {
+      filteredListShopper = [];
+    }
+  }
+
   getIDss() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cart_id = prefs.getInt("cartNo")!;
@@ -1744,29 +1789,21 @@ class Controller extends ChangeNotifier {
       debugPrint("PlatformException Kot_Print_Kot: ${e.message}");
       debugPrint("not connected..Kot_Print_Kot..");
       debugPrint(e.toString());
-      // Navigator.pop(context);
+
       await showConnectionDialog(context, "FINP", e.toString());
-      // return false;
     } catch (e) {
       print("An unexpected error occurred: $e");
       if (e.toString().contains('connection object is closed')) {
-        // Reconnect and retry
         await initYearsDb(context, "FINP");
       }
-      // return false;
     }
   }
 
   finalSave(BuildContext context, String ph, String name, String adrs) async {
     print("Ph: $ph \nNAme: $name \n Adrs: $adrs ");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? cid = await prefs.getString("cid");
-    // String? db = prefs.getString("db_name");
-    // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
     int? cartNo = await prefs.getInt("cartNo");
-    // for(var item in cartItems){
-    // if(item['Cart_Row']!=0){
     try {
       List r = [];
       var res;
@@ -1778,7 +1815,6 @@ class Controller extends ChangeNotifier {
       print("ress==${res.runtimeType}");
       //  res=  [{"FB_no":"ZV13", "Save_Status":"Success"}];
       if (res is String) {
-        // Convert JSON string to List
         res = jsonDecode(res);
       }
       if (res.isNotEmpty) {
@@ -1796,9 +1832,7 @@ class Controller extends ChangeNotifier {
           print("Savee failed ! $res");
           return false;
         }
-      } 
-      else 
-      {
+      } else {
         return false;
       }
 
@@ -1819,7 +1853,6 @@ class Controller extends ChangeNotifier {
       debugPrint("PlatformException Kot_Save_Kot: ${e.message}");
       debugPrint("not connected..Kot_Save_Kot..");
       debugPrint(e.toString());
-      // Navigator.pop(context);
       await showConnectionDialog(context, "FIN", e.toString());
       return false;
     } catch (e) {
