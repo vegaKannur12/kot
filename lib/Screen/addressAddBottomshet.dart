@@ -22,6 +22,7 @@ class AddressAddBottomSheet {
           return Consumer<Controller>(
             builder: (context, value, child) {
               return Container(
+                color: Colors.white,
                 // height: size.height * 0.96,
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -30,7 +31,7 @@ class AddressAddBottomSheet {
                   child: Form(
                     key: _formKey,
                     child: Column(
-                      mainAxisSize:MainAxisSize.min ,
+                      mainAxisSize: MainAxisSize.min,
                       // spacing: 5,
                       children: <Widget>[
                         Row(
@@ -72,23 +73,22 @@ class AddressAddBottomSheet {
                               Autocomplete<Map<String, dynamic>>(
                             optionsBuilder:
                                 (TextEditingValue textEditingValue) async {
-
-                                  print("valueeeeee${textEditingValue.text}");
+                              print("valueeeeee${textEditingValue.text}");
                               // if (value.length >= 4) {
 
                               // if (textEditingValue.text.isNotEmpty) {
-                                //   return value
-                                //       .listShopper; // Return all items if input is empty
-                                // }
-                                // else{
-                                await Provider.of<Controller>(context,
-                                        listen: false)
-                                    .getShopperList(context,
-                                        textEditingValue.text.toString());
-                                return value.listShopper.where((item) =>
-                                    item['MOBILE']
-                                        .toString()
-                                        .startsWith(textEditingValue.text));
+                              //   return value
+                              //       .listShopper; // Return all items if input is empty
+                              // }
+                              // else{
+                              await Provider.of<Controller>(context,
+                                      listen: false)
+                                  .getShopperList(context,
+                                      textEditingValue.text.toString());
+                              return value.listShopper.where((item) =>
+                                  item['MOBILE']
+                                      .toString()
+                                      .startsWith(textEditingValue.text));
                               // }
                             },
                             displayStringForOption: (item) =>
@@ -97,10 +97,13 @@ class AddressAddBottomSheet {
                               return Align(
                                 alignment: Alignment.topLeft,
                                 child: Container(
-                                  decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(10),),                             
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                   child: ListView.builder(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
                                     shrinkWrap: true,
                                     itemCount: options.length,
                                     itemBuilder: (context, index) {
@@ -122,24 +125,32 @@ class AddressAddBottomSheet {
                                 phoneController.text =
                                     suggestion['MOBILE'].toString();
                                 finalText = suggestion['MOBILE'].toString();
-                                nameController.text= suggestion['SHOPER_NAME'].toString();
-                                addressController.text= suggestion['SHOPER_ADDRESS'].toString();
+                                nameController.text =
+                                    suggestion['SHOPER_NAME'].toString();
+                                addressController.text =
+                                    suggestion['SHOPER_ADDRESS'].toString();
                               });
                             },
                             fieldViewBuilder: (context, phoneController,
                                 focusNode, onEditingComplete) {
                               return Padding(
-                                padding: const EdgeInsets.only(left: 15.0, right: 15),
+                                padding: const EdgeInsets.only(
+                                    left: 15.0, right: 15),
                                 child: TextField(
+                                  keyboardType: TextInputType.phone,
                                   controller: phoneController,
                                   focusNode: focusNode,
                                   onChanged: (text) {
                                     setState(() {
                                       finalText = text;
+                                      // phoneController.text=text;
                                       print("final text---$finalText");
                                     });
                                   },
                                   decoration: InputDecoration(
+                                    prefixIcon:
+                                        Icon(Icons.phone_android_outlined),
+                                    labelText: "Type Mobile Number...",
                                     suffixIcon: IconButton(
                                       icon: Icon(Icons.cancel),
                                       onPressed: () {
@@ -149,7 +160,7 @@ class AddressAddBottomSheet {
                                         });
                                       },
                                     ),
-                                    hintText: "Type here...",
+                                    hintText: "Type Mobile Number...",
                                     filled: true,
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(
@@ -234,7 +245,6 @@ class AddressAddBottomSheet {
                         //     ),
                         //   ],
                         // ),
-
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.only(left: 15.0, right: 15),
@@ -255,7 +265,7 @@ class AddressAddBottomSheet {
                             ),
                           ),
                         ),
-
+                        const SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.only(
                               left: 15.0, right: 15, bottom: 18),
@@ -354,6 +364,10 @@ class AddressAddBottomSheet {
                                                           child: ElevatedButton(
                                                             onPressed:
                                                                 () async {
+                                                              print(
+                                                                  "final $finalText");
+                                                              print(
+                                                                  "phonctrl  ${phoneController.text}");
                                                               bool isSuccess = await Provider.of<
                                                                           Controller>(
                                                                       context,
@@ -361,8 +375,9 @@ class AddressAddBottomSheet {
                                                                           false)
                                                                   .finalSave(
                                                                       context,
-                                                                      phoneController
-                                                                          .text,
+                                                                      finalText,
+                                                                      // phoneController
+                                                                      //     .text,
                                                                       nameController
                                                                           .text,
                                                                       addressController
@@ -375,6 +390,7 @@ class AddressAddBottomSheet {
                                                                     .clear();
                                                                 addressController
                                                                     .clear();
+                                                                finalText = "";
                                                                 showDialog(
                                                                   barrierDismissible:
                                                                       false,
