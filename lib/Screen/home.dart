@@ -794,8 +794,7 @@ class _HomePageState extends State<HomePage> {
             //     });
           },
           onTap: () async {
-            await value.setTableID(list["Table_ID"].toString().trimLeft(),
-                list["Table_Name"].toString().trimLeft(), context);
+            await value.setTableID(list, context);
             await Provider.of<Controller>(context, listen: false)
                 .getCartNo(context);
             // CustomSnackbar snackbar = CustomSnackbar();

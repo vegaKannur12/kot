@@ -98,7 +98,7 @@ class AddressAddBottomSheet {
                                 alignment: Alignment.topLeft,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Color.fromARGB(255, 204, 208, 231),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: ListView.builder(
@@ -109,11 +109,16 @@ class AddressAddBottomSheet {
                                     itemBuilder: (context, index) {
                                       final Map<String, dynamic> option =
                                           options.elementAt(index);
-                                      return ListTile(
-                                        onTap: () => onSelected(option),
-                                        title: Text(option['SHOPER_NAME']),
-                                        subtitle:
-                                            Text(option['MOBILE'].toString()),
+                                      return Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () => onSelected(option),
+                                            title: Text(option['SHOPER_NAME']),
+                                            subtitle:
+                                                Text(option['MOBILE'].toString()),
+                                          ),
+                                          Divider(color: Colors.white,)
+                                        ],
                                       );
                                     },
                                   ),
@@ -155,6 +160,8 @@ class AddressAddBottomSheet {
                                       icon: Icon(Icons.cancel),
                                       onPressed: () {
                                         phoneController.clear();
+                                        nameController.clear();
+                                        addressController.clear();
                                         setState(() {
                                           finalText = "";
                                         });
@@ -167,7 +174,7 @@ class AddressAddBottomSheet {
                                       borderRadius: BorderRadius.circular(15.0),
                                     ),
                                   ),
-                                ),
+                                ), 
                               );
                             },
                           ),

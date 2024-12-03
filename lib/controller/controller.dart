@@ -137,6 +137,7 @@ class Controller extends ChangeNotifier {
   String roomnm = "";
   String tablname = "";
   String guestnm = " ";
+  Map<String, dynamic>? selTableMap;
 
   //new IDsss
   int cart_id = 0;
@@ -318,7 +319,8 @@ class Controller extends ChangeNotifier {
     var res1 = await SqlConn.readData(
         "SELECT * from [KOT_Notify] WHERE CALL_STATUS=0");
     print("KOT_Notify res---$res1");
-    if (res1.isNotEmpty) {
+    if (res1.isNotEmpty) 
+    {
       alertList.clear();
       currentIndex = 0;
       notifyListeners();
@@ -1386,6 +1388,7 @@ class Controller extends ChangeNotifier {
     guestnm = " ";
     cartItems.clear();
     cartTotal = 0;
+    selTableMap={};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("table_id");
     prefs.remove("table_nm");
@@ -1814,7 +1817,8 @@ class Controller extends ChangeNotifier {
           "Kot_Save_Kot '$os',$cartNo,$cartlen,'$ph','$name','$adrs'");
       print("ress==${res.runtimeType}");
       //  res=  [{"FB_no":"ZV13", "Save_Status":"Success"}];
-      if (res is String) {
+      if (res is String) 
+      {
         res = jsonDecode(res);
       }
       if (res.isNotEmpty) {
@@ -2255,14 +2259,14 @@ class Controller extends ChangeNotifier {
   }
 
   ///////////////////////////////////////////////////////////////////////
-  setTableID(String id, String tbNM, BuildContext context) async {
-    tablID = id;
-    tablname = tbNM;
+  setTableID(Map<String, dynamic> list, BuildContext context) async {
+    tablID = list["Table_ID"].toString().trimLeft();
+    tablname = list["Table_Name"].toString().trimLeft();
+    selTableMap=list;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("table_id", id);
-    prefs.setString("table_nm", tbNM);
-
-    print("tablID----$id");
+    prefs.setString("table_id", list["Table_ID"].toString().trimLeft());
+    prefs.setString("table_nm", list["Table_Name"].toString().trimLeft()); 
+    print("tabl selected----$list");
     notifyListeners();
   }
 
@@ -2310,10 +2314,11 @@ class Controller extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateTableCAT(BuildContext context) async {
+
+  updateTableCAT(BuildContext context) async 
+  {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("Sm_Tbl_catName", selectedItemTablecat!['Table_Category']);
-
     await prefs.setInt("Sm_Tbl_rateID", selectedItemTablecat!["Rateid"]);
     await prefs.setInt(
         "Sm_Tbl_CollectAddrs", selectedItemTablecat!["CollectAddress"]);
@@ -2322,14 +2327,13 @@ class Controller extends ChangeNotifier {
     notifyListeners();
     getTableList(context);
   }
-
   ///////////////........................../////////////////////////////
   // setCatID(String id, BuildContext context) {
   //   catlID = id;
   //   print("catlID----$catlID");
   //   notifyListeners();
   // }
-
+  
   setCatID(String id, String nm, BuildContext context) async {
     // catlID = id;
     // catNM=nm;

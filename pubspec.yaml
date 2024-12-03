@@ -46,7 +46,7 @@ dependencies:
   intl: ^0.18.1
   fluttertoast: ^8.2.2
   sql_conn:
-    path: C:/Users/PHP SERVER/Downloads/sql_conn-master/sql_conn-master
+    path: E:/FLUTTER2024/sql_conn-master/sql_conn-master
   device_info_plus: ^4.1.2
   sqflite: ^2.0.3+1
   responsive_grid_list: ^1.4.0

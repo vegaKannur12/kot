@@ -840,7 +840,7 @@ packages:
   sql_conn:
     dependency: "direct main"
     description:
-      path: "C:/Users/PHP SERVER/Downloads/sql_conn-master/sql_conn-master"
+      path: "E:\\FLUTTER2024\\sql_conn-master\\sql_conn-master"
       relative: false
     source: path
     version: "0.0.3"
