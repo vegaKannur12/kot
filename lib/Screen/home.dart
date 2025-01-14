@@ -363,6 +363,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   )
+                                  ////////////bottom Navigation tablename and proceedd/////
                                 : Container(
                                     margin: EdgeInsets.only(bottom: 10),
                                     padding: EdgeInsets.only(left: 10,top: 10,bottom: 10,right: 15),
@@ -403,6 +404,7 @@ class _HomePageState extends State<HomePage> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 height: 70,
+                                /////////////proceed  buttoon/////////////
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors
@@ -422,6 +424,8 @@ class _HomePageState extends State<HomePage> {
                                         Provider.of<Controller>(context,
                                                 listen: false)
                                             .getItemList(context);
+                                             await Provider.of<Controller>(context, listen: false)
+                                              .viewCart(context);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -444,6 +448,11 @@ class _HomePageState extends State<HomePage> {
                                             // Update data or perform actions to refresh the page
                                           });
                                         });
+
+
+
+
+
                                       } else {
                                         CustomSnackbar snackbar =
                                             CustomSnackbar();
@@ -837,7 +846,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
+//////////////////////THIS WIDGET not use in resturentkot SVALUE=="YES"//////////////////
   Widget roomWidget(Size size, List list, BuildContext context) {
     return Consumer<Controller>(
       builder: (context, value, child) => value.isRoomLoading

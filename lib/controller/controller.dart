@@ -46,6 +46,8 @@ class Controller extends ChangeNotifier {
   List<Map<String, dynamic>> kitchenKotItems = [];
   List<Map<String, dynamic>> tableItemList = [];
   List<Map<String, dynamic>> kotItemList = [];
+    List<Map<String, dynamic>> kotCancelItemList = [];
+
   bool isCartLoading = false;
   bool isKOTLoading = false;
   List<Map<String, dynamic>> categoryList = [];
@@ -882,6 +884,7 @@ class Controller extends ChangeNotifier {
           // username: "sa",
           // password: "1"
           );
+          
       debugPrint("Connected!");
       Navigator.pop(context);
     } catch (e) {
@@ -1942,7 +1945,7 @@ class Controller extends ChangeNotifier {
     // String? db = prefs.getString("db_name");
     // String? brId = await prefs.getString("br_id");
     String? os = await prefs.getString("os");
-
+  
     isKOTLoading = true;
     notifyListeners();
 
@@ -2118,6 +2121,15 @@ class Controller extends ChangeNotifier {
     //  kotItems=[{"Kot_No":"AT3", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 10:43:12.57", "Table_No":"t1", "Room_No":102, "Status":0}, {"Kot_No":"AT2", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:54:44.667", "Table_No":"101T", "Room_No":10, "Status":0}, {"Kot_No":"AT1", "kot_Date":"2024-07-20 00:00:00.0", "kot_time":"2024-07-20 09:52:55.043", "Table_No":"101T", "Room_No":102, "Status":1}];
     notifyListeners();
   }
+
+  ///////////////////////////////////////////////////////
+cancelKOt(String tblname,int status,)async{
+  print("cccccccccc");
+var resc3 = await SqlConn.writeData("Kot_Updatencopy_kot '$tblname',$status");    
+    print("kot cancel list--------$resc3");
+    notifyListeners();
+
+}
 
 ////////////////////////////////////////////////////////////////////////
   searchTable(String val) {

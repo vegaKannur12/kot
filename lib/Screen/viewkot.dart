@@ -142,7 +142,10 @@ class _ViewKotState extends State<ViewKot> {
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
+              Provider.of<Controller>(context, listen: false).clearAllData(context);
+              Provider.of<Controller>(context, listen: false).getTableList(context);
             Navigator.pop(context);
+
           },
         ),
         centerTitle: true,
@@ -150,6 +153,7 @@ class _ViewKotState extends State<ViewKot> {
           builder: (BuildContext context, Controller value, Widget? child) =>
               Text(
             "KOT List",
+
             ///value.cartItems.length
             style: TextStyle(
               fontSize: 19,
@@ -160,33 +164,35 @@ class _ViewKotState extends State<ViewKot> {
         ),
         backgroundColor: Color.fromARGB(255, 69, 79, 134),
       ),
-      body: Consumer<Controller>(
-        builder: (context, value, child) => value.isKOTLoading
-            ? SpinKitCircle(
-                color: Colors.black,
-              )
-            : value.kotItems.length == 0
-                ? Container(
-                    height: size.height * 0.7,
-                    child: Center(
-                        child: Lottie.asset("assets/noitem.json",
-                            height: size.height * 0.3)))
-                : value.isKOTLoading
-                    ? const Expanded(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: SpinKitCircle(
-                            color: Colors.black,
+      body: Consumer<Controller>(                  
+          builder: (context, value, child) => value.isKOTLoading
+              ? SpinKitCircle(
+                  color: Colors.black,
+                )
+              : value.kotItems.length == 0
+                  ? Container(
+                      height: size.height * 0.7,
+                      child: Center(
+                          child: Lottie.asset("assets/noitem.json",
+                              height: size.height * 0.3)))
+                  : value.isKOTLoading
+                      ? const Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SpinKitCircle(
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: value.kotItems.length,
-                        itemBuilder: (context, int index) {
-                          // return cartItems(index, size, value.cartItems[index]);
-                          return customCard(index, size, value.kotItems[index]);
-                        }),
-      ),
+                        )
+                      : ListView.builder(
+                          itemCount: value.kotItems.length,
+                          itemBuilder: (context, int index) {
+                            // return cartItems(index, size, value.cartItems[index]);
+                            return customCard(
+                                index, size, value.kotItems[index]);
+                          }),
+        ),
+      
     );
   }
 
@@ -351,6 +357,117 @@ class _ViewKotState extends State<ViewKot> {
                     )),
                   ],
                 ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        // value.cancelKOt(map["Kot_No"], 1);
+                        await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content:
+                                    Text('Do you want to cancel the order?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(
+                                              false); // dismisses only the dialog and returns false
+                                    },
+                                    child: Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                         value.cancelKOt(
+                                        map["Kot_No"],
+                                        1,
+                                      );
+                                      
+
+                                     Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .viewKot(context, date!);
+                                                
+
+                                      });
+                                        
+                                     
+
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 219, 72, 62)),
+                    ),
+                    SizedBox(
+                      width: 55,
+                    ),
+                    ElevatedButton(
+                      onPressed: () async{
+                         await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content:
+                                    Text('Do you want to copy and cancel the order?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(
+                                              false); // dismisses only the dialog and returns false
+                                    },
+                                    child: Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                         value.cancelKOt(
+                                        map["Kot_No"],
+                                        2,
+                                      );
+                          
+                      //                Provider.of<Controller>(context, listen: false)
+                      // .getItemList(context);
+                                     Provider.of<Controller>(context,
+                                                    listen: false)
+                                                .viewKot(context, date!);
+
+                                      });
+                                     
+                                     
+
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Text(
+                        "Cancel & Copy",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 92, 186, 223)),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -358,6 +475,8 @@ class _ViewKotState extends State<ViewKot> {
       );
     });
   }
+
+ 
 }
 
 Future<bool> _onBackPressed(BuildContext context) async {

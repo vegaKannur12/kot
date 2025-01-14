@@ -101,11 +101,12 @@ class _CatTESTState extends State<CatTEST> {
           ),
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () {
-                // Provider.of<Controller>(context, listen: false).viewCart(
-                //   context,
-                //   value.customerId.toString(),
-                // );
+              onPressed: () {        
+                
+              Provider.of<Controller>(context, listen: false).clearAllData(context);
+              Provider.of<Controller>(context, listen: false).getTableList(context);
+
+
                 Navigator.pop(context);
               },
               icon: const Icon(
@@ -242,7 +243,7 @@ class _CatTESTState extends State<CatTEST> {
                               ),
                               value.isSearch
                                   ? tblWidget(size, value.filteredlist, date!)
-                                  : tblWidget(size, value.itemlist, date!)
+                                  : tblWidget(size, value.itemlist, date!),
                             ],
                           ),
                   ),
@@ -430,30 +431,55 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ListTile(
-                          selected: true,
-                          minVerticalPadding: 5,
-                          selectedTileColor: Colors.redAccent,
-                          onTap: () {
-                            cocosheet.showorderMoadlBottomsheet(
-                                list, context, size, index, showrate, date);
-                          },
-                          contentPadding: EdgeInsets.only(left: 8.0, right: 0),
-                          title: Text(
-                            list[index]["Product"]
-                                .toString()
-                                .trimLeft()
-                                .toUpperCase(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: const Color.fromARGB(255, 3, 100, 180)),
-                          ),
-                          subtitle: Text(
-                            "\u{20B9}$showrate",
-                            // "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                        Expanded(
+                          child: ListTile(
+                            // tileColor: Colors.blue,
+
+                            selected: true,
+                            minVerticalPadding: 5,
+                            selectedTileColor: Colors.redAccent,
+                            onTap: () {
+                              cocosheet.showorderMoadlBottomsheet(
+                                  list, context, size, index, showrate, date);
+                            },
+                            contentPadding:
+                                EdgeInsets.only(left: 8.0, right: 0),
+                            title: Text(
+                              list[index]["Product"]
+                                  .toString()
+                                  .trimLeft()
+                                  .toUpperCase(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                  color:
+                                      const Color.fromARGB(255, 3, 100, 180)),
+                            ),
+                            trailing: list[index]["msgtype"].toString() == '1'
+                                ? Icon(
+                                    Icons.not_interested,
+                                    color: Colors.red,
+                                    size: 30,
+                                  )
+                                : Text(""),
+                            subtitle: Column(
+                              // mainAxisSize: MainAxisSize.min,
+
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(list[index]["msg"].toString()),
+                                Text(
+                                  "\u{20B9}$showrate",
+                                  // "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                                SizedBox(height: 20,),
+                                Divider(),
+                                // list[index]["msgtype"].toString()=='1' ?Icon(Icons.not_interested_rounded,color: Colors.red,size: 30,):Text(""),
+                              ],
+                            ),
                           ),
                         ),
                         Divider()
