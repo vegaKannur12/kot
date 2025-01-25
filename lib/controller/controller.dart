@@ -905,53 +905,30 @@ class Controller extends ChangeNotifier {
     isTableLoading = true;
     notifyListeners();
     try {
-      var res = await SqlConn.readData("Kot_Table_List '$os','$smid'");
+      var res = await SqlConn.readData("Kot_Table_List '$os','$smid','$tablecat'");
       var map = jsonDecode(res);
       tabllist.clear();
       tabllistCAT.clear();
       notifyListeners();
       print("tablelist--$res");
       if (map != null) {
-        //            tabllist = [
-        //   {
-        //     "Table_ID": "VGMHD2",
-        //     "Table_Name": "101T",
-        //     "Table_Category": "TABLE",
-        //     "STATUS": 1
-        //   },
-        //   {
-        //     "Table_ID": "VGMHD5",
-        //     "Table_Name": "1A",
-        //     "Table_Category": "ALL",
-        //     "STATUS": 1
-        //   },
-        //   {
-        //     "Table_ID": "VGMHD6",
-        //     "Table_Name": "1B",
-        //     "Table_Category": "TABLE",
-        //     "STATUS": 1
-        //   },
-        //   {
-        //     "Table_ID": "VGMHD7",
-        //     "Table_Name": "1C",
-        //     "Table_Category": "ALL",
-        //     "STATUS": 1
-        //   }
-        // ];
+        
         for (var item in map) {
           tabllist.add(item);
         }
       }
-      tabllistCAT = tabllist
-          .where((e) => e["Table_Category"]
-              .toString()
-              .trimLeft()
-              .toLowerCase()
-              .contains(tablecat.toString().toLowerCase()))
-          .toList();
-      if (tablecat == "ALL") {
+      // tabllistCAT = tabllist
+      //     .where((e) => e["Table_Category"]
+      //         .toString()
+      //         .trimLeft()
+      //         .toLowerCase()
+      //         .contains(tablecat.toString().toLowerCase()))
+      //     .toList();
+
+      
+      // if (tablecat == "ALL") {
         tabllistCAT = tabllist;
-      }
+      // }
 
       print("tablelistCAT-$tabllistCAT");
       isTableLoading = false;
@@ -2257,7 +2234,11 @@ var resc3 = await SqlConn.writeData("Kot_Updatencopy_kot '$tblname',$status");
               .toString()
               .trimLeft()
               .toLowerCase()
-              .contains(val.toLowerCase()))
+              .contains(val.toLowerCase())|| e["Product"]
+              .toString()
+              .trimLeft()
+              .toLowerCase()
+              .startsWith(val.toLowerCase()))
           .toList();
     } else {
       isSearch = false;

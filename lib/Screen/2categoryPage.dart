@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:restaurent_kot/Screen/cartpage.dart';
 import 'package:restaurent_kot/Screen/home.dart';
 import 'package:restaurent_kot/Screen/orderbottomsheet.dart';
+import 'package:restaurent_kot/components/custom_toast.dart';
 import 'package:restaurent_kot/controller/controller.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -22,8 +24,11 @@ class CatTEST extends StatefulWidget {
 class _CatTESTState extends State<CatTEST> {
   TextEditingController seacrh = TextEditingController();
   TextEditingController seacrhcat = TextEditingController();
+  TextEditingController seacrhCntlr = TextEditingController();
+
   String? date;
   int? selectedIndex;
+  CustomToast toast = CustomToast();
   @override
   void initState() {
     // TODO: implement initState
@@ -101,11 +106,11 @@ class _CatTESTState extends State<CatTEST> {
           ),
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () {        
-                
-              Provider.of<Controller>(context, listen: false).clearAllData(context);
-              Provider.of<Controller>(context, listen: false).getTableList(context);
-
+              onPressed: () {
+                Provider.of<Controller>(context, listen: false)
+                    .clearAllData(context);
+                Provider.of<Controller>(context, listen: false)
+                    .getTableList(context);
 
                 Navigator.pop(context);
               },
@@ -136,119 +141,170 @@ class _CatTESTState extends State<CatTEST> {
               )
             ],
           ),
-          body: Row(
+          body: Column(
             children: [
-              Container(
-                width: size.width * 1 / 3,
-                color: Color.fromARGB(255, 204, 208, 231),
-                child: Consumer<Controller>(builder: (context, value, child) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      categoryWidget(size, value.catlist,
-                          value.tabl_ID.toString(), value.room_ID.toString())
-                    ],
-                  );
-                }),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: TextFormField(
+              //     controller: seacrhCntlr,
+              //     onChanged: (valu) {
+              //       Provider.of<Controller>(context, listen: false)
+              //           .searchItem(valu.toString());
+              //     },
+              //     decoration: InputDecoration(
+              //       fillColor: Colors.white,
+              //       filled: true,
+              //       prefixIcon: const Icon(
+              //         Icons.search,
+              //         color: Colors.black,
+              //       ),
+              //       suffixIcon: IconButton(
+              //         icon: const Icon(Icons.cancel),
+              //         onPressed: () {
+              //           seacrhCntlr.clear();
+              //                                 Provider.of<Controller>(context,
+              //                                         listen: false)
+              //                                     .searchItem("");
+
+              //         },
+              //       ),
+
+              //       border: OutlineInputBorder(
+              //         borderSide: const BorderSide(color: Colors.black38),
+              //         borderRadius: BorderRadius.circular(23),
+              //       ),
+
+              //       hintStyle: TextStyle(color: Colors.black, fontSize: 13),
+              //       hintText: "Search Here......... ",
+              //       // fillColor: Colors.grey[100]
+              //     ),
+              //   ),
+              // ),
               Expanded(
-                child: Container(
-                  color: Colors.white,
-                  child: Consumer<Controller>(
-                    builder: (context, value, child) => value.isLoading
-                        ? SpinKitCircle(
-                            color: Colors.black,
-                          )
-                        : Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              // Container(
-                              //   width: double.infinity,
-                              //   height: 50,
-                              //   color: Color.fromARGB(255, 139, 200, 228),
-                              //   child: Center(
-                              //     child: Text(
-                              //       "${widget.catName.toString().toUpperCase()}",
-                              //       style: TextStyle(
-                              //           color: Colors.white,
-                              //           fontSize: 20,
-                              //           fontWeight: FontWeight.bold),
-                              //     ),
-                              //   ),
-                              // ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color:
-                                      const Color.fromARGB(241, 235, 236, 236),
+                child: Row(
+                  children: [
+                    Container(
+                      width: size.width * 1 / 3,
+                      color: Color.fromARGB(255, 204, 208, 231),
+                      child: Consumer<Controller>(
+                          builder: (context, value, child) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            categoryWidget(
+                                size,
+                                value.catlist,
+                                value.tabl_ID.toString(),
+                                value.room_ID.toString())
+                          ],
+                        );
+                      }),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.white,
+                        child: Consumer<Controller>(
+                          builder: (context, value, child) => value.isLoading
+                              ? SpinKitCircle(
+                                  color: Colors.black,
+                                )
+                              : Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    // Container(
+                                    //   width: double.infinity,
+                                    //   height: 50,
+                                    //   color: Color.fromARGB(255, 139, 200, 228),
+                                    //   child: Center(
+                                    //     child: Text(
+                                    //       "${widget.catName.toString().toUpperCase()}",
+                                    //       style: TextStyle(
+                                    //           color: Colors.white,
+                                    //           fontSize: 20,
+                                    //           fontWeight: FontWeight.bold),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: const Color.fromARGB(
+                                            241, 235, 236, 236),
+                                      ),
+                                      child: TextFormField(
+                                        controller: seacrh,
+                                        //   decoration: const InputDecoration(,
+                                        onChanged: (val) {
+                                          Provider.of<Controller>(context,
+                                                  listen: false)
+                                              .searchItem(val.toString());
+                                        },
+                                        decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
+                                          prefixIcon: const Icon(
+                                            Icons.search,
+                                            color: Colors.black,
+                                          ),
+                                          suffixIcon: IconButton(
+                                            icon: const Icon(Icons.cancel),
+                                            onPressed: () {
+                                              seacrh.clear();
+                                              Provider.of<Controller>(context,
+                                                      listen: false)
+                                                  .searchItem("");
+                                            },
+                                          ),
+                                          // contentPadding: const EdgeInsets.symmetric(
+                                          //     horizontal: 5, vertical: 0),
+                                          border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                                color: Colors.black38),
+                                            borderRadius:
+                                                BorderRadius.circular(23),
+                                          ),
+                                          // border: OutlineInputBorder(
+                                          //   borderRadius: BorderRadius.circular(20.0),
+                                          //   borderSide: const BorderSide(
+                                          //       color: Colors.black, width: 1.0),
+                                          // ),
+                                          // focusedBorder: UnderlineInputBorder(
+                                          //   borderRadius: BorderRadius.circular(20.0),
+                                          //   borderSide: const BorderSide(
+                                          //       color: Colors.blue, width: 1.0),
+                                          // ),
+                                          // enabledBorder: OutlineInputBorder(
+                                          //   borderRadius: BorderRadius.circular(20.0),
+                                          //   borderSide:
+                                          //       BorderSide(color: Colors.black, width: 1.0),
+                                          // ),
+                                          // filled: true,
+                                          hintStyle: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 13),
+                                          hintText: "Search Item here.. ",
+                                          // fillColor: Colors.grey[100]
+                                        ),
+                                      ),
+                                    ),
+                                    value.isSearch
+                                        ? tblWidget(
+                                            size, value.filteredlist, date!)
+                                        : tblWidget(
+                                            size, value.itemlist, date!),
+                                  ],
                                 ),
-                                child: TextFormField(
-                                  controller: seacrh,
-                                  //   decoration: const InputDecoration(,
-                                  onChanged: (val) {
-                                    Provider.of<Controller>(context,
-                                            listen: false)
-                                        .searchItem(val.toString());
-                                  },
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                    prefixIcon: const Icon(
-                                      Icons.search,
-                                      color: Colors.black,
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.cancel),
-                                      onPressed: () {
-                                        seacrh.clear();
-                                        Provider.of<Controller>(context,
-                                                listen: false)
-                                            .searchItem("");
-                                      },
-                                    ),
-                                    // contentPadding: const EdgeInsets.symmetric(
-                                    //     horizontal: 5, vertical: 0),
-                                    border: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.black38),
-                                      borderRadius: BorderRadius.circular(23),
-                                    ),
-                                    // border: OutlineInputBorder(
-                                    //   borderRadius: BorderRadius.circular(20.0),
-                                    //   borderSide: const BorderSide(
-                                    //       color: Colors.black, width: 1.0),
-                                    // ),
-                                    // focusedBorder: UnderlineInputBorder(
-                                    //   borderRadius: BorderRadius.circular(20.0),
-                                    //   borderSide: const BorderSide(
-                                    //       color: Colors.blue, width: 1.0),
-                                    // ),
-                                    // enabledBorder: OutlineInputBorder(
-                                    //   borderRadius: BorderRadius.circular(20.0),
-                                    //   borderSide:
-                                    //       BorderSide(color: Colors.black, width: 1.0),
-                                    // ),
-                                    // filled: true,
-                                    hintStyle: TextStyle(
-                                        color: Colors.black, fontSize: 13),
-                                    hintText: "Search Item here.. ",
-                                    // fillColor: Colors.grey[100]
-                                  ),
-                                ),
-                              ),
-                              value.isSearch
-                                  ? tblWidget(size, value.filteredlist, date!)
-                                  : tblWidget(size, value.itemlist, date!),
-                            ],
-                          ),
-                  ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
+              ),
             ],
           )),
     );
@@ -365,7 +421,7 @@ class _CatTESTState extends State<CatTEST> {
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20),
+                                        fontSize: 15),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -398,6 +454,73 @@ class _CatTESTState extends State<CatTEST> {
   }
 }
 
+Widget _buildTrailingWidget(Map<String, dynamic> item) {
+  String msgType = item["msgtype"].toString();
+
+  if (msgType == '1') {
+    return Icon(Icons.error, color: Colors.red, size: 30);
+  } else if (msgType == '2') {
+    return Icon(Icons.warning, color: Colors.orange, size: 30);
+  } else if (msgType == '3') {
+    return Icon(Icons.warning, color: Colors.blue, size: 30);
+  } else if (msgType == '4') {
+    return Icon(Icons.info, color: Colors.blue, size: 30);
+  } else if (msgType == '5') {
+    return Icon(Icons.info, color: Color.fromARGB(255, 33, 243, 61), size: 30);
+  } else {
+    return SizedBox.shrink(); // Empty widget for no trailing content
+  }
+}
+
+////////////////////////////////////////////
+// Function to show the custom toast
+void showCustomToast(BuildContext context, String message) {
+  final overlay = Overlay.of(context);
+  final overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      bottom: 60.0, // Position from the bottom
+      left: 20.0, // Position from the left
+      right: 20.0, // Position from the right
+      child: Material(
+        color: Color.fromARGB(0, 201, 22, 22),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Container(
+            // width: 10,
+            height: 50,
+            alignment: Alignment.center,
+
+            // padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 155, 24, 15),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              message,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  // Insert the toast into the overlay
+  overlay.insert(overlayEntry);
+
+  // Remove the toast after 2 seconds
+  Future.delayed(Duration(seconds: 2), () {
+    overlayEntry.remove();
+  });
+}
+/////////////////////////////////////
+
+/////////////////////////////////////
 Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
     // OrderBottomSheet cocosheet, String date
     ) {
@@ -437,10 +560,25 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
 
                             selected: true,
                             minVerticalPadding: 5,
-                            selectedTileColor: Colors.redAccent,
+                            // selectedTileColor: Colors.redAccent,
                             onTap: () {
-                              cocosheet.showorderMoadlBottomsheet(
-                                  list, context, size, index, showrate, date);
+                              print("item clicked");
+                              if (list[index]["msgtype"].toString().isEmpty ||
+                                  list[index]["msgtype"].toString() == "0") {
+                                cocosheet.showorderMoadlBottomsheet(
+                                    list, context, size, index, showrate, date);
+                              } else {
+                                showCustomToast(context, "Item Finished...!");
+
+                                // Fluttertoast.showToast(
+                                //     msg: "FINISHED....",
+                                //     gravity: ToastGravity.CENTER,
+                                //     backgroundColor: Colors.red,
+                                //     textColor: Colors.white,
+                                //     toastLength: Toast.LENGTH_LONG,
+
+                                //     );
+                              }
                             },
                             contentPadding:
                                 EdgeInsets.only(left: 8.0, right: 0),
@@ -455,28 +593,54 @@ Widget tblWidget(Size size, List<Map<String, dynamic>> list, String date
                                   color:
                                       const Color.fromARGB(255, 3, 100, 180)),
                             ),
-                            trailing: list[index]["msgtype"].toString() == '1'
-                                ? Icon(
-                                    Icons.not_interested,
-                                    color: Colors.red,
-                                    size: 30,
-                                  )
-                                : Text(""),
+                            trailing: _buildTrailingWidget(list[index]),
+
+                            //     ? Icon(
+                            //         Icons.info_outline_rounded,
+                            //         color: Colors.red,
+                            //         size: 30,
+                            //       )
+                            //     : Text(""),
+
                             subtitle: Column(
                               // mainAxisSize: MainAxisSize.min,
 
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(list[index]["msg"].toString()),
+                                Text(
+                                  list[index]["msg"].toString(),
+                                  style: TextStyle(
+                                      // color: Colors.red,
+
+                                      color: list[index]["msg"].toString() ==
+                                                  "FINISHED".toUpperCase() ||
+                                              list[index]["msg"].toString() ==
+                                                  "FINISHED".toLowerCase()
+                                          ? const Color.fromARGB(
+                                              255, 201, 44, 33)
+                                          : Color.fromARGB(255, 176, 202, 133),
+
+                                      // color: list[index]["msg"].toString() ==
+                                      //         "TODAY"
+                                      //     ? Colors.red
+                                      //     : list[index]["msg"].toString() ==
+                                      //             "TEST"
+                                      //         ? Colors.red
+                                      //         : Color.fromARGB(255, 136, 139, 100),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
                                 Text(
                                   "\u{20B9}$showrate",
                                   // "\u{20B9}${list[index]["SRATE"].toStringAsFixed(2)}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                      fontSize: 10),
                                 ),
-                                SizedBox(height: 20,),
-                                Divider(),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                // Divider(),
                                 // list[index]["msgtype"].toString()=='1' ?Icon(Icons.not_interested_rounded,color: Colors.red,size: 30,):Text(""),
                               ],
                             ),

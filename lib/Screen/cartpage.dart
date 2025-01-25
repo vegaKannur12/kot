@@ -599,7 +599,7 @@ class _CartBagState extends State<CartBag> {
                                   // Navigator.pop(context);
                                 },
                                 child: Text(
-                                  "Update",
+                                  "Edit",
                                   style: TextStyle(
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold),
